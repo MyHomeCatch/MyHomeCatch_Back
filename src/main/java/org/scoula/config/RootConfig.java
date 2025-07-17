@@ -17,7 +17,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @PropertySource("classpath:application.properties")
-// @MapperScan(basePackages={})
+@MapperScan(basePackages={"org.scoula"})
 public class RootConfig {
     @Value("${jdbc.driver}") String driver;
     @Value("${jdbc.url}") String url;
@@ -57,8 +57,7 @@ public class RootConfig {
 
     @Bean
     public DataSourceTransactionManager transactionManager() {
-        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
-        return transactionManager;
+        return new DataSourceTransactionManager(dataSource());
     }
 
 }
