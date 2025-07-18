@@ -16,7 +16,7 @@
     <title>Title</title>
 </head>
 <body>
-<h4> <c:out value="${exception.getMassage()}"> </c:out></h4>
+<h4> <c:out value="${exception.getMessage()}"> </c:out></h4>
 <ul>
   <c:forEach items="${exception.getStackTrace()}" var="stack">
     <li><c:out value="${stack}"> </c:out></li>
