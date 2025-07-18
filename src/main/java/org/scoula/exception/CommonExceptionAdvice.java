@@ -18,7 +18,7 @@ public class CommonExceptionAdvice {
     @ExceptionHandler(Exception.class)
     public String except(Exception e, Model model) {
         log.error("Exception..........!!");
-        model.addAttribute("exception", e.getMessage());
+        model.addAttribute("exception", e);
         log.error(model);
         return "error_page";
     }
