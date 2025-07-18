@@ -36,7 +36,10 @@ public class AuthController {
             String message = result.getFieldErrors().stream()
                     .map(FieldError::getDefaultMessage)
                     .collect(Collectors.joining(", "));
-            return ResponseEntity.badRequest().body(message);
+
+            Map<String, String> errorBody = new HashMap<>();
+            errorBody.put("message", message);
+            return ResponseEntity.badRequest().body(errorBody);
         }
 
         return ResponseEntity.ok(authService.login(request));
