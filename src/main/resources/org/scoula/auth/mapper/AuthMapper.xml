@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.scoula.auth.mapper.AuthMapper">
+
+    <select id="findByEmail" resultType="org.scoula.user.domain.User">
+        SELECT * FROM users
+        WHERE email = #{email}
+    </select>
+
+    <insert id="insertUser" parameterType="org.scoula.user.domain.User">
+        INSERT INTO users (email, password, name, nickname, address, additional_point)
+        VALUES (#{email}, #{password}, #{name}, #{nickname}, #{address}, #{additionalPoint})
+    </insert>
+
+</mapper>
