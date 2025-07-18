@@ -13,6 +13,7 @@ import org.springframework.web.servlet.view.JstlView;
 
 @EnableWebMvc
 @ComponentScan(basePackages = {
+        "org.scoula",
         "org.scoula.exception",
         "org.scoula.controller"
 }) // Spring MVC용 컴포넌트 등록을 위한 스캔 패키지
