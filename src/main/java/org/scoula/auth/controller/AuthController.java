@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -45,7 +46,7 @@ public class AuthController {
 //        return authServiceImpl.signup(request);
 //    }
 
-    @PostMapping(value = "/signup", produces = "text/pain;charset=UTF-8")
+    @PostMapping(value = "/signup", produces = "text/plain;charset=UTF-8")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request, BindingResult result) {
         if (result.hasErrors()) {
             String message = result.getFieldErrors().stream()
@@ -55,6 +56,6 @@ public class AuthController {
         }
 
         authService.signup(request);
-        return ResponseEntity.ok("회원가입 성공");
+        return ResponseEntity.ok().body(Map.of("message", "회원가입 성공"));
     }
 }
