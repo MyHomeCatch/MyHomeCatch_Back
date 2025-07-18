@@ -68,6 +68,8 @@ dependencies {
 
     // Jackson - Json 처리
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.9.4'
+    implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.0'
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.15.0'
 
     // 보안
     implementation("org.springframework.security:spring-security-web:${springSecurityVersion}")

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -46,16 +47,22 @@ public class AuthController {
 //        return authServiceImpl.signup(request);
 //    }
 
-    @PostMapping(value = "/signup", produces = "text/plain;charset=UTF-8")
+    @PostMapping(value = "/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request, BindingResult result) {
         if (result.hasErrors()) {
             String message = result.getFieldErrors().stream()
                     .map(FieldError::getDefaultMessage)
                     .collect(Collectors.joining(", "));
-            return ResponseEntity.badRequest().body(message);
+
+            Map<String, String> errorBody = new HashMap<>();
+            errorBody.put("message", message);
+            return ResponseEntity.badRequest().body(errorBody);
         }
 
         authService.signup(request);
-        return ResponseEntity.ok().body(Map.of("message", "회원가입 성공"));
+
+        Map<String, String> body = new HashMap<>();
+        body.put("message", "회원가입 성공");
+        return ResponseEntity.ok(body);
     }
 }
