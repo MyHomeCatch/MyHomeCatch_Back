@@ -1,6 +1,7 @@
 package org.scoula.auth.service;
 
 import org.scoula.auth.dto.AuthResponse;
+import org.scoula.auth.dto.KakaoLoginInfoDto;
 import org.scoula.auth.dto.LoginRequest;
 import org.scoula.auth.dto.SignupRequest;
 
@@ -11,5 +12,5 @@ public interface AuthService {
 
     AuthResponse signup(SignupRequest request);
 
-    AuthResponse kakaoLogin(String code);
+    KakaoLoginInfoDto kakaoLogin(String code);
 }
