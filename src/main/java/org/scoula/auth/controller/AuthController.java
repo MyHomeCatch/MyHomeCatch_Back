@@ -5,10 +5,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.log4j.Log4j2;
-import org.scoula.auth.dto.AuthResponse;
-import org.scoula.auth.dto.KakaoLoginDto;
-import org.scoula.auth.dto.LoginRequest;
-import org.scoula.auth.dto.SignupRequest;
+import org.scoula.auth.dto.*;
 import org.scoula.auth.service.AuthServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -46,14 +43,8 @@ public class AuthController {
     public ResponseEntity<?> kakaoLogin(@RequestBody KakaoLoginDto kakaoLoginDto) {
         String code = kakaoLoginDto.getCode();
 
-        AuthResponse authResponse = authServiceImpl.kakaoLogin(code);
+        KakaoLoginInfoDto kakaoLoginInfoDto = authServiceImpl.kakaoLogin(code);
 
-        return ResponseEntity.ok(authResponse);
-    }
-
-    @PostMapping("/kakaoSignup")
-    public ResponseEntity<?> kakaoSignup(@RequestBody KakaoLoginDto kakaoLoginDto) {
-
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(kakaoLoginInfoDto);
     }
 }

@@ -2,6 +2,7 @@ package org.scoula.auth.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.scoula.auth.dto.AuthResponse;
+import org.scoula.auth.dto.KakaoLoginInfoDto;
 import org.scoula.auth.dto.LoginRequest;
 import org.scoula.auth.dto.SignupRequest;
 import org.scoula.auth.mapper.AuthMapper;
@@ -80,7 +81,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse kakaoLogin(String code) {
+    public KakaoLoginInfoDto kakaoLogin(String code) {
         String url = "https://kauth.kakao.com/oauth/token";
 
         // 1. 헤더 설정
@@ -101,38 +102,50 @@ public class AuthServiceImpl implements AuthService {
 
         // 요청
         ResponseEntity<LinkedHashMap> tokenResponse = restTemplate.postForEntity(url, tokenRequest, LinkedHashMap.class);
-
         String accessToken = "Bearer "+ tokenResponse.getBody().get("access_token");;
+        // 사용자 정보 가져오기 응답
+        ResponseEntity<LinkedHashMap> response = fetchKakaoUserData(accessToken);
 
-        LinkedHashMap<String, Object> userInfo = fetchKakaoUserData(accessToken);
-
+        // 카카오 로그인 password에 적용할 ID
+        // Ex) Kakao + ID
+        Long id = (Long) response.getBody().get("id");
+        // 카카오 사용자 정보
+        LinkedHashMap<String, Object> userInfo = (LinkedHashMap<String, Object>) response.getBody().get("kakao_account");
         String kakaoEmail = userInfo.get("email").toString();
-
         User user = authMapper.findByEmail(kakaoEmail);
 
         if (user != null) {
             String token = jwtUtil.generateToken(kakaoEmail);
             String nickname = user.getNickname();
 
-            AuthResponse authResponse = AuthResponse.builder()
+            KakaoLoginInfoDto kakaoLoginInfoDto = KakaoLoginInfoDto.builder()
                     .token(token)
                     .nickname(nickname)
                     .build();
 
-            return authResponse;
+            return kakaoLoginInfoDto;
         }
         else {
-            AuthResponse authResponse = AuthResponse.builder()
+            LinkedHashMap<String, Object> profile = (LinkedHashMap<String, Object>) userInfo.get("profile");
+            String profileUrl = (String) profile.get("profile_image_url");
+
+
+            KakaoLoginInfoDto kakaoLoginInfoDto = KakaoLoginInfoDto.builder()
+                    .id(id.toString())
                     .token(null)
-                    .nickname("회원가입해람마")
+//                    .nickname(userInfo.get("name").toString())
+                    .profile(profileUrl)
+                    .email(kakaoEmail)
+                    .birthday(userInfo.get("birthday").toString())
                     .build();
 
-            return authResponse;
+            return kakaoLoginInfoDto;
         }
     }
 
+
     // kakaoAccessToken을 사용하여 카카오 서버로부터 유저 정보 받아오기
-    private LinkedHashMap<String, Object> fetchKakaoUserData(String kakaoAccessToken) {
+    private ResponseEntity<LinkedHashMap> fetchKakaoUserData(String kakaoAccessToken) {
 
         String url = "https://kapi.kakao.com/v2/user/me";
         RestTemplate restTemplate = new RestTemplate();
@@ -145,10 +158,7 @@ public class AuthServiceImpl implements AuthService {
 
         ResponseEntity<LinkedHashMap> response = restTemplate.exchange(url, HttpMethod.GET, http, LinkedHashMap.class);
 
-        Long id = (Long) response.getBody().get("id");
-        LinkedHashMap<String, Object> value = (LinkedHashMap<String, Object>) response.getBody().get("kakao_account");
-
-        return value;
+        return response;
     }
 
 }
