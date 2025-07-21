@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @PropertySource("classpath:application.properties")
-@ComponentScan({"org.scoula.chapi.service"})
+@ComponentScan(basePackages = {"org.scoula.chapi.service"})
 @MapperScan(basePackages={"org.scoula.chapi.mapper"})
 @EnableTransactionManagement
 public class RootConfig {
