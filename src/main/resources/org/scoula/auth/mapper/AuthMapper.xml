@@ -15,4 +15,8 @@
         VALUES (#{email}, #{password}, #{name}, #{nickname}, #{address}, #{additionalPoint})
     </insert>
 
+    <delete id="deleteByEmail">
+        DELETE FROM users WHERE email = #{email}
+    </delete>
+
 </mapper>
