@@ -21,6 +21,16 @@ public class AuthServiceImpl implements AuthService {
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    @Override
+    public boolean emailExists(String email) {
+        return authMapper.findByEmail(email) != null;
+    }
+
+    @Override
+    public boolean nicknameExists(String nickname) {
+        return authMapper.findByNickname(nickname) != null;
+    }
+
     public AuthResponse login(LoginRequest request) {
         User user = authMapper.findByEmail(request.getEmail());
         if (user == null) {

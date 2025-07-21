@@ -27,6 +27,18 @@ public class AuthController {
     @Autowired
     private JwtUtil jwtUtil;
 
+    @GetMapping("/check-email")
+    public ResponseEntity<?> checkEmail(@RequestParam String email) {
+        boolean exists = authService.emailExists(email);
+        return ResponseEntity.ok(Map.of("available", !exists));
+    }
+
+    @GetMapping("/check-nickname")
+    public ResponseEntity<?> checkNickname(@RequestParam String nickname) {
+        boolean exists = authService.nicknameExists(nickname);
+        return ResponseEntity.ok(Map.of("available", !exists));
+    }
+
 //    @PostMapping("/login")
 //    public AuthResponse login(@RequestBody LoginRequest request) {
 //        return authServiceImpl.login(request);
