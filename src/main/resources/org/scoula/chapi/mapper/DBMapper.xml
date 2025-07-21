@@ -4,6 +4,74 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.scoula.chapi.mapper.DBMapper">
+    <resultMap id="DBMap" type="org.scoula.chapi.domain.CHOfficetelVO">
+        <id property="pblancNo" column="PBLANC_NO"/>
+        <result property="bsnsMbyNm" column="BSNS_MBY_NM"/>
+        <result property="cntrctCnclsBgnde" column="CNTRCT_CNCLS_BGNDE"/>
+        <result property="cntrctCnclsEndde" column="CNTRCT_CNCLS_ENDDE"/>
+        <result property="hmpgAdres" column="HMPG_ADRES"/>
+        <result property="houseDtlSecd" column="HOUSE_DTL_SECD"/>
+        <result property="houseDtlSecdNm" column="HOUSE_DTL_SECD_NM"/>
+        <result property="houseManageNo" column="HOUSE_MANAGE_NO"/>
+        <result property="houseNm" column="HOUSE_NM"/>
+        <result property="houseSecd" column="HOUSE_SECD"/>
+        <result property="houseSecdNm" column="HOUSE_SECD_NM"/>
+        <result property="hssplyAdres" column="HSSPLY_ADRES"/>
+        <result property="hssplyZip" column="HSSPLY_ZIP"/>
+        <result property="mdhsTelno" column="MDHS_TELNO"/>
+        <result property="mvnPrearngeYm" column="MVN_PREARNGE_YM"/>
+        <result property="nsprcNm" column="NSPRC_NM"/>
+        <result property="pblancUrl" column="PBLANC_URL"/>
+        <result property="przwnerPresnatnDe" column="PRZWNER_PRESNATN_DE"/>
+        <result property="rcritPblancDe" column="RCRIT_PBLANC_DE"/>
+        <result property="searchHouseSecd" column="SEARCH_HOUSE_SECD"/>
+        <result property="subscrptAreaCode" column="SUBSCRPT_AREA_CODE"/>
+        <result property="subscrptAreaCodeNm" column="SUBSCRPT_AREA_CODE_NM"/>
+        <result property="subscrptRceptBgnde" column="SUBSCRPT_RCEPT_BGNDE"/>
+        <result property="subscrptRceptEndde" column="SUBSCRPT_RCEPT_ENDDE"/>
+        <result property="totSuplyHshldco" column="TOT_SUPLY_HSHLDCO"/>
+    </resultMap>
+
+<!--    ON DUPLICATE KEY UPDATE = MYSQL 기능, 동일 Primary Key (=PBLANC_NO) 존재시 기존 레코드의 지정된 컬럼 업데이트 -->
+    <insert id="insert">
+        INSERT INTO ch_db_officetel(BSNS_MBY_NM, CNTRCT_CNCLS_BGNDE, CNTRCT_CNCLS_ENDDE, HMPG_ADRES,
+                                    HOUSE_DTL_SECD, HOUSE_DTL_SECD_NM, HOUSE_MANAGE_NO, HOUSE_NM,
+                                    HOUSE_SECD, HOUSE_SECD_NM, HSSPLY_ADRES, HSSPLY_ZIP, MDHS_TELNO,
+                                    MVN_PREARNGE_YM, NSPRC_NM, PBLANC_NO, PBLANC_URL, PRZWNER_PRESNATN_DE,
+                                    RCRIT_PBLANC_DE, SEARCH_HOUSE_SECD, SUBSCRPT_AREA_CODE, SUBSCRPT_AREA_CODE_NM,
+                                    SUBSCRPT_RCEPT_BGNDE, SUBSCRPT_RCEPT_ENDDE, TOT_SUPLY_HSHLDCO)
+        VALUES (#{bsnsMbyNm}, #{cntrctCnclsBgnde}, #{cntrctCnclsEndde}, #{hmpgAdres},
+                #{houseDtlSecd}, #{houseDtlSecdNm}, #{houseManageNo}, #{houseNm},
+                #{houseSecd}, #{houseSecdNm}, #{hssplyAdres}, #{hssplyZip}, #{mdhsTelno},
+                #{mvnPrearngeYm}, #{nsprcNm}, #{pblancNo}, #{pblancUrl}, #{przwnerPresnatnDe},
+                #{rcritPblancDe}, #{searchHouseSecd}, #{subscrptAreaCode}, #{subscrptAreaCodeNm},
+                #{subscrptRceptBgnde}, #{subscrptRceptEndde}, #{totSuplyHshldco})
+        ON DUPLICATE KEY UPDATE
+                             BSNS_MBY_NM = VALUES(BSNS_MBY_NM),
+                             CNTRCT_CNCLS_BGNDE = VALUES(CNTRCT_CNCLS_BGNDE),
+                             CNTRCT_CNCLS_ENDDE = VALUES(CNTRCT_CNCLS_ENDDE),
+                             HMPG_ADRES = VALUES(HMPG_ADRES),
+                             HOUSE_DTL_SECD = VALUES(HOUSE_DTL_SECD),
+                             HOUSE_DTL_SECD_NM = VALUES(HOUSE_DTL_SECD_NM),
+                             HOUSE_MANAGE_NO = VALUES(HOUSE_MANAGE_NO),
+                             HOUSE_NM = VALUES(HOUSE_NM),
+                             HOUSE_SECD = VALUES(HOUSE_SECD),
+                             HOUSE_SECD_NM = VALUES(HOUSE_SECD_NM),
+                             HSSPLY_ADRES = VALUES(HSSPLY_ADRES),
+                             HSSPLY_ZIP = VALUES(HSSPLY_ZIP),
+                             MDHS_TELNO = VALUES(MDHS_TELNO),
+                             MVN_PREARNGE_YM = VALUES(MVN_PREARNGE_YM),
+                             NSPRC_NM = VALUES(NSPRC_NM),
+                             PBLANC_URL = VALUES(PBLANC_URL),
+                             PRZWNER_PRESNATN_DE = VALUES(PRZWNER_PRESNATN_DE),
+                             RCRIT_PBLANC_DE = VALUES(RCRIT_PBLANC_DE),
+                             SEARCH_HOUSE_SECD = VALUES(SEARCH_HOUSE_SECD),
+                             SUBSCRPT_AREA_CODE = VALUES(SUBSCRPT_AREA_CODE),
+                             SUBSCRPT_AREA_CODE_NM = VALUES(SUBSCRPT_AREA_CODE_NM),
+                             SUBSCRPT_RCEPT_BGNDE = VALUES(SUBSCRPT_RCEPT_BGNDE),
+                             SUBSCRPT_RCEPT_ENDDE = VALUES(SUBSCRPT_RCEPT_ENDDE),
+                             TOT_SUPLY_HSHLDCO = VALUES(TOT_SUPLY_HSHLDCO)
+    </insert>
 
 
 
