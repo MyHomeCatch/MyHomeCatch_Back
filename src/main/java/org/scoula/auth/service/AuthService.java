@@ -1,6 +1,7 @@
 package org.scoula.auth.service;
 
 import org.scoula.auth.dto.*;
+import org.springframework.http.ResponseEntity;
 
 public interface AuthService {
     boolean emailExists(String email);
@@ -15,5 +16,5 @@ public interface AuthService {
 
     KakaoLoginInfoDto kakaoLogin(String code);
 
-    AuthResponse googleSignupOrLogin(GoogleUserDto googleUserDto);
+    ResponseEntity<?> googleSignupOrLogin(String code);
 }
