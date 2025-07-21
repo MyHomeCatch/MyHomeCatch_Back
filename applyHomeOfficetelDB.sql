@@ -28,3 +28,5 @@ CREATE TABLE ch_db_officetel
     `SUBSCRPT_RCEPT_ENDDE`  DATE COMMENT '청약접수종료일',
     `TOT_SUPLY_HSHLDCO`     INT COMMENT '총공급세대수'
 );
+
+SELECT * FROM ch_db_officetel;
