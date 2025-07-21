@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;
 
@@ -60,6 +61,10 @@ public class RootConfig {
         return new DataSourceTransactionManager(dataSource());
     }
 
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
 }
 
 
