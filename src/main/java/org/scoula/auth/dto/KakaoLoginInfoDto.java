@@ -6,10 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class AuthResponse {
+public class KakaoLoginInfoDto {
+    private String id;
     private String token;
     private String nickname;
+    private String profile;
+    private String email;
+    private String birthday;
 }

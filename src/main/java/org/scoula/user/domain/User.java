@@ -1,8 +1,12 @@
 package org.scoula.user.domain;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
+@Builder
 public class User {
 
     private int userId;
