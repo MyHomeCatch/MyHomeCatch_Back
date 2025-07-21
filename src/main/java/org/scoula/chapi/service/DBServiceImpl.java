@@ -32,7 +32,6 @@ public class DBServiceImpl implements DBService {
     @Override
     public int insert(CHOfficetelDTO dto) {
         CHOfficetelVO vo = dto.toVO();
-        mapper.insert(vo);
 
         return mapper.insert(vo);
     }
