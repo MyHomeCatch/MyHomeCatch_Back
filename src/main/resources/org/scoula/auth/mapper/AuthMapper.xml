@@ -10,9 +10,19 @@
         WHERE email = #{email}
     </select>
 
+    <select id="findByNickname" resultType="org.scoula.user.domain.User">
+        SELECT *
+        from users
+        WHERE nickname = #{nickname};
+    </select>
+
     <insert id="insertUser" parameterType="org.scoula.user.domain.User">
         INSERT INTO users (email, password, name, nickname, address, additional_point)
         VALUES (#{email}, #{password}, #{name}, #{nickname}, #{address}, #{additionalPoint})
     </insert>
+
+    <delete id="deleteByEmail">
+        DELETE FROM users WHERE email = #{email}
+    </delete>
 
 </mapper>
