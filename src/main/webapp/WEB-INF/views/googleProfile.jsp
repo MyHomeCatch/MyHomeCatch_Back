@@ -14,6 +14,8 @@
 <h1>구글 로그인 성공</h1>
 <p>이메일: ${user.email}</p>
 <p>이름: ${user.name}</p>
-<p>프로필 사진: <img src="${user.picture}" /></p>
+<%--<p>프로필 사진: <img src="${user.picture}" /></p>--%>
+<p>닉네임: ${nickname}</p>
+<%--<p>JWT 토큰: ${token}</p>--%>
 </body>
 </html>
