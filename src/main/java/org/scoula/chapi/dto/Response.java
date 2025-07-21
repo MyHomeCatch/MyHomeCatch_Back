@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 public class Response{
 	private int perPage;
-	private List<DataItem> data;
+	private List<CHOfficetelDTO> data;
 	private int currentCount;
 	private int matchCount;
 	private int page;
