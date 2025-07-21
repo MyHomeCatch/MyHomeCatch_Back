@@ -16,7 +16,7 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import javax.sql.DataSource;
 
 @Configuration
-@PropertySource("classpath:application.properties")
+@PropertySource({"classpath:application.properties", "classpath:secrets.properties"})
 @MapperScan(basePackages={"org.scoula"})
 public class RootConfig {
     @Value("${jdbc.driver}") String driver;
