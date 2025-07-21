@@ -4,4 +4,33 @@
 
 <mapper namespace="org.scoula.statics.mapper.StaticsMapper">
 
+    <!-- 1. 지역별 청약 가점제 정보 조회 -->
+    <select id="getScoreWinnersByRegion" parameterType="string" resultType="org.scoula.statics.dto.ScoreWinnerDTO">
+        SELECT
+            region,
+            age_group,
+            average_score,
+            winner_count
+        FROM
+            score_winner_info
+        WHERE
+            region = #{region}
+    </select>
+
+    <!-- 2. 지역별 가점 낮은 아파트 TOP 5 조회 -->
+    <select id="getTop5ApartmentsWithLowestScore" parameterType="string" resultType="org.scoula.statics.dto.ApartmentScoreDTO">
+        SELECT
+            apt_name,
+            construction_company,
+            average_score,
+            region
+        FROM
+            apartment_score_info
+        WHERE
+            region = #{region}
+        ORDER BY
+            average_score ASC
+            LIMIT 5
+    </select>
+
 </mapper>
