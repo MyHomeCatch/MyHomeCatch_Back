@@ -42,7 +42,7 @@ import java.io.IOException;
 @Controller
 @RequestMapping("/api/auth")
 @Log4j2
-@Api(tags = "게시글관리")
+@Api(tags = "로그인")
 public class AuthController {
 
     @Autowired
