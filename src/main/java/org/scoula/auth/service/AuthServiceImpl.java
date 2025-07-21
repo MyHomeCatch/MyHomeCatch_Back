@@ -8,6 +8,7 @@ import org.scoula.auth.dto.SignupRequest;
 import org.scoula.auth.mapper.AuthMapper;
 import org.scoula.common.util.JwtUtil;
 import org.scoula.user.domain.User;
+import org.scoula.auth.dto.GoogleUserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -18,6 +19,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -49,6 +51,19 @@ public class AuthServiceImpl implements AuthService {
 
     @Value("${kakao.redirectUrl}")
     private String redirectUri; // 카카오 로그인 redirectURL
+
+
+    @Value("${google.client.id}")
+    private String googleClientId;
+
+    @Value("${google.client.secret}")
+    private String googleClientSecret;
+
+    @Value("${google.redirect.uri}")
+    private String googleRedirectUri;
+
+    private final String TOKEN_URI = "https://oauth2.googleapis.com/token";
+    private final String USERINFO_URI = "https://www.googleapis.com/oauth2/v2/userinfo";
 
     public AuthResponse login(LoginRequest request) {
         User user = authMapper.findByEmail(request.getEmail());
@@ -91,6 +106,7 @@ public class AuthServiceImpl implements AuthService {
     public void deleteByEmail(String email) {
         authMapper.deleteByEmail(email);
     }
+
 
     public KakaoLoginInfoDto kakaoLogin(String code) {
         String url = "https://kauth.kakao.com/oauth/token";
@@ -170,6 +186,62 @@ public class AuthServiceImpl implements AuthService {
         ResponseEntity<LinkedHashMap> response = restTemplate.exchange(url, HttpMethod.GET, http, LinkedHashMap.class);
 
         return response;
+    }
+
+    @Override
+    public ResponseEntity<?> googleSignupOrLogin(String code) {
+
+        MultiValueMap<String, String> tokenRequestParams = new LinkedMultiValueMap<>();
+        tokenRequestParams.add("code", code);
+        tokenRequestParams.add("client_id", googleClientId);
+        tokenRequestParams.add("client_secret", googleClientSecret);
+        tokenRequestParams.add("redirect_uri", googleRedirectUri);
+        tokenRequestParams.add("grant_type", "authorization_code");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        HttpEntity<MultiValueMap<String, String>> tokenRequest = new HttpEntity<>(tokenRequestParams, headers);
+
+        ResponseEntity<Map> tokenResponse = restTemplate.postForEntity(TOKEN_URI, tokenRequest, Map.class);
+
+
+        if (!tokenResponse.getStatusCode().is2xxSuccessful()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        String accessToken = (String) tokenResponse.getBody().get("access_token");
+
+
+        HttpHeaders userInfoHeaders = new HttpHeaders();
+        userInfoHeaders.setBearerAuth(accessToken);
+
+        HttpEntity<Void> userInfoRequest = new HttpEntity<>(userInfoHeaders);
+        ResponseEntity<Map> userInfoResponse = restTemplate.exchange(USERINFO_URI, HttpMethod.GET, userInfoRequest, Map.class);
+
+
+        if (!userInfoResponse.getStatusCode().is2xxSuccessful()) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        Map<String, Object> userInfo = userInfoResponse.getBody();
+
+        GoogleUserDto googleUserDto = GoogleUserDto.builder()
+                .email((String) userInfo.get("email"))
+                .name((String) userInfo.get("name"))
+                //.picture((String) userInfo.get("picture"))
+                .build();
+
+        User user = authMapper.findByEmail(googleUserDto.getEmail());
+
+        if(user != null) {
+            String token = jwtUtil.generateToken(user.getEmail());
+            googleUserDto.setToken(token);
+        }
+        googleUserDto.setId("1234");
+
+        return ResponseEntity.ok(googleUserDto);
+
     }
 
 }
