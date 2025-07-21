@@ -3,5 +3,11 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.scoula.statics.mapper.StaticsMapper">
+    <select id="getWinnerRate" resultType="org.scoula.statics.domain.WinnerRateVO">
+        select * from winner_rate_region where regionId = #{regionId}
+    </select>
 
+    <select id="getRegionId" resultType="Integer">
+        select regionId from region where name = #{region}
+    </select>
 </mapper>
