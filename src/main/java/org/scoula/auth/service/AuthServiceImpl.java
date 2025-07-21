@@ -34,14 +34,21 @@ public class AuthServiceImpl implements AuthService {
 
     private BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+    @Override
+    public boolean emailExists(String email) {
+        return authMapper.findByEmail(email) != null;
+    }
+
+    @Override
+    public boolean nicknameExists(String nickname) {
+        return authMapper.findByNickname(nickname) != null;
+    }
 
     @Value("${kakao.clientId}")
     private String clientId; // 카카오 로그인 클라이언트 ID
 
     @Value("${kakao.redirectUrl}")
     private String redirectUri; // 카카오 로그인 redirectURL
-
-
 
     public AuthResponse login(LoginRequest request) {
         User user = authMapper.findByEmail(request.getEmail());
@@ -81,6 +88,10 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public void deleteByEmail(String email) {
+        authMapper.deleteByEmail(email);
+    }
+
     public KakaoLoginInfoDto kakaoLogin(String code) {
         String url = "https://kauth.kakao.com/oauth/token";
 
