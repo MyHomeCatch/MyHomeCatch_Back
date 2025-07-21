@@ -39,7 +39,7 @@ import org.springframework.ui.Model;
 import java.io.IOException;
 
 
-@Controller
+@RestController
 @RequestMapping("/api/auth")
 @Log4j2
 @Api(tags = "로그인")
@@ -166,58 +166,10 @@ public class AuthController {
     }
 
     @GetMapping("/login/oauth2/code/google")
-    public String googleCallback(@RequestParam("code") String code, Model model) {
+    public ResponseEntity<?> googleCallback(@RequestParam("code") String code) {
+        ResponseEntity googleInfo = authService.googleSignupOrLogin(code);
 
-        MultiValueMap<String, String> tokenRequestParams = new LinkedMultiValueMap<>();
-        tokenRequestParams.add("code", code);
-        tokenRequestParams.add("client_id", clientId);
-        tokenRequestParams.add("client_secret", clientSecret);
-        tokenRequestParams.add("redirect_uri", redirectUri);
-        tokenRequestParams.add("grant_type", "authorization_code");
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-        HttpEntity<MultiValueMap<String, String>> tokenRequest = new HttpEntity<>(tokenRequestParams, headers);
-
-        ResponseEntity<Map> tokenResponse = restTemplate.postForEntity(TOKEN_URI, tokenRequest, Map.class);
-        if (!tokenResponse.getStatusCode().is2xxSuccessful()) {
-            model.addAttribute("error", "구글 토큰 요청 실패");
-            return "error_page";
-        }
-
-        String accessToken = (String) tokenResponse.getBody().get("access_token");
-
-
-        HttpHeaders userInfoHeaders = new HttpHeaders();
-        userInfoHeaders.setBearerAuth(accessToken);
-
-        HttpEntity<Void> userInfoRequest = new HttpEntity<>(userInfoHeaders);
-        ResponseEntity<Map> userInfoResponse = restTemplate.exchange(USERINFO_URI, HttpMethod.GET, userInfoRequest, Map.class);
-        if (!userInfoResponse.getStatusCode().is2xxSuccessful()) {
-            model.addAttribute("error", "구글 사용자 정보 요청 실패");
-            return "error_page";
-        }
-
-        Map<String, Object> userInfo = userInfoResponse.getBody();
-
-
-        GoogleUserDto googleUserDto = GoogleUserDto.builder()
-                .email((String) userInfo.get("email"))
-                .name((String) userInfo.get("name"))
-                //.picture((String) userInfo.get("picture"))
-                .build();
-
-
-        AuthResponse authResponse = authService.googleSignupOrLogin(googleUserDto);
-
-
-        model.addAttribute("user", googleUserDto);
-
-        model.addAttribute("token", authResponse.getToken());
-        model.addAttribute("nickname", authResponse.getNickname());
-
-        return "googleProfile";
+        return googleInfo;
     }
 
 }
