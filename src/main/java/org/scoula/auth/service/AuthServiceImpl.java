@@ -56,4 +56,9 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtUtil.generateToken(user.getEmail());
         return new AuthResponse(token, user.getNickname());
     }
+
+    @Override
+    public void deleteByEmail(String email) {
+        authMapper.deleteByEmail(email);
+    }
 }
