@@ -1,6 +1,7 @@
 package org.scoula.auth.service;
 
 import org.scoula.auth.dto.AuthResponse;
+import org.scoula.auth.dto.GoogleUserDto;
 import org.scoula.auth.dto.LoginRequest;
 import org.scoula.auth.dto.SignupRequest;
 import org.scoula.auth.mapper.AuthMapper;
@@ -56,4 +57,26 @@ public class AuthServiceImpl implements AuthService {
         String token = jwtUtil.generateToken(user.getEmail());
         return new AuthResponse(token, user.getNickname());
     }
+
+    @Override
+    public AuthResponse googleSignupOrLogin(GoogleUserDto googleUserDto) {
+        User user = authMapper.findByEmail(googleUserDto.getEmail());
+
+        if (user == null) {
+            user = new User();
+            user.setEmail(googleUserDto.getEmail());
+            user.setName(googleUserDto.getName());
+            user.setNickname(googleUserDto.getName());
+            user.setAdditionalPoint(0);
+            // 구글 로그인이라 비밀번호 없을 수 있음, 비워두거나 랜덤값 넣거나 null 처리
+            user.setPassword("");
+
+            authMapper.insertUser(user);
+        }
+
+        String token = jwtUtil.generateToken(user.getEmail());
+        return new AuthResponse(token, user.getNickname());
+    }
+
+
 }
