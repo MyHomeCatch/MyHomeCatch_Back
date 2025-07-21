@@ -1,16 +1,21 @@
 package org.scoula.chapi.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
+
+import java.util.Date;
 
 @Data
 public class DataItem{
 	@JsonProperty("BSNS_MBY_NM")
 	private String bsnsMbyNm;
 
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 	@JsonProperty("CNTRCT_CNCLS_BGNDE")
 	private String cntrctCnclsBgnde;
 
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 	@JsonProperty("CNTRCT_CNCLS_ENDDE")
 	private String cntrctCnclsEndde;
 
@@ -56,11 +61,13 @@ public class DataItem{
 	@JsonProperty("PBLANC_URL")
 	private String pblancUrl;
 
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 	@JsonProperty("PRZWNER_PRESNATN_DE")
 	private String przwnerPresnatnDe;
 
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 	@JsonProperty("RCRIT_PBLANC_DE")
-	private String rcritPblancDe;
+	private Date rcritPblancDe;
 
 	@JsonProperty("SEARCH_HOUSE_SECD")
 	private String searchHouseSecd;
@@ -71,11 +78,13 @@ public class DataItem{
 	@JsonProperty("SUBSCRPT_AREA_CODE_NM")
 	private String subscrptAreaCodeNm;
 
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 	@JsonProperty("SUBSCRPT_RCEPT_BGNDE")
-	private String subscrptReceptBgnde;
+	private Date subscrptReceptBgnde;
 
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 	@JsonProperty("SUBSCRPT_RCEPT_ENDDE")
-	private String subscrptReceptEndde;
+	private Date subscrptReceptEndde;
 
 	@JsonProperty("TOT_SUPLY_HSHLDCO")
 	private int totSuplyHshldco;
