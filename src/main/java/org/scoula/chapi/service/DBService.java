@@ -5,8 +5,10 @@ import org.scoula.chapi.dto.CHOfficetelDTO;
 import java.util.List;
 
 public interface DBService {
-    CHOfficetelDTO insert(CHOfficetelDTO dto);
+    int insert(CHOfficetelDTO dto);
 
-    List<CHOfficetelDTO> insertAll(List<CHOfficetelDTO> dtoList);
+    int insertAll(List<CHOfficetelDTO> dtoList);
+
+    int fetchAndInsertAPIData();
 
 }
