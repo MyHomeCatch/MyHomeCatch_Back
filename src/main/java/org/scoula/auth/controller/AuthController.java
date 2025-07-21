@@ -84,22 +84,7 @@ public class AuthController {
     public ResponseEntity<?> kakaoLogin(@RequestBody KakaoLoginDto kakaoLoginDto) {
         String code = kakaoLoginDto.getCode();
 
-        KakaoLoginInfoDto kakaoLoginInfoDto = authServiceImpl.kakaoLogin(code);
-
-        return ResponseEntity.ok(kakaoLoginInfoDto);
-    }
-
-    @ApiOperation(value = "카카오 로그인", notes = "카카오 계정으로 로그인")
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "성공적으로 요청이 처리되었습니다.", response = AuthResponse.class),
-            @ApiResponse(code = 401, message = "잘못된 요청입니다."),
-            @ApiResponse(code = 500, message = "서버에서 오류가 발생했습니다.")
-    })
-    @PostMapping("/kakao")
-    public ResponseEntity<?> kakaoLogin(@RequestBody KakaoLoginDto kakaoLoginDto) {
-        String code = kakaoLoginDto.getCode();
-
-        KakaoLoginInfoDto kakaoLoginInfoDto = authServiceImpl.kakaoLogin(code);
+        KakaoLoginInfoDto kakaoLoginInfoDto = authService.kakaoLogin(code);
 
         return ResponseEntity.ok(kakaoLoginInfoDto);
     }
