@@ -5,12 +5,12 @@
 <mapper namespace="org.scoula.statics.mapper.StaticsMapper">
 
     <select id="getApplicant" resultType="org.scoula.statics.domain.ApplicantRegionVO">
-        select * from applicant_region where regionId = #{regionId}
+        select * from applicant_region where regionId = #{regionId} and stat_de = #{date}
     </select>
 
 
     <select id="getWinner" resultType="org.scoula.statics.domain.WinnerRegionVO">
-        select * from winner_region where regionId = #{regionId}
+        select * from winner_region where regionId = #{regionId} and stat_de = #{date}
     </select>
 
     <select id="getRegionId" resultType="Integer">

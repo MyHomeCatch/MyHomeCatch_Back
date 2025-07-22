@@ -4,5 +4,5 @@ import org.scoula.statics.dto.RegionAgeDTO;
 
 public interface StaticsService {
 
-    public RegionAgeDTO getRegionAge(String region);
+    public RegionAgeDTO getRegionAge(String region, String date);
 }

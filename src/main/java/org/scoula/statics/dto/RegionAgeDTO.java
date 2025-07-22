@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.scoula.statics.domain.ApplicantRegionVO;
 import org.scoula.statics.domain.WinnerRateVO;
+import org.scoula.statics.domain.WinnerRegionVO;
 
 @Data
 @NoArgsConstructor
@@ -25,18 +27,18 @@ public class RegionAgeDTO {
 
 
     // VO DTO변환
-    public static RegionAgeDTO of(WinnerRateVO vo) {
-        return vo == null ? null : RegionAgeDTO.builder()
-                .regionId(vo.getRegionId())
-                .statDe(vo.getStatDe())
-                .age30(vo.getAge30())
-                .age30Win(vo.getAge30Win())
-                .age40(vo.getAge40())
-                .age40Win(vo.getAge40Win())
-                .age50(vo.getAge50())
-                .age50Win(vo.getAge50Win())
-                .age60(vo.getAge60())
-                .age60Win(vo.getAge60Win())
+    public static RegionAgeDTO of(ApplicantRegionVO applicantVo, WinnerRegionVO winnerVo) {
+        return (applicantVo == null || winnerVo == null) ? null : RegionAgeDTO.builder()
+                .regionId(applicantVo.getRegionId())
+                .statDe(applicantVo.getStatDe())
+                .age30(applicantVo.getAge30())
+                .age30Win(winnerVo.getAge30Win())
+                .age40(applicantVo.getAge40())
+                .age40Win(winnerVo.getAge40Win())
+                .age50(applicantVo.getAge50())
+                .age50Win(winnerVo.getAge50Win())
+                .age60(applicantVo.getAge60())
+                .age60Win(winnerVo.getAge60Win())
                 .build();
     }
 
@@ -51,6 +53,28 @@ public class RegionAgeDTO {
                 .age50(age50)
                 .age50Win(age50Win)
                 .age60(age60)
+                .age60Win(age60Win)
+                .build();
+    }
+
+    public ApplicantRegionVO toApplicantVo() {
+        return ApplicantRegionVO.builder()
+                .regionId(regionId)
+                .statDe(statDe)
+                .age30(age30)
+                .age40(age40)
+                .age50(age50)
+                .age60(age60)
+                .build();
+    }
+
+    public WinnerRegionVO toWinnerVo() {
+        return WinnerRegionVO.builder()
+                .regionId(regionId)
+                .statDe(statDe)
+                .age30Win(age30Win)
+                .age40Win(age40Win)
+                .age50Win(age50Win)
                 .age60Win(age60Win)
                 .build();
     }

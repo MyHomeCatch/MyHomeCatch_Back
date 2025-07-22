@@ -17,8 +17,8 @@ public class StaticsController {
     private final ApiDataLoaderService loaderService;
 
     @GetMapping("/region-age")
-    public ResponseEntity<?> getRegionAge(@RequestParam String region) {
-        return ResponseEntity.ok(service.getRegionAge(region));
+    public ResponseEntity<?> getRegionAge(@RequestParam String region, @RequestParam String date) {
+        return ResponseEntity.ok(service.getRegionAge(region, date));
     }
 
 //    @GetMapping("/db")
