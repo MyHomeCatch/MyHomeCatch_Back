@@ -73,6 +73,35 @@
                              TOT_SUPLY_HSHLDCO = VALUES(TOT_SUPLY_HSHLDCO)
     </insert>
 
+    <insert id="insertOfficetelModel">
+        INSERT INTO ch_db_officetel_model(`EXCLUSE_AR`,
+                                          `GP`,
+                                          `HOUSE_MANAGE_NO`,
+                                          `MODEL_NO`,
+                                          `PBLANC_NO`,
+                                          `SUBSCRPT_REQST_AMOUNT`,
+                                          `SUPLY_AMOUNT`,
+                                          `SUPLY_HSHLDCO`,
+                                          `TP`)
+        VALUES (#{excluseAr},
+                #{gp},
+                #{houseManageNo},
+                #{modelNo},
+                #{pblancNo},
+                #{subscrptReqstAmount},
+                #{suplyAmount},
+                #{suplyHshldco},
+                #{tp})
+        ON DUPLICATE KEY UPDATE `EXCLUSE_AR`            = VALUES(`EXCLUSE_AR`),
+                                `GP`                    = VALUES(`GP`),
+                                `HOUSE_MANAGE_NO`       = VALUES(`HOUSE_MANAGE_NO`),
+                                `MODEL_NO`              = VALUES(`MODEL_NO`),
+                                `PBLANC_NO`             = VALUES(`PBLANC_NO`),
+                                `SUBSCRPT_REQST_AMOUNT` = VALUES(`SUBSCRPT_REQST_AMOUNT`),
+                                `SUPLY_AMOUNT`          = VALUES(`SUPLY_AMOUNT`),
+                                `SUPLY_HSHLDCO`         = VALUES(`SUPLY_HSHLDCO`),
+                                `TP`                    = VALUES(`TP`)
+    </insert>
 
 
 </mapper>
