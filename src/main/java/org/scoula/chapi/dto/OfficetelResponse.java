@@ -4,7 +4,7 @@ import java.util.List;
 import lombok.Data;
 
 @Data
-public class Response{
+public class OfficetelResponse {
 	private int perPage;
 	private List<CHOfficetelDTO> data;
 	private int currentCount;

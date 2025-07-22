@@ -1,5 +1,7 @@
 use scoula_db;
 
+DROP TABLE IF EXISTS  ch_db_officetel;
+
 CREATE TABLE ch_db_officetel
 (
     `BSNS_MBY_NM`           VARCHAR(255) COMMENT '사업주체명',
@@ -17,7 +19,7 @@ CREATE TABLE ch_db_officetel
     `MDHS_TELNO`            VARCHAR(50) COMMENT '문의처연락처',
     `MVN_PREARNGE_YM`       VARCHAR(16) COMMENT '입주예정월',
     `NSPRC_NM`              VARCHAR(255)            NULL DEFAULT NULL COMMENT '뉴스명',
-    `PBLANC_NO`             VARCHAR(20) PRIMARY KEY NOT NULL COMMENT '공고번호',
+    `PBLANC_NO`             VARCHAR(64) PRIMARY KEY NOT NULL COMMENT '공고번호',
     `PBLANC_URL`            VARCHAR(500) COMMENT '모집공고URL',
     `PRZWNER_PRESNATN_DE`   DATE COMMENT '당첨자발표일',
     `RCRIT_PBLANC_DE`       DATE COMMENT '모집공고일',
@@ -30,3 +32,26 @@ CREATE TABLE ch_db_officetel
 );
 
 SELECT * FROM ch_db_officetel;
+
+
+DROP TABLE IF EXISTS ch_db_officetel_model;
+
+CREATE TABLE ch_db_officetel_model
+(
+    `ID`                    INT PRIMARY KEY AUTO_INCREMENT,
+    `EXCLUSE_AR`            VARCHAR(16) COMMENT '전용면적',
+    `GP`                    VARCHAR(16) COMMENT '군',
+    `HOUSE_MANAGE_NO`       VARCHAR(64) NOT NULL COMMENT '주택관리번호',
+    `MODEL_NO`              VARCHAR(32) COMMENT '모델번호',
+    `PBLANC_NO`             VARCHAR(64) NOT NULL COMMENT '공고번호',
+    `SUBSCRPT_REQST_AMOUNT` VARCHAR(32) COMMENT '청약신청금(만원)',
+    `SUPLY_AMOUNT`          VARCHAR(32) COMMENT '공급금액(분양최고금액 : 만원)',
+    `SUPLY_HSHLDCO`         INT COMMENT '공급세대수',
+    `TP`                    VARCHAR(16) COMMENT '타입',
+    UNIQUE (`PBLANC_NO`, `MODEL_NO`),
+    FOREIGN KEY (`PBLANC_NO`) REFERENCES ch_db_officetel (`PBLANC_NO`)
+);
+
+SELECT * FROM ch_db_officetel_model;
+
+SHOW INDEX FROM ch_db_officetel_model;
