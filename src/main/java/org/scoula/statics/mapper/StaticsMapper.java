@@ -12,7 +12,7 @@ public interface StaticsMapper {
     void insertWinnerRegion(WinnerRegionVO winner);
     // 지역 연령대별 당첨 정보 조회
     // 1. 지역 연령대별 신청 정보 조회
-    ApplicantRegionVO getApplicant(int regionId);
+    ApplicantRegionVO getApplicant(long regionId, String date);
     // 2. 지역 연령대별 당첨 정보 조회
-    WinnerRegionVO getWinner(int regionId);
+    WinnerRegionVO getWinner(long regionId, String date);
 }
