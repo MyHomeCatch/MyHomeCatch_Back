@@ -3,11 +3,29 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.scoula.statics.mapper.StaticsMapper">
-    <select id="getWinnerRate" resultType="org.scoula.statics.domain.WinnerRateVO">
-        select * from winner_rate_region where regionId = #{regionId}
+
+    <select id="getApplicant" resultType="org.scoula.statics.domain.ApplicantRegionVO">
+        select * from applicant_region where regionId = #{regionId}
+    </select>
+
+
+    <select id="getWinner" resultType="org.scoula.statics.domain.WinnerRegionVO">
+        select * from winner_region where regionId = #{regionId}
     </select>
 
     <select id="getRegionId" resultType="Integer">
         select regionId from region where name = #{region}
     </select>
+
+    <insert id="insertApplicantRegion" parameterType="org.scoula.statics.domain.ApplicantRegionVO"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into applicant_region(regionId, stat_de, age_30, age_40, age_50, age_60)
+            values(#{regionId}, #{statDe}, #{age30}, #{age40}, #{age50}, #{age60})
+    </insert>
+
+    <insert id="insertWinnerRegion" parameterType="org.scoula.statics.domain.WinnerRegionVO"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into winner_region(regionId, stat_de, age_30_win, age_40_win, age_50_win, age_60_win)
+        values(#{regionId}, #{statDe}, #{age30Win}, #{age40Win}, #{age50Win}, #{age60Win})
+    </insert>
 </mapper>

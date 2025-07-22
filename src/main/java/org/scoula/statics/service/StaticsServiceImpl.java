@@ -16,6 +16,6 @@ public class StaticsServiceImpl implements StaticsService {
     @Override
     public RegionAgeDTO getRegionAge(String region) {
         int regionId = mapper.getRegionId(region);
-        return RegionAgeDTO.of(mapper.getWinnerRate(regionId));
+        return RegionAgeDTO.of(null);
     }
 }
