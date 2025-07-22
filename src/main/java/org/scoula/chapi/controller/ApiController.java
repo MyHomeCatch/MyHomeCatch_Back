@@ -68,7 +68,7 @@ public class ApiController {
     public ResponseEntity<String> fetchAndUpdate() {
         log.info("Fetch and update officetel data by schedule");
         try{
-            officetelScheduler.fetchAndUpdateNotices();
+            officetelScheduler.fetchAndUpdateAllOfficetelData();
             log.info("Fetch and update data successfully");
             return ResponseEntity.ok("Fetch and update data successfully");
         } catch (RuntimeException e) {
