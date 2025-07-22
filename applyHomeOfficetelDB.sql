@@ -1,6 +1,6 @@
 use scoula_db;
 
-DROP TABLE IF EXISTS  ch_db_officetel;
+# DROP TABLE IF EXISTS  ch_db_officetel;
 
 CREATE TABLE ch_db_officetel
 (
@@ -33,8 +33,7 @@ CREATE TABLE ch_db_officetel
 
 SELECT * FROM ch_db_officetel;
 
-
-DROP TABLE IF EXISTS ch_db_officetel_model;
+# DROP TABLE IF EXISTS ch_db_officetel_model;
 
 CREATE TABLE ch_db_officetel_model
 (
@@ -55,3 +54,24 @@ CREATE TABLE ch_db_officetel_model
 SELECT * FROM ch_db_officetel_model;
 
 SHOW INDEX FROM ch_db_officetel_model;
+
+# DROP TABLE IF EXISTS ch_db_officetel_cmpet;
+
+CREATE TABLE ch_db_officetel_cmpet(
+    `CMPET_ID` INT PRIMARY KEY AUTO_INCREMENT,
+    `CMPET_RATE` VARCHAR(16) COMMENT '경쟁률',
+    `HOUSE_MANAGE_NO`       VARCHAR(64) NOT NULL COMMENT '주택관리번호',
+    `HOUSE_TY` VARCHAR(32) COMMENT '주택형',
+    `MODEL_NO`              VARCHAR(32) COMMENT '모델번호',
+    `PBLANC_NO`             VARCHAR(64) NOT NULL COMMENT '공고번호',
+    `REQ_CNT` INT COMMENT '접수건수',
+    `RESIDNT_PRIOR_AT` VARCHAR(16) COMMENT '거주자 우선여부(Y/N)',
+    `RESIDNT_PRIOR_SEMN` VARCHAR(64) COMMENT '공급여부(거주자우선/전체/기타)',
+    `SUPLY_HSHLDCO` INT COMMENT '공급세대수',
+    UNIQUE (`PBLANC_NO`, `MODEL_NO`, `RESIDNT_PRIOR_SEMN`),
+    FOREIGN KEY (`PBLANC_NO`) REFERENCES ch_db_officetel(`PBLANC_NO`)
+);
+
+SELECT * FROM ch_db_officetel_cmpet;
+
+SHOW INDEX FROM ch_db_officetel_cmpet;

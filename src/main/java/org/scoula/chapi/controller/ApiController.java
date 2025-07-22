@@ -45,4 +45,19 @@ public class ApiController {
                     .body("Error occured: "+e.getMessage());
         }
     }
+
+    @GetMapping("/fetch/cmpet")
+    public ResponseEntity<String> fetchCmpet() {
+        log.info("Fetching officetel Cmpet data");
+        try{
+            int affectedRows = officetelDbService.fetchOfficetelCmpet();
+            String message = "Total "+affectedRows+" API data fetched successfully";
+            log.info(message);
+            return ResponseEntity.ok(message);
+        } catch (RuntimeException e) {
+            log.error("Error occured: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error occured: "+e.getMessage());
+        }
+    }
 }

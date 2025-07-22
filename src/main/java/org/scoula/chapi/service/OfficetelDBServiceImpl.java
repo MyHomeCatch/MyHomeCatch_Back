@@ -2,12 +2,10 @@ package org.scoula.chapi.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.scoula.chapi.domain.CHOfficetelCmpetVO;
 import org.scoula.chapi.domain.CHOfficetelModelVO;
 import org.scoula.chapi.domain.CHOfficetelVO;
-import org.scoula.chapi.dto.CHOfficetelDTO;
-import org.scoula.chapi.dto.CHOfficetelModelDTO;
-import org.scoula.chapi.dto.OfficetelModelResponse;
-import org.scoula.chapi.dto.OfficetelResponse;
+import org.scoula.chapi.dto.*;
 import org.scoula.chapi.mapper.DBMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -137,7 +135,7 @@ public class OfficetelDBServiceImpl implements OfficetelDBService {
         String apiUrl = UriComponentsBuilder.fromHttpUrl(baseUrl)
                 .queryParam("serviceKey", applyHomeApiKey)
                 .queryParam("page", 1)
-                .queryParam("perPage", 20)
+                .queryParam("perPage", 200)
                 .build(false).toUriString();
 
         List<CHOfficetelModelDTO> fetchedDtoList;
@@ -153,6 +151,72 @@ public class OfficetelDBServiceImpl implements OfficetelDBService {
                 return 0;
             }
             int affectedRows = insertAllOfficetelModel(fetchedDtoList);
+            log.info("Total inserted rows: "+affectedRows);
+            return affectedRows;
+
+        } catch (Exception e) {
+            log.error("Error occured: ", e.getMessage(), e);
+            throw new RuntimeException("Error occured: ", e);
+        }
+    }
+
+
+    // ApplyHome Officetel Cmpet Data
+    @Transactional
+    @Override
+    public int insertOfficetelCmpet(CHOfficetelCmpetDTO dto) {
+        CHOfficetelCmpetVO vo = dto.toVO();
+
+        return mapper.insertOfficetelCmpet(vo);
+    }
+
+    @Transactional
+    @Override
+    public int insertAllOfficetelCmpet(List<CHOfficetelCmpetDTO> dtoList) {
+        int affectedRows = 0;
+        for(CHOfficetelCmpetDTO dto : dtoList){
+            try {
+                CHOfficetelCmpetVO vo = dto.toVO();
+                int result = mapper.insertOfficetelCmpet(vo);
+                if(result > 0){
+                    affectedRows++;
+                } else {
+                    log.info("PBLANC_NO:  "+dto.getPblancNo()+" MODEL_NO: "+dto.getModelNo()+" RESIDNT_PRIOR_SEMN: "+dto.getResidntPriorSenm()+" Data updated but No records altered");
+                }
+            } catch (Exception e) {
+                log.info("PBLANC_NO:  "+dto.getPblancNo()+" MODEL_NO: "+dto.getModelNo()+" RESIDNT_PRIOR_SEMN: "+dto.getResidntPriorSenm()+" Error occured: "+e.getMessage());
+                throw new RuntimeException("Error occured: ", e);
+            }
+        }
+        log.info("Total inserted rows: "+dtoList.size()+" Affected Rows: "+affectedRows);
+        return affectedRows;
+    }
+
+    @Transactional
+    @Override
+    public int fetchOfficetelCmpet() {
+        String baseUrl = "https://api.odcloud.kr/api/ApplyhomeInfoCmpetRtSvc/v1/getUrbtyOfctlLttotPblancCmpet";
+        log.info("Fetch Cmpet data from ApplyHome API: {}", baseUrl);
+
+        String apiUrl = UriComponentsBuilder.fromHttpUrl(baseUrl)
+                .queryParam("serviceKey", applyHomeApiKey)
+                .queryParam("page", 1)
+                .queryParam("perPage", 200)
+                .build(false).toUriString();
+
+        List<CHOfficetelCmpetDTO> fetchedDtoList;
+
+        try{
+            log.info("Fetch Cmpet data from ApplyHome API: {}", apiUrl);
+            OfficetelCmpetResponse apiOfficetelCmpetResponse = restTemplate.getForObject(apiUrl, OfficetelCmpetResponse.class);
+            if(apiOfficetelCmpetResponse !=null && apiOfficetelCmpetResponse.getData()!=null){
+                fetchedDtoList = apiOfficetelCmpetResponse.getData();
+                log.info("Fetched Cmpet data from ApplyHome API: {}", fetchedDtoList.size());
+            } else {
+                log.info("Fetched Cmpet data from ApplyHome API: null");
+                return 0;
+            }
+            int affectedRows = insertAllOfficetelCmpet(fetchedDtoList);
             log.info("Total inserted rows: "+affectedRows);
             return affectedRows;
 
