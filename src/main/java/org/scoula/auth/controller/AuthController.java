@@ -35,6 +35,7 @@ import org.scoula.auth.dto.SignupRequest;
 import org.springframework.http.*;
 
 import org.springframework.ui.Model;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 
@@ -155,21 +156,20 @@ public class AuthController {
         return ResponseEntity.ok(kakaoLoginInfoDto);
     }
 
-    @GetMapping("/login/google")
-    public void redirectToGoogle(HttpServletResponse response) throws IOException {
-        String oauthUrl = "https://accounts.google.com/o/oauth2/v2/auth?" +
-                "client_id=" + clientId +
-                "&redirect_uri=" + redirectUri +
-                "&response_type=code" +
-                "&scope=openid%20email%20profile";
-        response.sendRedirect(oauthUrl);
-    }
+    @ApiOperation(value = "구글 로그인", notes = "구글 계정으로 로그인")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "성공적으로 요청이 처리되었습니다.", response = GoogleUserDto.class),
+            @ApiResponse(code = 400, message = "잘못된 요청입니다."),
+            @ApiResponse(code = 500, message = "서버 오류")
+    })
+    @PostMapping("/login/google")
+    public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> payload) {
+        String code = payload.get("code");
+        if (code == null || code.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of("message", "code 값이 누락되었습니다."));
+        }
 
-    @GetMapping("/login/oauth2/code/google")
-    public ResponseEntity<?> googleCallback(@RequestParam("code") String code) {
-        ResponseEntity googleInfo = authService.googleSignupOrLogin(code);
-
-        return googleInfo;
+        return authService.googleSignupOrLogin(code);
     }
 
 }
