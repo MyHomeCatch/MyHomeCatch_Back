@@ -4,12 +4,12 @@
 
 <mapper namespace="org.scoula.statics.mapper.StaticsMapper">
 
-    <select id="getApplicant" resultType="org.scoula.statics.domain.ApplicantRegionVO">
+    <select id="getApplicant" resultMap="applicantResultMap">
         select * from applicant_region where regionId = #{regionId} and stat_de = #{date}
     </select>
 
 
-    <select id="getWinner" resultType="org.scoula.statics.domain.WinnerRegionVO">
+    <select id="getWinner" resultMap="winnerResultMap">
         select * from winner_region where regionId = #{regionId} and stat_de = #{date}
     </select>
 
@@ -34,4 +34,25 @@
             (#{item.regionId}, #{item.statDe}, #{item.age30Win}, #{item.age40Win}, #{item.age50Win}, #{item.age60Win})
         </foreach>
     </insert>
+
+    <resultMap id="applicantResultMap" type="org.scoula.statics.domain.ApplicantRegionVO">
+        <id property="id" column="id" />
+        <result property="regionId" column="regionId" />
+        <result property="statDe" column="stat_de" />
+        <result property="age30" column="age_30" />
+        <result property="age40" column="age_40" />
+        <result property="age50" column="age_50" />
+        <result property="age60" column="age_60" />
+    </resultMap>
+
+    <resultMap id="winnerResultMap" type="org.scoula.statics.domain.WinnerRegionVO">
+        <id property="id" column="id" />
+        <result property="regionId" column="regionId" />
+        <result property="statDe" column="stat_de" />
+        <result property="age30Win" column="age_30_win" />
+        <result property="age40Win" column="age_40_win" />
+        <result property="age50Win" column="age_50_win" />
+        <result property="age60Win" column="age_60_win" />
+    </resultMap>
+
 </mapper>
