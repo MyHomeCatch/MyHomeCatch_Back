@@ -103,6 +103,13 @@ dependencies {
     implementation 'io.springfox:springfox-swagger2:2.9.2'
     implementation 'io.springfox:springfox-swagger-ui:2.9.2'
 
+
+    // Spring context-support
+    implementation 'org.springframework:spring-context-support:5.3.33'
+    // Mail
+    implementation 'javax.mail:mail:1.4.7'
+
+
 }
 
 test {
