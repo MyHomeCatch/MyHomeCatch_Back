@@ -7,6 +7,9 @@ import org.scoula.statics.service.StaticsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
+
 @Log4j2
 @RestController
 @RequiredArgsConstructor
@@ -22,8 +25,11 @@ public class StaticsController {
     }
 
 //    @GetMapping("/db")
-//    public String saveApiData() {
-//        loaderService.applicantApiSave("100", 2021);
-//        return "api 호출";
+//    public String saveApiData() throws IOException, URISyntaxException {
+//        for(int i=2020; i<=2025; i++) {
+//            loaderService.applicantApiSave("100", i);
+//            loaderService.winnerApiSave("100", i);
+//        }
+//        return "index";
 //    }
 }
