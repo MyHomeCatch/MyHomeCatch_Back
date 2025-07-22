@@ -14,18 +14,24 @@
     </select>
 
     <select id="getRegionId" resultType="Integer">
-        select regionId from region where name = #{region}
+        select id from region where name = #{region}
     </select>
 
-    <insert id="insertApplicantRegion" parameterType="org.scoula.statics.domain.ApplicantRegionVO"
+    <insert id="insertApplicantList" parameterType="org.scoula.statics.domain.ApplicantRegionVO"
             useGeneratedKeys="true" keyProperty="id">
         insert into applicant_region(regionId, stat_de, age_30, age_40, age_50, age_60)
-            values(#{regionId}, #{statDe}, #{age30}, #{age40}, #{age50}, #{age60})
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.regionId}, #{item.statDe}, #{item.age30}, #{item.age40}, #{item.age50}, #{item.age60})
+        </foreach>
     </insert>
 
-    <insert id="insertWinnerRegion" parameterType="org.scoula.statics.domain.WinnerRegionVO"
+    <insert id="insertWinnerList" parameterType="org.scoula.statics.domain.WinnerRegionVO"
             useGeneratedKeys="true" keyProperty="id">
         insert into winner_region(regionId, stat_de, age_30_win, age_40_win, age_50_win, age_60_win)
-        values(#{regionId}, #{statDe}, #{age30Win}, #{age40Win}, #{age50Win}, #{age60Win})
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.regionId}, #{item.statDe}, #{item.age30Win}, #{item.age40Win}, #{item.age50Win}, #{item.age60Win})
+        </foreach>
     </insert>
 </mapper>
