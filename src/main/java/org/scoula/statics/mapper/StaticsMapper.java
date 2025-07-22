@@ -15,7 +15,7 @@ public interface StaticsMapper {
     void insertWinnerList(@Param("list") List<WinnerRegionVO> list);
     // 지역 연령대별 당첨 정보 조회
     // 1. 지역 연령대별 신청 정보 조회
-    ApplicantRegionVO getApplicant(long regionId, String date);
+    ApplicantRegionVO getApplicant(@Param("regionId") long regionId, @Param("date") String date);
     // 2. 지역 연령대별 당첨 정보 조회
-    WinnerRegionVO getWinner(long regionId, String date);
+    WinnerRegionVO getWinner(@Param("regionId") long regionId, @Param("date") String date);
 }
