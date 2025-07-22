@@ -6,7 +6,7 @@ import org.scoula.chapi.domain.CHOfficetelCmpetVO;
 import org.scoula.chapi.domain.CHOfficetelModelVO;
 import org.scoula.chapi.domain.CHOfficetelVO;
 import org.scoula.chapi.dto.*;
-import org.scoula.chapi.mapper.DBMapper;
+import org.scoula.chapi.mapper.OfficetelDBMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
@@ -21,12 +21,12 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class OfficetelDBServiceImpl implements OfficetelDBService {
-    final DBMapper mapper;
+    final OfficetelDBMapper mapper;
 
     final RestTemplate restTemplate;
 
     @Value("${applyHome.api_key}")
-    private String applyHomeApiKey;
+    private String applyHomeApiServiceKey;
 
 
     // ApplyHome Officetel Data
@@ -68,7 +68,7 @@ public class OfficetelDBServiceImpl implements OfficetelDBService {
         log.info("Fetch data from ApplyHome API: {}", baseUrl);
 
         String apiUrl = UriComponentsBuilder.fromHttpUrl(baseUrl)
-                .queryParam("serviceKey", applyHomeApiKey)
+                .queryParam("serviceKey", applyHomeApiServiceKey)
                 .queryParam("page", 1)
                 .queryParam("perPage", 200)
                 .build(false).toUriString();
@@ -133,7 +133,7 @@ public class OfficetelDBServiceImpl implements OfficetelDBService {
         log.info("Fetch Model data from ApplyHome API: {}", baseUrl);
 
         String apiUrl = UriComponentsBuilder.fromHttpUrl(baseUrl)
-                .queryParam("serviceKey", applyHomeApiKey)
+                .queryParam("serviceKey", applyHomeApiServiceKey)
                 .queryParam("page", 1)
                 .queryParam("perPage", 200)
                 .build(false).toUriString();
@@ -199,7 +199,7 @@ public class OfficetelDBServiceImpl implements OfficetelDBService {
         log.info("Fetch Cmpet data from ApplyHome API: {}", baseUrl);
 
         String apiUrl = UriComponentsBuilder.fromHttpUrl(baseUrl)
-                .queryParam("serviceKey", applyHomeApiKey)
+                .queryParam("serviceKey", applyHomeApiServiceKey)
                 .queryParam("page", 1)
                 .queryParam("perPage", 200)
                 .build(false).toUriString();

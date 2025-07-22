@@ -2,6 +2,7 @@ package org.scoula.chapi.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.scoula.chapi.scheduler.CHOfficetelScheduler;
 import org.scoula.chapi.service.OfficetelDBService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/ch/officetel")
 public class ApiController {
     private final OfficetelDBService officetelDbService;
+
+    private final CHOfficetelScheduler officetelScheduler;
 
     @GetMapping("/fetch")
     public ResponseEntity<String> fetch() {
@@ -54,6 +57,20 @@ public class ApiController {
             String message = "Total "+affectedRows+" API data fetched successfully";
             log.info(message);
             return ResponseEntity.ok(message);
+        } catch (RuntimeException e) {
+            log.error("Error occured: {}", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error occured: "+e.getMessage());
+        }
+    }
+
+    @GetMapping("/schedule")
+    public ResponseEntity<String> fetchAndUpdate() {
+        log.info("Fetch and update officetel data by schedule");
+        try{
+            officetelScheduler.fetchAndUpdateNotices();
+            log.info("Fetch and update data successfully");
+            return ResponseEntity.ok("Fetch and update data successfully");
         } catch (RuntimeException e) {
             log.error("Error occured: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
