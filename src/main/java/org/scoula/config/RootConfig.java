@@ -2,6 +2,7 @@ package org.scoula.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.extern.log4j.Log4j2;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -9,20 +10,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.sql.DataSource;
 
 @Configuration
 @PropertySource("classpath:application.properties")
-// @MapperScan(basePackages={})
+@EnableScheduling
+@MapperScan(basePackages = {"org.scoula.applyHome.mapper"})
+@ComponentScan(basePackages = {
+        "org.scoula.applyHome.service",
+        "org.scoula.applyHome.scheduler"})
+@Log4j2
 public class RootConfig {
-    @Value("${jdbc.driver}") String driver;
-    @Value("${jdbc.url}") String url;
-    @Value("${jdbc.username}") String username;
-    @Value("${jdbc.password}") String password;
+    @Value("${driver}")
+    String driver;
+    @Value("${spring.datasource.url}")
+    String url;
+    @Value("${spring.datasource.username}")
+    String username;
+    @Value("${spring.datasource.password}")
+    String password;
 
     @Bean
     public DataSource dataSource() {
@@ -40,8 +52,6 @@ public class RootConfig {
     @Autowired
     ApplicationContext applicationContext;
 
-
-
     // MyBatis용 SqlSessionFactory를 생성하는 빈 등록 메서드
     @Bean
     public SqlSessionFactory sqlSessionFactory() throws Exception {
@@ -56,9 +66,8 @@ public class RootConfig {
     }
 
     @Bean
-    public DataSourceTransactionManager transactionManager() {
-        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
-        return transactionManager;
+    public DataSourceTransactionManager transactionManager(DataSource dataSource) {
+        return new DataSourceTransactionManager(dataSource);
     }
 
 }

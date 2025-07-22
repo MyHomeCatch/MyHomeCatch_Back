@@ -19,23 +19,30 @@ public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitiali
         return new Class<?>[]{RootConfig.class};
     }
 
-    @Override
-    protected Class<?>[] getServletConfigClasses() {
-        return new Class[] {ServletConfig.class};
-    }
-
-    // URI mapping pattern of DispatcherServlet(FrontController) / : 모든 요청에 대해 매핑
-    @Override
-    protected String[] getServletMappings() {
-        return new String[] {"/"};
-    }
-
     // POST body 문자 인코딩 필터 설정- UTF-8 설정
     protected Filter[] getServletFilters() {
         CharacterEncodingFilter characterEncodingFilter = new CharacterEncodingFilter();
         characterEncodingFilter.setEncoding("UTF-8");
         characterEncodingFilter.setForceEncoding(true);
         return new Filter[] {characterEncodingFilter};
+    }
+
+
+    @Override
+    protected Class<?>[] getServletConfigClasses(){
+        return new Class<?>[]{ServletConfig.class, SwaggerConfig.class};
+    }
+
+    // 스프링의 FrontController인 DispatcherServlet이 담당할 Url 매핑 패턴, / : 모든 요청에 대해 매핑
+    @Override
+    protected String[] getServletMappings() {
+        return new String[]{
+                "/",
+                "/swagger-ui.html",
+                "/swagger-resources/**",
+                "/v2/api-docs",
+                "/webjars/**"
+        };
     }
 
     @Override
@@ -50,5 +57,4 @@ public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitiali
                 );
         registration.setMultipartConfig(multipartConfig);
     }
-
 }
