@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.scoula.chapi.mapper.OfficetelDBMapper">
+    <resultMap id="OfficetelBasic" type="org.scoula.chapi.domain.CHOfficetelVO">
+        <id property="pblancNo" column="PBLANC_NO"/>
+        <result property="bsnsMbyNm" column="BSNS_MBY_NM"/>
+        <result property="cntrctCnclsBgnde" column="CNTRCT_CNCLS_BGNDE"/>
+        <result property="cntrctCnclsEndde" column="CNTRCT_CNCLS_ENDDE"/>
+        <result property="hmpgAdres" column="HMPG_ADRES"/>
+        <result property="houseDtlSecd" column="HOUSE_DTL_SECD"/>
+        <result property="houseDtlSecdNm" column="HOUSE_DTL_SECD_NM"/>
+        <result property="houseManageNo" column="HOUSE_MANAGE_NO"/>
+        <result property="houseNm" column="HOUSE_NM"/>
+        <result property="houseSecd" column="HOUSE_SECD"/>
+        <result property="houseSecdNm" column="HOUSE_SECD_NM"/>
+        <result property="hssplyAdres" column="HSSPLY_ADRES"/>
+        <result property="hssplyZip" column="HSSPLY_ZIP"/>
+        <result property="mdhsTelno" column="MDHS_TELNO"/>
+        <result property="mvnPrearngeYm" column="MVN_PREARNGE_YM"/>
+        <result property="nsprcNm" column="NSPRC_NM"/>
+        <result property="pblancUrl" column="PBLANC_URL"/>
+        <result property="przwnerPresnatnDe" column="PRZWNER_PRESNATN_DE"/>
+        <result property="rcritPblancDe" column="RCRIT_PBLANC_DE"/>
+        <result property="searchHouseSecd" column="SEARCH_HOUSE_SECD"/>
+        <result property="subscrptAreaCode" column="SUBSCRPT_AREA_CODE"/>
+        <result property="subscrptAreaCodeNm" column="SUBSCRPT_AREA_CODE_NM"/>
+        <result property="subscrptRceptBgnde" column="SUBSCRPT_RCEPT_BGNDE"/>
+        <result property="subscrptRceptEndde" column="SUBSCRPT_RCEPT_ENDDE"/>
+        <result property="totSuplyHshldco" column="TOT_SUPLY_HSHLDCO"/>
+    </resultMap>
+
+    <resultMap id="OfficetelModel" type="org.scoula.chapi.domain.CHOfficetelModelVO">
+        <id property="modelUid" column="MODEL_UID"/>
+        <result property="excluseAr" column="EXCLUSE_AR"/>
+        <result property="gp" column="GP"/>
+        <result property="houseManageNo" column="HOUSE_MANAGE_NO"/>
+        <result property="modelNo" column="MODEL_NO"/>
+        <result property="pblancNo" column="PBLANC_NO"/>
+        <result property="subscrptReqstAmount" column="SUBSCRPT_REQST_AMOUNT"/>
+        <result property="suplyAmount" column="SUPLY_AMOUNT"/>
+        <result property="suplyHshldco" column="SUPLY_HSHLDCO"/>
+        <result property="tp" column="TP"/>
+    </resultMap>
+
+    <resultMap id="OfficetelCmpet" type="org.scoula.chapi.domain.CHOfficetelCmpetVO">
+        <id property="cmpetUid" column="CMPET_UID"/>
+        <result property="cmpetRate" column="CMPET_RATE"/>
+        <result property="houseManageNo" column="HOUSE_MANAGE_NO"/>
+        <result property="houseTy" column="HOUSE_TY"/>
+        <result property="modelNo" column="MODEL_NO"/>
+        <result property="pblancNo" column="PBLANC_NO"/>
+        <result property="reqCnt" column="REQ_CNT"/>
+        <result property="residntPriorAt" column="RESIDNT_PRIOR_AT"/>
+        <result property="residntPriorSenm" column="RESIDNT_PRIOR_SENM"/>
+        <result property="suplyHshldco" column="SUPLY_HSHLDCO"/>
+    </resultMap>
+
+    <resultMap id="OfficetelTotalMap" type="org.scoula.chapi.domain.CHOfficetelTotalVO">
+        <association property="basic" resultMap="OfficetelBasic"/>
+        <collection property="models" resultMap="OfficetelModel"/>
+        <collection property="cmpets" resultMap="OfficetelCmpet"/>
+    </resultMap>
+
+
+
+<!--    ON DUPLICATE KEY UPDATE = MYSQL 기능, 동일 Primary Key (=PBLANC_NO) 존재시 기존 레코드의 지정된 컬럼 업데이트 -->
+    <insert id="insert">
+        INSERT INTO APPLYHOME_officetel(BSNS_MBY_NM, CNTRCT_CNCLS_BGNDE, CNTRCT_CNCLS_ENDDE, HMPG_ADRES,
+                                    HOUSE_DTL_SECD, HOUSE_DTL_SECD_NM, HOUSE_MANAGE_NO, HOUSE_NM,
+                                    HOUSE_SECD, HOUSE_SECD_NM, HSSPLY_ADRES, HSSPLY_ZIP, MDHS_TELNO,
+                                    MVN_PREARNGE_YM, NSPRC_NM, PBLANC_NO, PBLANC_URL, PRZWNER_PRESNATN_DE,
+                                    RCRIT_PBLANC_DE, SEARCH_HOUSE_SECD, SUBSCRPT_AREA_CODE, SUBSCRPT_AREA_CODE_NM,
+                                    SUBSCRPT_RCEPT_BGNDE, SUBSCRPT_RCEPT_ENDDE, TOT_SUPLY_HSHLDCO)
+        VALUES (#{bsnsMbyNm}, #{cntrctCnclsBgnde}, #{cntrctCnclsEndde}, #{hmpgAdres},
+                #{houseDtlSecd}, #{houseDtlSecdNm}, #{houseManageNo}, #{houseNm},
+                #{houseSecd}, #{houseSecdNm}, #{hssplyAdres}, #{hssplyZip}, #{mdhsTelno},
+                #{mvnPrearngeYm}, #{nsprcNm}, #{pblancNo}, #{pblancUrl}, #{przwnerPresnatnDe},
+                #{rcritPblancDe}, #{searchHouseSecd}, #{subscrptAreaCode}, #{subscrptAreaCodeNm},
+                #{subscrptRceptBgnde}, #{subscrptRceptEndde}, #{totSuplyHshldco})
+        ON DUPLICATE KEY UPDATE
+                             BSNS_MBY_NM = VALUES(BSNS_MBY_NM),
+                             CNTRCT_CNCLS_BGNDE = VALUES(CNTRCT_CNCLS_BGNDE),
+                             CNTRCT_CNCLS_ENDDE = VALUES(CNTRCT_CNCLS_ENDDE),
+                             HMPG_ADRES = VALUES(HMPG_ADRES),
+                             HOUSE_DTL_SECD = VALUES(HOUSE_DTL_SECD),
+                             HOUSE_DTL_SECD_NM = VALUES(HOUSE_DTL_SECD_NM),
+                             HOUSE_MANAGE_NO = VALUES(HOUSE_MANAGE_NO),
+                             HOUSE_NM = VALUES(HOUSE_NM),
+                             HOUSE_SECD = VALUES(HOUSE_SECD),
+                             HOUSE_SECD_NM = VALUES(HOUSE_SECD_NM),
+                             HSSPLY_ADRES = VALUES(HSSPLY_ADRES),
+                             HSSPLY_ZIP = VALUES(HSSPLY_ZIP),
+                             MDHS_TELNO = VALUES(MDHS_TELNO),
+                             MVN_PREARNGE_YM = VALUES(MVN_PREARNGE_YM),
+                             NSPRC_NM = VALUES(NSPRC_NM),
+                             PBLANC_URL = VALUES(PBLANC_URL),
+                             PRZWNER_PRESNATN_DE = VALUES(PRZWNER_PRESNATN_DE),
+                             RCRIT_PBLANC_DE = VALUES(RCRIT_PBLANC_DE),
+                             SEARCH_HOUSE_SECD = VALUES(SEARCH_HOUSE_SECD),
+                             SUBSCRPT_AREA_CODE = VALUES(SUBSCRPT_AREA_CODE),
+                             SUBSCRPT_AREA_CODE_NM = VALUES(SUBSCRPT_AREA_CODE_NM),
+                             SUBSCRPT_RCEPT_BGNDE = VALUES(SUBSCRPT_RCEPT_BGNDE),
+                             SUBSCRPT_RCEPT_ENDDE = VALUES(SUBSCRPT_RCEPT_ENDDE),
+                             TOT_SUPLY_HSHLDCO = VALUES(TOT_SUPLY_HSHLDCO)
+    </insert>
+
+
+    <!--    ON DUPLICATE KEY UPDATE = MYSQL 기능, 동일 Unique Key (PBLANC_NO, MODEL_NO) 존재시 기존 레코드의 지정된 컬럼 업데이트 -->
+    <insert id="insertOfficetelModel">
+        INSERT INTO APPLYHOME_officetel_model(`EXCLUSE_AR`,
+                                          `GP`,
+                                          `HOUSE_MANAGE_NO`,
+                                          `MODEL_NO`,
+                                          `PBLANC_NO`,
+                                          `SUBSCRPT_REQST_AMOUNT`,
+                                          `SUPLY_AMOUNT`,
+                                          `SUPLY_HSHLDCO`,
+                                          `TP`)
+        VALUES (#{excluseAr},
+                #{gp},
+                #{houseManageNo},
+                #{modelNo},
+                #{pblancNo},
+                #{subscrptReqstAmount},
+                #{suplyAmount},
+                #{suplyHshldco},
+                #{tp})
+        ON DUPLICATE KEY UPDATE `EXCLUSE_AR`            = VALUES(`EXCLUSE_AR`),
+                                `GP`                    = VALUES(`GP`),
+                                `HOUSE_MANAGE_NO`       = VALUES(`HOUSE_MANAGE_NO`),
+                                `SUBSCRPT_REQST_AMOUNT` = VALUES(`SUBSCRPT_REQST_AMOUNT`),
+                                `SUPLY_AMOUNT`          = VALUES(`SUPLY_AMOUNT`),
+                                `SUPLY_HSHLDCO`         = VALUES(`SUPLY_HSHLDCO`),
+                                `TP`                    = VALUES(`TP`)
+    </insert>
+
+
+    <!--    ON DUPLICATE KEY UPDATE = MYSQL 기능, 동일 Unique Key (PBLANC_NO, MODEL_NO, RESIDNT_PRIOR_SENM) 존재시 기존 레코드의 지정된 컬럼 업데이트 -->
+    <insert id="insertOfficetelCmpet">
+        INSERT INTO APPLYHOME_officetel_cmpet(`CMPET_RATE`,
+                                          `HOUSE_MANAGE_NO`,
+                                          `HOUSE_TY`,
+                                          `MODEL_NO`,
+                                          `PBLANC_NO`,
+                                          `REQ_CNT`,
+                                          `RESIDNT_PRIOR_AT`,
+                                          `RESIDNT_PRIOR_SENM`,
+                                          `SUPLY_HSHLDCO`)
+        VALUES (#{cmpetRate},
+                #{houseManageNo},
+                #{houseTy},
+                #{modelNo},
+                #{pblancNo},
+                #{reqCnt},
+                #{residntPriorAt},
+                #{residntPriorSenm},
+                #{suplyHshldco})
+        ON DUPLICATE KEY UPDATE `CMPET_RATE`       = VALUES(`CMPET_RATE`),
+                                `HOUSE_MANAGE_NO`  = VALUES(`HOUSE_MANAGE_NO`),
+                                `HOUSE_TY`         = VALUES(`HOUSE_TY`),
+                                `REQ_CNT`          = VALUES(`REQ_CNT`),
+                                `RESIDNT_PRIOR_AT` = VALUES(`RESIDNT_PRIOR_AT`),
+                                `SUPLY_HSHLDCO`    = VALUES(`SUPLY_HSHLDCO`);
+    </insert>
+
+    <select id="getOfficetelBasic" resultType="org.scoula.chapi.domain.CHOfficetelVO">
+        SELECT *
+        FROM APPLYHOME_officetel
+        WHERE PBLANC_NO = #{pblancNo}
+    </select>
+
+    <select id="getOfficetelModels" resultType="org.scoula.chapi.domain.CHOfficetelModelVO">
+        SELECT *
+        FROM APPLYHOME_officetel_model
+        WHERE PBLANC_NO = #{pblancNo}
+        ORDER BY MODEL_NO
+    </select>
+
+    <select id="getOfficetelCmpets" resultType="org.scoula.chapi.domain.CHOfficetelCmpetVO">
+        SELECT *
+        FROM APPLYHOME_officetel_cmpet
+        WHERE PBLANC_NO = #{pblancNo}
+        ORDER BY MODEL_NO,
+                 RESIDNT_PRIOR_AT DESC
+    </select>
+
+<!--    <select id="getOfficetelTotal" resultMap="OfficetelTotalMap">-->
+<!--        SELECT * FROM APPLYHOME_officetel WHERE PBLANC_NO = #{pblancNo};-->
+
+<!--        SELECT * FROM-->
+<!--                (SELECT * FROM APPLYHOME_officetel_model where PBLANC_NO = #{pblancNo}) a-->
+<!--                    LEFT JOIN (SELECT * FROM APPLYHOME_officetel_cmpet WHERE PBLANC_NO = #{pblancNo}) b ON a.MODEL_NO = b.MODEL_NO;-->
+
+<!--#         select *-->
+<!--#         from-->
+<!--#                 (select * from APPLYHOME_officetel_model where PBLANC_NO = 2025950037) a-->
+<!--#                     left join (select * from APPLYHOME_officetel_cmpet where PBLANC_NO = 2025950037) b on a.MODEL_NO = b.MODEL_NO;-->
+<!--    </select>-->
+
+    <select id="getOfficetelTotal" resultMap="OfficetelTotalMap">
+        SELECT
+            -- Officetel basic info (aliased with O_)
+            O.PBLANC_NO AS O_PBLANC_NO,
+            O.BSNS_MBY_NM AS O_BSNS_MBY_NM,
+            O.CNTRCT_CNCLS_BGNDE AS O_CNTRCT_CNCLS_BGNDE,
+            O.CNTRCT_CNCLS_ENDDE AS O_CNTRCT_CNCLS_ENDDE,
+            O.HMPG_ADRES AS O_HMPG_ADRES,
+            O.HOUSE_DTL_SECD AS O_HOUSE_DTL_SECD,
+            O.HOUSE_DTL_SECD_NM AS O_HOUSE_DTL_SECD_NM,
+            O.HOUSE_MANAGE_NO AS O_HOUSE_MANAGE_NO,
+            O.HOUSE_NM AS O_HOUSE_NM,
+            O.HOUSE_SECD AS O_HOUSE_SECD,
+            O.HOUSE_SECD_NM AS O_HOUSE_SECD_NM,
+            O.HSSPLY_ADRES AS O_HSSPLY_ADRES,
+            O.HSSPLY_ZIP AS O_HSSPLY_ZIP,
+            O.MDHS_TELNO AS O_MDHS_TELNO,
+            O.MVN_PREARNGE_YM AS O_MVN_PREARNGE_YM,
+            O.NSPRC_NM AS O_NSPRC_NM,
+            O.PBLANC_URL AS O_PBLANC_URL,
+            O.PRZWNER_PRESNATN_DE AS O_PRZWNER_PRESNATN_DE,
+            O.RCRIT_PBLANC_DE AS O_RCRIT_PBLANC_DE,
+            O.SEARCH_HOUSE_SECD AS O_SEARCH_HOUSE_SECD,
+            O.SUBSCRPT_AREA_CODE AS O_SUBSCRPT_AREA_CODE,
+            O.SUBSCRPT_AREA_CODE_NM AS O_SUBSCRPT_AREA_CODE_NM,
+            O.SUBSCRPT_RCEPT_BGNDE AS O_SUBSCRPT_RCEPT_BGNDE,
+            O.SUBSCRPT_RCEPT_ENDDE AS O_SUBSCRPT_RCEPT_ENDDE,
+            O.TOT_SUPLY_HSHLDCO AS O_TOT_SUPLY_HSHLDCO,
+
+            -- Officetel model info (aliased with M_)
+            M.MODEL_UID AS M_MODEL_UID,
+            M.EXCLUSE_AR AS M_EXCLUSE_AR,
+            M.GP AS M_GP,
+            M.HOUSE_MANAGE_NO AS M_HOUSE_MANAGE_NO,
+            M.MODEL_NO AS M_MODEL_NO,
+            M.PBLANC_NO AS M_PBLANC_NO,
+            M.SUBSCRPT_REQST_AMOUNT AS M_SUBSCRPT_REQST_AMOUNT,
+            M.SUPLY_AMOUNT AS M_SUPLY_AMOUNT,
+            M.SUPLY_HSHLDCO AS M_SUPLY_HSHLDCO,
+            M.TP AS M_TP,
+
+            -- Officetel competition info (aliased with C_)
+            C.CMPET_UID AS C_CMPET_UID,
+            C.CMPET_RATE AS C_CMPET_RATE,
+            C.HOUSE_MANAGE_NO AS C_HOUSE_MANAGE_NO,
+            C.HOUSE_TY AS C_HOUSE_TY,
+            C.MODEL_NO AS C_MODEL_NO,
+            C.PBLANC_NO AS C_PBLANC_NO,
+            C.REQ_CNT AS C_REQ_CNT,
+            C.RESIDNT_PRIOR_AT AS C_RESIDNT_PRIOR_AT,
+            C.RESIDNT_PRIOR_SENM AS C_RESIDNT_PRIOR_SEMN,
+            C.SUPLY_HSHLDCO AS C_SUPLY_HSHLDCO
+        FROM APPLYHOME_officetel O
+        LEFT JOIN APPLYHOME_officetel_model M ON O.PBLANC_NO = M.PBLANC_NO
+        LEFT JOIN APPLYHOME_officetel_cmpet C ON O.PBLANC_NO = C.PBLANC_NO AND M.MODEL_NO = C.MODEL_NO
+        WHERE O.PBLANC_NO = #{pblancNo}
+        ORDER BY O.PBLANC_NO, M.MODEL_NO, C.RESIDNT_PRIOR_AT DESC
+    </select>
+
+
+</mapper>
+
+
