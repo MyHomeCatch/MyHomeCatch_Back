@@ -31,18 +31,16 @@ import java.util.Properties;
         "org.scoula.applyHome.service",
         "org.scoula.applyHome.scheduler"})
 @Log4j2
-@MapperScan(basePackages = {"org.scoula.lh.mapper"})
-@EnableScheduling
 @PropertySource({"classpath:application.properties", "classpath:secrets.properties"})
-@MapperScan(basePackages={"org.scoula"})
+@MapperScan(basePackages={"org.scoula.**.mapper"})
 public class RootConfig {
-    @Value("${driver}")
+    @Value("${jdbc.driver}")
     String driver;
-    @Value("${spring.datasource.url}")
+    @Value("${jdbc.url}")
     String url;
-    @Value("${spring.datasource.username}")
+    @Value("${jdbc.username}")
     String username;
-    @Value("${spring.datasource.password}")
+    @Value("${jdbc.password}")
     String password;
 
 

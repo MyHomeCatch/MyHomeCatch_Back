@@ -19,11 +19,6 @@ public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitiali
         return new Class<?>[]{RootConfig.class};
     }
 
-    @Override
-    protected Class<?>[] getServletConfigClasses() {
-        return new Class[] {ServletConfig.class, SwaggerConfig.class};
-    }
-
     // URI mapping pattern of DispatcherServlet(FrontController) / : 모든 요청에 대해 매핑
     @Override
     protected String[] getServletMappings() {
@@ -50,17 +45,6 @@ public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitiali
         return new Class<?>[]{ServletConfig.class, SwaggerConfig.class};
     }
 
-    // 스프링의 FrontController인 DispatcherServlet이 담당할 Url 매핑 패턴, / : 모든 요청에 대해 매핑
-    @Override
-    protected String[] getServletMappings() {
-        return new String[]{
-                "/",
-                "/swagger-ui.html",
-                "/swagger-resources/**",
-                "/v2/api-docs",
-                "/webjars/**"
-        };
-    }
 
     @Override
     protected void customizeRegistration(ServletRegistration.Dynamic registration) {
