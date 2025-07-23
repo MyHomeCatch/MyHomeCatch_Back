@@ -243,5 +243,4 @@ public class AuthServiceImpl implements AuthService {
         return ResponseEntity.ok(googleUserDto);
 
     }
-
 }
