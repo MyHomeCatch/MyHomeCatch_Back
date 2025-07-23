@@ -15,7 +15,7 @@ import java.util.List;
 @Log4j2
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/winner-stats")
+@RequestMapping("/api/winner-stats")
 public class StaticsController {
 
     private final StaticsService staticsService;
@@ -26,7 +26,7 @@ public class StaticsController {
         return staticsService.getScoreWinnersByRegion(regionCode);
     }
 
-    @GetMapping("/low-score")
+    @GetMapping("/low-popular")
     public List<ApartmentScoreDTO> getLowScoreApartments(@RequestParam("region") String regionCode) {
         log.info("가점 하위 TOP5 조회 요청 - regionCode: {}", regionCode);
         return staticsService.getTop5ApartmentsWithLowestScore(regionCode);

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 // 가점 하위 TOP5 조회 요청
-// 예시 : http://localhost:8080/winner-stats/low-score?region=(지역번호)
+// 예시 : http://localhost:8080/api/low-popular/region-score?region=(지역 번호)
 // 지역번호 01, 02 등
 public class ApartmentScoreDTO {
     // 공고관리번호
