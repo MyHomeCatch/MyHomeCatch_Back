@@ -14,22 +14,26 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.client.RestTemplate;
-
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
 
+@EnableTransactionManagement
 @EnableScheduling
 @ComponentScan(basePackages = {
         "org.scoula.applyHome.service",
-        "org.scoula.applyHome.scheduler"})
+        "org.scoula.applyHome.scheduler",
+        "org.scoula.chapi.scheduler"
+})
 @Log4j2
 @PropertySource({"classpath:application.properties", "classpath:secrets.properties"})
 @MapperScan(basePackages={"org.scoula.**.mapper"})
@@ -95,6 +99,7 @@ public class RootConfig {
     public RestTemplate restTemplate() {
         return new RestTemplate();
     }
+
 
 
     @Bean
