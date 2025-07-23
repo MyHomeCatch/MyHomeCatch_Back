@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.scoula.lh.mapper.lhRental.LhRentalAttMapper">
+    <!-- 첨부파일 정보 생성 -->
+    <insert id="create" parameterType="org.scoula.lh.domain.rental.LhRentalAttVO">
+        INSERT INTO LH_rental_att (
+            pan_id,
+            loc_nt_nm,
+            ls_spl_inf_upl_fl_ds_cd_nm,
+            cmn_ahfl_nm,
+            ahfl_url
+        ) VALUES (
+                     #{panId},
+                     #{locNtNm},
+                     #{lsSplInfUplFlDsCdNm},
+                     #{cmnAhflNm},
+                     #{ahflUrl}
+                 )
+    </insert>
+
+    <!-- 공고ID로 첨부파일 목록 조회 -->
+    <select id="getByPanId" parameterType="string" resultType="org.scoula.lh.domain.rental.LhRentalAttVO">
+        SELECT
+            LH_rental_att_id,
+            pan_id,
+            loc_nt_nm,
+            ls_spl_inf_upl_fl_ds_cd_nm,
+            cmn_ahfl_nm,
+            ahfl_url
+        FROM LH_rental_att
+        WHERE pan_id = #{panId}
+        ORDER BY LH_rental_att_id ASC
+    </select>
+
+    <!-- ID로 첨부파일 단건 조회 -->
+    <select id="getById" parameterType="int" resultType="org.scoula.lh.domain.rental.LhRentalAttVO">
+        SELECT
+            LH_rental_att_id,
+            pan_id,
+            loc_nt_nm,
+            ls_spl_inf_upl_fl_ds_cd_nm,
+            cmn_ahfl_nm,
+            ahfl_url
+        FROM LH_rental_att
+        WHERE LH_rental_att_id = #{id}
+    </select>
+
+</mapper>
