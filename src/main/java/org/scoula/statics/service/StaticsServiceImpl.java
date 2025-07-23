@@ -36,19 +36,19 @@ public class StaticsServiceImpl implements StaticsService {
         List<LowCompetitionRateDTO> lowCmpetList = new ArrayList<>();
         // 현재 날짜
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        String today = LocalDate.now().format(formatter);
+        String date = LocalDate.now().format(formatter);
 
         // 모집중인 공고 조회
-        List<HousingInfoVO> housingList = mapper.getAPTList();
-        housingList.addAll(mapper.getOfficetelList());
+        List<HousingInfoVO> housingList = mapper.getAPTList(region, date);
+        housingList.addAll(mapper.getOfficetelList(region, date));
 
         // 공고 경쟁률 조회
         for(HousingInfoVO vo : housingList) {
             CompetitionRateVO cmpetVo;
             if(vo.getTable_code() == 1) {
-                cmpetVo = mapper.getAPTCmpet();
+                cmpetVo = mapper.getAPTCmpet(vo.getPBLANC_NO(), reside, rank);
             } else {
-                cmpetVo = mapper.getOfficetelCmpet();
+                cmpetVo = mapper.getOfficetelCmpet(vo.getPBLANC_NO());
             }
 
             lowCmpetList.add(LowCompetitionRateDTO.of(cmpetVo, vo));
