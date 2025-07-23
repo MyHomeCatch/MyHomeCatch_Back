@@ -30,23 +30,22 @@ import java.util.Properties;
 @EnableTransactionManagement
 @EnableScheduling
 @ComponentScan(basePackages = {
-        "org.scoula.applyHome.service",
-        "org.scoula.applyHome.scheduler",
-        "org.scoula.chapi.scheduler"
+        "org.scoula.applyHome",
+        "org.scoula.applyHome",
+        "org.scoula.chapi",
+        "org.scoula.lh",
 })
 @Log4j2
-@MapperScan(basePackages = {"org.scoula.lh.mapper", "org.scoula.chapi.mapper"})
-@EnableScheduling
 @PropertySource({"classpath:application.properties", "classpath:secrets.properties"})
-@MapperScan(basePackages={"org.scoula"})
+@MapperScan(basePackages={"org.scoula.**.mapper"})
 public class RootConfig {
-    @Value("${driver}")
+    @Value("${jdbc.driver}")
     String driver;
-    @Value("${spring.datasource.url}")
+    @Value("${jdbc.url}")
     String url;
-    @Value("${spring.datasource.username}")
+    @Value("${jdbc.username}")
     String username;
-    @Value("${spring.datasource.password}")
+    @Value("${jdbc.password}")
     String password;
 
 

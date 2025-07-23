@@ -4,12 +4,9 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.scoula.applyHome.domain.ApplyHomeAnalysisVO;
-import org.scoula.applyHome.domain.ApplyHomeSpecialVO;
 import org.scoula.applyHome.dto.*;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.scoula.applyHome.service.ApplyHomeService;
-import org.scoula.applyHome.service.ApplyHomeServiceImpl;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
@@ -31,7 +28,7 @@ public class ApplyHomeScheduler {
     @Value("${APPLYHOME_API_SERVICE_KEY}")
     private String APPLYHOME_API_SERVICE_KEY;
 
-    private final ApplyHomeService ApplyHomeService;
+    private final ApplyHomeService applyHomeService;
 
     // 테스트에서 키를 주입할 수 있도록 setter 추가
     public void setApplyhomeApiServiceKey(String key) {
@@ -45,12 +42,12 @@ public class ApplyHomeScheduler {
         log.info("Scheduling apply home analysis");
 
         List<ApplyHomeDTO> newNotices = fetchApplyHomeNotice(1);
-        newNotices.forEach(ApplyHomeService::create);
+        newNotices.forEach(applyHomeService::create);
 
         List<ApplyHomeAnalysisDTO> competList = fetchApplyHomeCompet(1);
         List<ApplyHomeAnalysisDTO> winnerList = fetchApplyHomeWinner(1);
         List<ApplyHomeSpecialDTO> specialList = fetchApplyHomeSpecial(1);
-        specialList.forEach(ApplyHomeService::createSpecial);
+        specialList.forEach(applyHomeService::createSpecial);
     }
 
     public void fetchNotices() {
@@ -58,7 +55,7 @@ public class ApplyHomeScheduler {
 
         try {
             List<ApplyHomeDTO> allNotices = fetchApplyHomeNotice(250); //2455 - 100
-            allNotices.forEach(ApplyHomeService::create);
+            allNotices.forEach(applyHomeService::create);
 
             // 경쟁률 및 당첨가점 정보
             // return하는게 안들어와서 내부에서 바로 Service::create)
@@ -165,7 +162,7 @@ public class ApplyHomeScheduler {
             }
         }
         log.info("Successfully parsed {} items from API response.", allNotices.size());
-        allNotices.forEach(ApplyHomeService::createAnalysis);
+        allNotices.forEach(applyHomeService::createAnalysis);
         return allNotices;
     }
 
@@ -208,7 +205,7 @@ public class ApplyHomeScheduler {
             }
         }
         log.info("Successfully parsed {} items from 당첨가점 API response.", allNotices.size());
-        allNotices.forEach(ApplyHomeService::createAnalysis);
+        allNotices.forEach(applyHomeService::createAnalysis);
         return allNotices;
     }
 
