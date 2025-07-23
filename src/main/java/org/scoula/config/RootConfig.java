@@ -30,9 +30,10 @@ import java.util.Properties;
 @EnableTransactionManagement
 @EnableScheduling
 @ComponentScan(basePackages = {
-        "org.scoula.applyHome.service",
-        "org.scoula.applyHome.scheduler",
-        "org.scoula.chapi.scheduler"
+        "org.scoula.applyHome",
+        "org.scoula.applyHome",
+        "org.scoula.chapi",
+        "org.scoula.lh",
 })
 @Log4j2
 @PropertySource({"classpath:application.properties", "classpath:secrets.properties"})
