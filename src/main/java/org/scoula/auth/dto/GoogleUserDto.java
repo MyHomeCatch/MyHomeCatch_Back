@@ -15,6 +15,4 @@ public class GoogleUserDto {
     private String email;
     private String name;
     // private String picture;
-
-
 }
