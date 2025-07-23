@@ -2,9 +2,11 @@ package org.scoula.lh.service;
 
 import org.scoula.lh.dto.NoticeApiDTO;
 import org.scoula.lh.dto.NoticeDTO;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public interface LhNoticeSchedulerService {
     List<NoticeDTO> getNotices();
     NoticeDTO getNotice(String panId);

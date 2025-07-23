@@ -17,13 +17,10 @@ import org.springframework.web.servlet.view.JstlView;
 @ComponentScan(basePackages = {
         "org.scoula",
         "org.scoula.exception",
-
-        "org.scoula.controller"
-}) // Spring MVC용 컴포넌트 등록을 위한 스캔 패키지
-@PropertySource("classpath:application.properties")
         "org.scoula.controller",
         "org.scoula.lh",
-})
+}) // Spring MVC용 컴포넌트 등록을 위한 스캔 패키지
+@PropertySource("classpath:application.properties")
 @EnableScheduling
 public class ServletConfig implements WebMvcConfigurer {
 

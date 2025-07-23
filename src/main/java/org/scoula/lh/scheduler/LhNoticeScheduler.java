@@ -59,8 +59,8 @@ public class LhNoticeScheduler {
     private final LhRentalAttService lhRentalAttService;
 
     //    @Scheduled(cron = "0/20 * * * * ?")  // 초 분 시 일 월 요일 (6개 필드!)
-//    @Scheduled(fixedDelay = 6000000, initialDelay = 0)
-    @Scheduled(cron = "0 0 2 * * *")
+    @Scheduled(fixedDelay = 6000000, initialDelay = 0)
+//    @Scheduled(cron = "0 0 2 * * *")
     public void schedule() {
         log.info("=== LH 공고 데이터 업데이트 스케줄러 시작 ===");
 
