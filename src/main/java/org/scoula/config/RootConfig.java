@@ -12,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.client.RestTemplate;
@@ -20,6 +21,9 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
+@PropertySource("classpath:application.properties")
+@MapperScan(basePackages = {"org.scoula.lh.mapper"})
+@EnableScheduling
 @PropertySource({"classpath:application.properties", "classpath:secrets.properties"})
 @MapperScan(basePackages={"org.scoula"})
 public class RootConfig {
@@ -72,7 +76,9 @@ public class RootConfig {
 
     @Bean
     public DataSourceTransactionManager transactionManager() {
-        return new DataSourceTransactionManager(dataSource());
+        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
+        transactionManager.setDataSource(dataSource());
+        return transactionManager;
     }
 
     @Bean
