@@ -24,6 +24,12 @@ public class StaticsController {
         return ResponseEntity.ok(service.getRegionAge(region, date));
     }
 
+    // 로그인 -> 유저 테이블에서 지역 가져오기
+    @GetMapping("/low-popular")
+    public ResponseEntity<?> getLowPopular(@RequestParam String region, @RequestParam String reside, @RequestParam int rank) {
+        return null;
+    }
+
 //    @GetMapping("/db")
 //    public String saveApiData() throws IOException, URISyntaxException {
 //        for(int i=2020; i<=2025; i++) {
