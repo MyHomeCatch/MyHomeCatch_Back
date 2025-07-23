@@ -20,16 +20,15 @@ public class StaticsController {
 
     private final StaticsService staticsService;
 
-//    지역별 청약 가점제 당첨자 정보 조회
     @GetMapping("/region-score")
-    public List<ScoreWinnerDTO> getScoreWinnersByRegion(@RequestParam("region") String region) {
-        log.info("청약 가점 당첨자 통계 조회 요청 - region: {}", region);
-        return staticsService.getScoreWinnersByRegion(region);
+    public List<ScoreWinnerDTO> getScoreWinnersByRegion(@RequestParam("region") String regionCode) {
+        log.info("청약 가점 통계 조회 요청 - regionCode: {}", regionCode);
+        return staticsService.getScoreWinnersByRegion(regionCode);
     }
 
     @GetMapping("/low-popular")
-    public List<ApartmentScoreDTO> getLowScoreApartments(@RequestParam("region") String region) {
-        log.info("가점 하위 TOP5 조회 요청 - region: {}", region);
-        return staticsService.getTop5ApartmentsWithLowestScore(region);
+    public List<ApartmentScoreDTO> getLowScoreApartments(@RequestParam("region") String regionCode) {
+        log.info("가점 하위 TOP5 조회 요청 - regionCode: {}", regionCode);
+        return staticsService.getTop5ApartmentsWithLowestScore(regionCode);
     }
 }

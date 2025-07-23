@@ -6,7 +6,6 @@ import org.scoula.statics.dto.ScoreWinnerDTO;
 import java.util.List;
 
 public interface StaticsService {
-
     /**
      * 지역별 청약 가점제 정보 조회
      */
