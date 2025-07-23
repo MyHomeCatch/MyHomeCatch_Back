@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Log4j2
@@ -55,6 +56,9 @@ public class StaticsServiceImpl implements StaticsService {
         }
 
         // 리스트 정렬 경쟁률 순(5개)
+        lowCmpetList.sort(Comparator.comparingDouble(o ->
+                (double) o.getREQ_CNT() / o.getSUPLY_HSHLDCO()
+        ));
         return lowCmpetList;
     }
 }
