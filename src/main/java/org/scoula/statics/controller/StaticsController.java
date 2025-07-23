@@ -27,7 +27,7 @@ public class StaticsController {
     // 로그인 -> 유저 테이블에서 지역 가져오기
     @GetMapping("/low-popular")
     public ResponseEntity<?> getLowPopular(@RequestParam String region, @RequestParam String reside, @RequestParam int rank) {
-        return null;
+        return ResponseEntity.ok(service.getLowCmpetRate(region, reside, rank));
     }
 
 //    @GetMapping("/db")
