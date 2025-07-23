@@ -1,8 +1,8 @@
-use scoula_db;
+use MyHomeCatch;
 
-# DROP TABLE IF EXISTS  ch_db_officetel;
+# DROP TABLE IF EXISTS  APPLYHOME_officetel;
 
-CREATE TABLE ch_db_officetel
+CREATE TABLE APPLYHOME_officetel
 (
     `BSNS_MBY_NM`           VARCHAR(255) COMMENT '사업주체명',
     `CNTRCT_CNCLS_BGNDE`    DATE COMMENT '계약시작일',
@@ -31,11 +31,11 @@ CREATE TABLE ch_db_officetel
     `TOT_SUPLY_HSHLDCO`     INT COMMENT '공급규모'
 );
 
-SELECT * FROM ch_db_officetel;
+SELECT * FROM APPLYHOME_officetel;
 
-# DROP TABLE IF EXISTS ch_db_officetel_model;
+# DROP TABLE IF EXISTS APPLYHOME_officetel_model;
 
-CREATE TABLE ch_db_officetel_model
+CREATE TABLE APPLYHOME_officetel_model
 (
     `ID`                    INT PRIMARY KEY AUTO_INCREMENT,
     `EXCLUSE_AR`            VARCHAR(16) COMMENT '전용면적',
@@ -43,21 +43,21 @@ CREATE TABLE ch_db_officetel_model
     `HOUSE_MANAGE_NO`       VARCHAR(64) NOT NULL COMMENT '주택관리번호',
     `MODEL_NO`              VARCHAR(32) COMMENT '모델번호',
     `PBLANC_NO`             VARCHAR(64) NOT NULL COMMENT '공고번호',
-    `SUBSCRPT_REQST_AMOUNT` VARCHAR(32) COMMENT '청약신청금(만원)',
-    `SUPLY_AMOUNT`          VARCHAR(32) COMMENT '공급금액(분양최고금액 : 만원)',
+    `SUBSCRPT_REQST_AMOUNT` INT COMMENT '청약신청금(만원)',
+    `SUPLY_AMOUNT`          INT COMMENT '공급금액(분양최고금액 : 만원)',
     `SUPLY_HSHLDCO`         INT COMMENT '공급세대수',
     `TP`                    VARCHAR(16) COMMENT '타입',
     UNIQUE (`PBLANC_NO`, `MODEL_NO`),
-    FOREIGN KEY (`PBLANC_NO`) REFERENCES ch_db_officetel (`PBLANC_NO`)
+    FOREIGN KEY (`PBLANC_NO`) REFERENCES APPLYHOME_officetel (`PBLANC_NO`)
 );
 
-SELECT * FROM ch_db_officetel_model;
+SELECT * FROM APPLYHOME_officetel_model;
 
-SHOW INDEX FROM ch_db_officetel_model;
+SHOW INDEX FROM APPLYHOME_officetel_model;
 
-# DROP TABLE IF EXISTS ch_db_officetel_cmpet;
+# DROP TABLE IF EXISTS APPLYHOME_officetel_cmpet;
 
-CREATE TABLE ch_db_officetel_cmpet(
+CREATE TABLE APPLYHOME_officetel_cmpet(
     `CMPET_ID` INT PRIMARY KEY AUTO_INCREMENT,
     `CMPET_RATE` VARCHAR(16) COMMENT '경쟁률',
     `HOUSE_MANAGE_NO`       VARCHAR(64) NOT NULL COMMENT '주택관리번호',
@@ -69,9 +69,9 @@ CREATE TABLE ch_db_officetel_cmpet(
     `RESIDNT_PRIOR_SEMN` VARCHAR(64) COMMENT '공급여부(거주자우선/전체/기타)',
     `SUPLY_HSHLDCO` INT COMMENT '공급세대수',
     UNIQUE (`PBLANC_NO`, `MODEL_NO`, `RESIDNT_PRIOR_SEMN`),
-    FOREIGN KEY (`PBLANC_NO`) REFERENCES ch_db_officetel(`PBLANC_NO`)
+    FOREIGN KEY (`PBLANC_NO`) REFERENCES APPLYHOME_officetel(`PBLANC_NO`)
 );
 
-SELECT * FROM ch_db_officetel_cmpet;
+SELECT * FROM APPLYHOME_officetel_cmpet;
 
-SHOW INDEX FROM ch_db_officetel_cmpet;
+SHOW INDEX FROM APPLYHOME_officetel_cmpet;

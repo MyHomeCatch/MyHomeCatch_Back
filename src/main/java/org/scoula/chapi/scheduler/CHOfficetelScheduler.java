@@ -13,6 +13,7 @@ import org.scoula.chapi.dto.CHOfficetelModelDTO;
 import org.scoula.chapi.service.OfficetelDBService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -38,7 +39,7 @@ public class CHOfficetelScheduler {
     }
 
     // 자정마다 실행 (초 분 시 일 월 요일)
-//    @Scheduled(cron = "0 0 0 * * ?")
+//    @Scheduled(cron = "0 0 0/1 1/1 * ?")
     public void fetchAndUpdateAllOfficetelData(){
         log.info("청약홈 오피스텔 전체 데이터 업데이트 스케줄러 시작");
 
@@ -58,7 +59,7 @@ public class CHOfficetelScheduler {
         try {
             List<CHOfficetelDTO> allNotices = fetchNoticeFromApi(
                     "ApplyhomeInfoDetailSvc/v1/getUrbtyOfctlLttotPblancDetail",
-                    20,
+                    10,
                     new TypeReference<List<CHOfficetelDTO>>() {});
             allNotices.forEach(officetelDBService::insert);
             log.info("오피스텔 공고 기본정보 업데이트 완료: {}건", allNotices.size());
@@ -76,7 +77,7 @@ public class CHOfficetelScheduler {
         try {
             List<CHOfficetelModelDTO> allNotices = fetchNoticeFromApi(
                     "ApplyhomeInfoDetailSvc/v1/getUrbtyOfctlLttotPblancMdl",
-                    20,
+                    40,
                     new TypeReference<List<CHOfficetelModelDTO>>() {});
             allNotices.forEach(officetelDBService::insertOfficetelModel);
             log.info("오피스텔 공고 주택형별 상세정보 업데이트 완료: {}건", allNotices.size());
@@ -94,7 +95,7 @@ public class CHOfficetelScheduler {
         try {
             List<CHOfficetelCmpetDTO> allNotices = fetchNoticeFromApi(
                     "ApplyhomeInfoCmpetRtSvc/v1/getUrbtyOfctlLttotPblancCmpet",
-                    20,
+                    40,
                     new TypeReference<List<CHOfficetelCmpetDTO>>() {});
             allNotices.forEach(officetelDBService::insertOfficetelCmpet);
             log.info("오피스텔 공고 경쟁률 상세정보 업데이트 완료: {}건", allNotices.size());

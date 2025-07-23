@@ -20,9 +20,9 @@ public class CHOfficetelModelVO {
 
     private String pblancNo;
 
-    private String subscrptReqstAmount;
+    private int subscrptReqstAmount;
 
-    private String suplyAmount;
+    private int suplyAmount;
 
     private int suplyHshldco;
 

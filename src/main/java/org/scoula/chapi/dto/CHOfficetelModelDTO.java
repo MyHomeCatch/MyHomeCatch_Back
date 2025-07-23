@@ -28,10 +28,10 @@ public class CHOfficetelModelDTO {
 	private String pblancNo;
 
 	@JsonProperty("SUBSCRPT_REQST_AMOUNT")
-	private String subscrptReqstAmount;
+	private int subscrptReqstAmount;
 
 	@JsonProperty("SUPLY_AMOUNT")
-	private String suplyAmount;
+	private int suplyAmount;
 
 	@JsonProperty("SUPLY_HSHLDCO")
 	private int suplyHshldco;

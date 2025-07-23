@@ -34,7 +34,7 @@
 
 <!--    ON DUPLICATE KEY UPDATE = MYSQL 기능, 동일 Primary Key (=PBLANC_NO) 존재시 기존 레코드의 지정된 컬럼 업데이트 -->
     <insert id="insert">
-        INSERT INTO ch_db_officetel(BSNS_MBY_NM, CNTRCT_CNCLS_BGNDE, CNTRCT_CNCLS_ENDDE, HMPG_ADRES,
+        INSERT INTO APPLYHOME_officetel(BSNS_MBY_NM, CNTRCT_CNCLS_BGNDE, CNTRCT_CNCLS_ENDDE, HMPG_ADRES,
                                     HOUSE_DTL_SECD, HOUSE_DTL_SECD_NM, HOUSE_MANAGE_NO, HOUSE_NM,
                                     HOUSE_SECD, HOUSE_SECD_NM, HSSPLY_ADRES, HSSPLY_ZIP, MDHS_TELNO,
                                     MVN_PREARNGE_YM, NSPRC_NM, PBLANC_NO, PBLANC_URL, PRZWNER_PRESNATN_DE,
@@ -75,7 +75,7 @@
 
     <!--    ON DUPLICATE KEY UPDATE = MYSQL 기능, 동일 Unique Key (PBLANC_NO, MODEL_NO) 존재시 기존 레코드의 지정된 컬럼 업데이트 -->
     <insert id="insertOfficetelModel">
-        INSERT INTO ch_db_officetel_model(`EXCLUSE_AR`,
+        INSERT INTO APPLYHOME_officetel_model(`EXCLUSE_AR`,
                                           `GP`,
                                           `HOUSE_MANAGE_NO`,
                                           `MODEL_NO`,
@@ -104,7 +104,7 @@
 
     <!--    ON DUPLICATE KEY UPDATE = MYSQL 기능, 동일 Unique Key (PBLANC_NO, MODEL_NO, RESIDNT_PRIOR_SENM) 존재시 기존 레코드의 지정된 컬럼 업데이트 -->
     <insert id="insertOfficetelCmpet">
-        INSERT INTO ch_db_officetel_cmpet(`CMPET_RATE`,
+        INSERT INTO APPLYHOME_officetel_cmpet(`CMPET_RATE`,
                                           `HOUSE_MANAGE_NO`,
                                           `HOUSE_TY`,
                                           `MODEL_NO`,
