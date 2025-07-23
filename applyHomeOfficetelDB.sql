@@ -1,7 +1,5 @@
 use MyHomeCatch;
 
-# DROP TABLE IF EXISTS  APPLYHOME_officetel;
-
 CREATE TABLE APPLYHOME_officetel
 (
     `BSNS_MBY_NM`           VARCHAR(255) COMMENT '사업주체명',
@@ -33,8 +31,6 @@ CREATE TABLE APPLYHOME_officetel
 
 SELECT * FROM APPLYHOME_officetel;
 
-# DROP TABLE IF EXISTS APPLYHOME_officetel_model;
-
 CREATE TABLE APPLYHOME_officetel_model
 (
     `ID`                    INT PRIMARY KEY AUTO_INCREMENT,
@@ -55,8 +51,6 @@ SELECT * FROM APPLYHOME_officetel_model;
 
 SHOW INDEX FROM APPLYHOME_officetel_model;
 
-# DROP TABLE IF EXISTS APPLYHOME_officetel_cmpet;
-
 CREATE TABLE APPLYHOME_officetel_cmpet(
     `CMPET_ID` INT PRIMARY KEY AUTO_INCREMENT,
     `CMPET_RATE` VARCHAR(16) COMMENT '경쟁률',
@@ -66,12 +60,14 @@ CREATE TABLE APPLYHOME_officetel_cmpet(
     `PBLANC_NO`             VARCHAR(64) NOT NULL COMMENT '공고번호',
     `REQ_CNT` INT COMMENT '접수건수',
     `RESIDNT_PRIOR_AT` VARCHAR(16) COMMENT '거주자 우선여부(Y/N)',
-    `RESIDNT_PRIOR_SEMN` VARCHAR(64) COMMENT '공급여부(거주자우선/전체/기타)',
+    `RESIDNT_PRIOR_SENM` VARCHAR(64) COMMENT '공급여부(거주자우선/전체/기타)',
     `SUPLY_HSHLDCO` INT COMMENT '공급세대수',
-    UNIQUE (`PBLANC_NO`, `MODEL_NO`, `RESIDNT_PRIOR_SEMN`),
+    UNIQUE (`PBLANC_NO`, `MODEL_NO`, `RESIDNT_PRIOR_SENM`),
     FOREIGN KEY (`PBLANC_NO`) REFERENCES APPLYHOME_officetel(`PBLANC_NO`)
 );
 
 SELECT * FROM APPLYHOME_officetel_cmpet;
 
 SHOW INDEX FROM APPLYHOME_officetel_cmpet;
+
+

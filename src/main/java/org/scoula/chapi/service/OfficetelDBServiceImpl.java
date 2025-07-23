@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.scoula.chapi.domain.CHOfficetelCmpetVO;
 import org.scoula.chapi.domain.CHOfficetelModelVO;
+import org.scoula.chapi.domain.CHOfficetelTotalVO;
 import org.scoula.chapi.domain.CHOfficetelVO;
 import org.scoula.chapi.dto.*;
 import org.scoula.chapi.mapper.OfficetelDBMapper;
@@ -224,6 +225,27 @@ public class OfficetelDBServiceImpl implements OfficetelDBService {
             log.error("Error occured: ", e.getMessage(), e);
             throw new RuntimeException("Error occured: ", e);
         }
+    }
+
+    @Override
+    public CHOfficetelDTO getOfficetelBasic(String pblancNo) {
+        return CHOfficetelDTO.of(mapper.getOfficetelBasic(pblancNo));
+    }
+
+    @Override
+    public List<CHOfficetelModelDTO> getOfficetelModels(String pblancNo) {
+        return mapper.getOfficetelModels(pblancNo).stream().map(CHOfficetelModelDTO::of).toList();
+    }
+
+    @Override
+    public List<CHOfficetelCmpetDTO> getOfficetelCmpets(String pblancNo) {
+        return mapper.getOfficetelCmpets(pblancNo).stream().map(CHOfficetelCmpetDTO::of).toList();
+    }
+
+    @Override
+    public CHOfficetelTotalDTO getOfficetelTotal(String pblancNo) {
+        CHOfficetelTotalVO totalVO = mapper.getOfficetelTotal(pblancNo);
+        return CHOfficetelTotalDTO.of(totalVO);
     }
 
 
