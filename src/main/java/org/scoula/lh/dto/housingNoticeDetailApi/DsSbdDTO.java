@@ -5,10 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.scoula.lh.domain.LhHousingVO;
-import org.scoula.lh.dto.LhHousingDTO;
-
-import java.util.Date;
+import org.scoula.lh.domain.housing.LhHousingVO;
+import org.scoula.lh.dto.lhHousing.LhHousingDTO;
 
 // 단지 DTO
 @Data

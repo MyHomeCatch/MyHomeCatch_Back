@@ -10,4 +10,6 @@ public interface LhNoticeSchedulerService {
     NoticeDTO getNotice(String panId);
     int create(NoticeApiDTO notice);
     int createAll(List<NoticeApiDTO> notices);
+    List<NoticeDTO> createAllAndReturnNew(List<NoticeApiDTO> allNotices);
+    boolean existsByPanId(String panId);
 }

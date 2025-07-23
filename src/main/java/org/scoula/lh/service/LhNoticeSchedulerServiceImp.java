@@ -8,6 +8,7 @@ import org.scoula.lh.mapper.LhNoticeMapper;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,5 +38,27 @@ public class LhNoticeSchedulerServiceImp implements LhNoticeSchedulerService {
     public int createAll(List<NoticeApiDTO> noticeApiDTO) {
         int row = noticeMapper.createAll(noticeApiDTO.stream().map(NoticeApiDTO::toVO).toList());
         return row;
+    }
+
+    @Override
+    public List<NoticeDTO> createAllAndReturnNew(List<NoticeApiDTO> allNotices) {
+        List<NoticeDTO> newNotices = new ArrayList<>();
+
+        for (NoticeApiDTO apiNotice : allNotices) {
+            if (!noticeMapper.existsByPanId(apiNotice.getPanId())) {
+                int result = create(apiNotice);
+                if (result > 0) {
+                    NoticeDTO newNotice = getNotice(apiNotice.getPanId());
+                    newNotices.add(newNotice);
+                }
+            }
+        }
+
+        return newNotices;
+    }
+
+    @Override
+    public boolean existsByPanId(String panId) {
+        return noticeMapper.existsByPanId(panId);
     }
 }

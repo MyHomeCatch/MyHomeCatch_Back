@@ -90,4 +90,8 @@
     <select id="getLhNotices" resultType="org.scoula.lh.domain.LhNoticeVO">
         SELECT * FROM LH_notice
     </select>
+
+    <select id="existsByPanId" resultType="java.lang.Boolean">
+        SELECT EXISTS(SELECT 1 FROM LH_notice WHERE pan_id = #{panId})
+    </select>
 </mapper>
