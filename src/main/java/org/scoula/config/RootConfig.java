@@ -2,6 +2,7 @@ package org.scoula.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.extern.log4j.Log4j2;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -9,28 +10,40 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.EnableScheduling;
+
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.web.client.RestTemplate;
+
 
 import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@PropertySource("classpath:application.properties")
+
+@EnableScheduling
+@ComponentScan(basePackages = {
+        "org.scoula.applyHome.service",
+        "org.scoula.applyHome.scheduler"})
+@Log4j2
 @MapperScan(basePackages = {"org.scoula.lh.mapper"})
 @EnableScheduling
 @PropertySource({"classpath:application.properties", "classpath:secrets.properties"})
 @MapperScan(basePackages={"org.scoula"})
 public class RootConfig {
-    @Value("${jdbc.driver}") String driver;
-    @Value("${jdbc.url}") String url;
-    @Value("${jdbc.username}") String username;
-    @Value("${jdbc.password}") String password;
+    @Value("${driver}")
+    String driver;
+    @Value("${spring.datasource.url}")
+    String url;
+    @Value("${spring.datasource.username}")
+    String username;
+    @Value("${spring.datasource.password}")
+    String password;
 
 
     @Value("${spring.mail.host}")
@@ -59,8 +72,6 @@ public class RootConfig {
     @Autowired
     ApplicationContext applicationContext;
 
-
-
     // MyBatis용 SqlSessionFactory를 생성하는 빈 등록 메서드
     @Bean
     public SqlSessionFactory sqlSessionFactory() throws Exception {
@@ -75,6 +86,7 @@ public class RootConfig {
     }
 
     @Bean
+
     public DataSourceTransactionManager transactionManager() {
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
         transactionManager.setDataSource(dataSource());
