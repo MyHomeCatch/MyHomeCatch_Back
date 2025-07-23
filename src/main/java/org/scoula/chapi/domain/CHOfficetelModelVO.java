@@ -10,6 +10,9 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class CHOfficetelModelVO {
+
+    private int id;
+
     private String excluseAr;
 
     private String gp;

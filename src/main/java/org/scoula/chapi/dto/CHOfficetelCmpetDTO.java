@@ -12,6 +12,8 @@ import org.scoula.chapi.domain.CHOfficetelCmpetVO;
 @Data
 @Builder
 public class CHOfficetelCmpetDTO {
+	private int cmpetId;
+
 	@JsonProperty("CMPET_RATE")
 	private String cmpetRate;
 	@JsonProperty("HOUSE_MANAGE_NO")
@@ -33,6 +35,7 @@ public class CHOfficetelCmpetDTO {
 
 	public static CHOfficetelCmpetDTO of(CHOfficetelCmpetVO vo) {
 		return CHOfficetelCmpetDTO.builder()
+				.cmpetId(vo.getCmpetId())
 				.cmpetRate(vo.getCmpetRate())
 				.houseManageNo(vo.getHouseManageNo())
 				.houseTy(vo.getHouseTy())
@@ -47,6 +50,7 @@ public class CHOfficetelCmpetDTO {
 
 	public CHOfficetelCmpetVO toVO() {
 		return CHOfficetelCmpetVO.builder()
+				.cmpetId(this.cmpetId)
 				.cmpetRate(this.cmpetRate)
 				.houseManageNo(this.houseManageNo)
 				.houseTy(this.houseTy)

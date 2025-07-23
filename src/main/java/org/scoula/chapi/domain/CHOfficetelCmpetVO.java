@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @Builder
 public class CHOfficetelCmpetVO {
+    private int cmpetId;
     private String cmpetRate;
     private String houseManageNo;
     private String houseTy;

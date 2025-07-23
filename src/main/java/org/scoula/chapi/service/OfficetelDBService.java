@@ -3,6 +3,7 @@ package org.scoula.chapi.service;
 import org.scoula.chapi.dto.CHOfficetelCmpetDTO;
 import org.scoula.chapi.dto.CHOfficetelDTO;
 import org.scoula.chapi.dto.CHOfficetelModelDTO;
+import org.scoula.chapi.dto.CHOfficetelTotalDTO;
 
 import java.util.List;
 
@@ -21,6 +22,15 @@ public interface OfficetelDBService {
     int insertOfficetelCmpet(CHOfficetelCmpetDTO dto);
     int insertAllOfficetelCmpet(List<CHOfficetelCmpetDTO> dtoList);
     int fetchOfficetelCmpet();
+
+    // GET Methods
+    CHOfficetelDTO getOfficetelBasic(String pblancNo);
+    List<CHOfficetelModelDTO> getOfficetelModels(String pblancNo);
+    List<CHOfficetelCmpetDTO> getOfficetelCmpets(String pblancNo);
+    // JOIN GET Method
+    CHOfficetelTotalDTO getOfficetelTotal(String pblancNo);
+
+
 
 
 }
