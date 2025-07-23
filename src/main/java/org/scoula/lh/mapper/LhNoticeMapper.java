@@ -11,4 +11,5 @@ public interface LhNoticeMapper {
     List<LhNoticeVO> getLhNotices();
     int create(LhNoticeVO lhNoticeVO);
     int createAll(List<LhNoticeVO> lhNoticeVOList);
+    boolean existsByPanId(String panId);
 }

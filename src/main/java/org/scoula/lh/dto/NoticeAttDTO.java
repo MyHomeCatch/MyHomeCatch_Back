@@ -14,7 +14,7 @@ public class NoticeAttDTO {
     /**
      * 첨부파일 ID (Primary Key, Auto Increment)
      */
-    private Integer noticeAttId;
+    private Integer lhNoticeAttId;
 
     /**
      * 공고 ID (Foreign Key - LH_notice.pan_id 참조)
@@ -47,7 +47,7 @@ public class NoticeAttDTO {
      */
     public static NoticeAttDTO of(NoticeAttVO vo) {
         return NoticeAttDTO.builder()
-                .noticeAttId(vo.getNoticeAttId())
+                .lhNoticeAttId(vo.getLhNoticeAttId())
                 .panId(vo.getPanId())
                 .slPanAhflDsCdNm(vo.getSlPanAhflDsCdNm())
                 .cmnAhflNm(vo.getCmnAhflNm())

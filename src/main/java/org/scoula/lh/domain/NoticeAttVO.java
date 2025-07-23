@@ -14,7 +14,7 @@ public class NoticeAttVO {
     /**
      * 첨부파일 ID (Primary Key, Auto Increment)
      */
-    private Integer noticeAttId;
+    private Integer lhNoticeAttId;
 
     /**
      * 공고 ID (Foreign Key - LH_notice.pan_id 참조)

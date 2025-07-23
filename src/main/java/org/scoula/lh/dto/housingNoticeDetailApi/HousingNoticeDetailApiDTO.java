@@ -5,10 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.scoula.lh.domain.LhHousingVO;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 // 메인 응답 DTO
@@ -17,7 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class HousingNoticeDetailApiDTO {
-
     /**
      * 공급일정 정보
      * - 청약 접수 일정, 당첨자 발표일, 계약 기간 등 분양 관련 일정 정보
@@ -28,22 +24,6 @@ public class HousingNoticeDetailApiDTO {
      */
     @JsonProperty("dsSplScdl")
     private List<DsSplScdlDTO> dsSplScdl;
-
-    /**
-     * 단지 첨부파일명 헤더 정보
-     * - 첨부파일 테이블의 컬럼명 정보 (실제 데이터가 아닌 헤더)
-     * 예시: "단지명", "다운로드", "파일구분명", "첨부파일명"
-     */
-    @JsonProperty("dsSbdAhflNm")
-    private List<DsSbdAhflNmDTO> dsSbdAhflNm;
-
-    /**
-     * 단지명 헤더 정보
-     * - 단지 기본 정보 테이블의 컬럼명 정보 (실제 데이터가 아닌 헤더)
-     * 예시: "단지상세주소", "단지명", "교육환경", "전용면적", "총세대수" 등
-     */
-    @JsonProperty("dsSbdNm")
-    private List<DsSbdNmDTO> dsSbdNm;
 
     /**
      * 기타 정보
@@ -91,30 +71,6 @@ public class HousingNoticeDetailApiDTO {
     private List<DsSbdAhflDTO> dsSbdAhfl;
 
     /**
-     * 계약장소명 헤더 정보
-     * - 계약장소 관련 테이블의 컬럼명 정보 (실제 데이터가 아닌 헤더)
-     * 예시: "운영기간종료일시", "접수처소재지상세주소", "전화번호" 등
-     */
-    @JsonProperty("dsCtrtPlcNm")
-    private List<DsCtrtPlcNmDTO> dsCtrtPlcNm;
-
-    /**
-     * 기타정보명 헤더 정보
-     * - 기타정보 테이블의 컬럼명 정보 (실제 데이터가 아닌 헤더)
-     * 예시: "기타사항", "공고내용"
-     */
-    @JsonProperty("dsEtcInfoNm")
-    private List<DsEtcInfoNmDTO> dsEtcInfoNm;
-
-    /**
-     * 첨부파일정보명 헤더 정보
-     * - 첨부파일 테이블의 컬럼명 정보 (실제 데이터가 아닌 헤더)
-     * 예시: "다운로드", "파일구분명", "첨부파일명"
-     */
-    @JsonProperty("dsAhflInfoNm")
-    private List<DsAhflInfoNmDTO> dsAhflInfoNm;
-
-    /**
      * 계약장소 정보
      * - 주택전시관 위치, 운영시간, 연락처 등 실제 방문 관련 정보
      * 예시:
@@ -125,12 +81,4 @@ public class HousingNoticeDetailApiDTO {
      */
     @JsonProperty("dsCtrtPlc")
     private List<DsCtrtPlcDTO> dsCtrtPlc;
-
-    /**
-     * 공급일정명 헤더 정보
-     * - 공급일정 테이블의 컬럼명 정보 (실제 데이터가 아닌 헤더)
-     * 예시: "신청방법", "당첨자발표일자", "구분", "신청일시" 등
-     */
-    @JsonProperty("dsSplScdlNm")
-    private List<DsSplScdlNmDTO> dsSplScdlNm;
 }

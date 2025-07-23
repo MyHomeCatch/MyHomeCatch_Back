@@ -1,63 +1,106 @@
-package org.scoula.lh.dto.housingNoticeDetailApi;
+package org.scoula.lh.dto.rentalNoticeDetailApi;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.scoula.lh.domain.housing.LhHousingApplyVO;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.log4j.Log4j2;
+import org.scoula.lh.domain.rental.LhRentalApplyVO;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-// 공급일정 DTO
+/**
+ * 임대주택 공급일정 DTO
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DsSplScdlDTO {
-    @JsonProperty("RMK")
-    private String rmk;
+@Log4j2
+public class RentalDsSplScdlDTO {
 
+    /**
+     * 서류제출대상자발표일
+     * 예시: "2025.07.11"
+     */
+    @JsonProperty("PPR_SBM_OPE_ANC_DT")
+    private String pprSbmOpeAncDt;
+
+    /**
+     * 서류접수기간종료일
+     * 예시: "2025.07.16"
+     */
+    @JsonProperty("PPR_ACP_CLSG_DT")
+    private String pprAcpClsgDt;
+
+    /**
+     * 당첨자발표일
+     * 예시: "2025.09.22"
+     */
     @JsonProperty("PZWR_ANC_DT")
     private String pzwrAncDt;
 
+    /**
+     * 계약기간종료일
+     * 예시: "2025.10.15"
+     */
     @JsonProperty("CTRT_ED_DT")
     private String ctrtEdDt;
 
-    @JsonProperty("HS_SBSC_ACP_TRG_CD_NM")
-    private String hsSbscAcpTrgCdNm;
+    /**
+     * 단지명
+     * 예시: "고흥남계 국민임대"
+     */
+    @JsonProperty("SBD_LGO_NM")
+    private String sbdLgoNm;
 
-    @JsonProperty("ACP_DTTM")
-    private String acpDttm;
+    /**
+     * 접수기간시작일
+     * 예시: "2025.07.07"
+     */
+    @JsonProperty("SBSC_ACP_ST_DT")
+    private String sbscAcpStDt;
 
-    @JsonProperty("PZWR_PPR_SBM_ST_DT")
-    private String pzwrPprSbmStDt;
+    /**
+     * 접수기간종료일
+     * 예시: "2025.07.09"
+     */
+    @JsonProperty("SBSC_ACP_CLSG_DT")
+    private String sbscAcpClsgDt;
 
-    @JsonProperty("SPL_SCD_GUD_FCTS")
-    private String splScdGudFcts;
-
+    /**
+     * 계약기간시작일
+     * 예시: "2025.10.13"
+     */
     @JsonProperty("CTRT_ST_DT")
     private String ctrtStDt;
 
-    @JsonProperty("PZWR_PPR_SBM_ED_DT")
-    private String pzwrPprSbmEdDt;
+    /**
+     * 서류접수기간시작일
+     * 예시: "2025.07.11"
+     */
+    @JsonProperty("PPR_ACP_ST_DT")
+    private String pprAcpStDt;
 
     /**
-     * LhHousingApplyVO로 변환
+     * LhRentalApplyVO로 변환
      * @param panId 공고 ID
-     * @return LhHousingApplyVO 객체
+     * @return LhRentalApplyVO 객체
      */
-    public LhHousingApplyVO toVO(String panId) {
-        return LhHousingApplyVO.builder()
+    public LhRentalApplyVO toLhRentalApplyVO(String panId) {
+        return LhRentalApplyVO.builder()
                 .panId(panId)
-                .hsSbscAcpTrgCdNm(this.hsSbscAcpTrgCdNm)
-                .acpDttm(this.acpDttm)
-                .rmk(this.rmk)
+                .sbdLgoNm(this.sbdLgoNm)
+                .sbscAcpStDt(this.sbscAcpStDt)
+                .sbscAcpClsgDt(this.sbscAcpClsgDt)
+                .pprSbmOpeAncDt(this.pprSbmOpeAncDt)
+                .pprAcpStDt(parseDate(this.pprAcpStDt))
+                .pprAcpClsgDt(parseDate(this.pprAcpClsgDt))
                 .pzwrAncDt(parseDate(this.pzwrAncDt))
-                .pzwrPprSbmStDt(parseDate(this.pzwrPprSbmStDt))
-                .pzwrPprSbmEdDt(parseDate(this.pzwrPprSbmEdDt))
                 .ctrtStDt(parseDate(this.ctrtStDt))
                 .ctrtEdDt(parseDate(this.ctrtEdDt))
                 .build();

@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.scoula.lh.domain.LhHousingAttVO;
+import org.scoula.lh.domain.housing.LhHousingAttVO;
 
 // 단지첨부파일 DTO
 @Data

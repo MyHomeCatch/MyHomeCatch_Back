@@ -5,7 +5,7 @@
 
 <mapper namespace="org.scoula.lh.mapper.NoticeAttMapper">
     <insert id="create" parameterType="org.scoula.lh.domain.NoticeAttVO">
-        INSERT INTO notice_att (
+        INSERT INTO LH_notice_att (
             pan_id,
             sl_pan_ahfl_ds_cd_nm,
             cmn_ahfl_nm,
@@ -20,7 +20,7 @@
     </insert>
 
     <insert id="createAll" parameterType="java.util.List">
-        INSERT INTO notice_att (
+        INSERT INTO LH_notice_att (
         pan_id,
         sl_pan_ahfl_ds_cd_nm,
         cmn_ahfl_nm,
@@ -39,13 +39,13 @@
 
     <select id="getNoticeAttByPanId" parameterType="string" resultType="org.scoula.lh.domain.NoticeAttVO">
         SELECT
-            notice_att_id,
+            lh_notice_att_id,
             pan_id,
             sl_pan_ahfl_ds_cd_nm,
             cmn_ahfl_nm,
             ahfl_url
-        FROM notice_att
+        FROM LH_notice_att
         WHERE pan_id = #{panId}
-        ORDER BY notice_att_id
+        ORDER BY lh_notice_att_id
     </select>
 </mapper>
