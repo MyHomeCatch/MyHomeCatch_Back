@@ -15,6 +15,7 @@ build/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+src/main/resources/.env
 
 ### Eclipse ###
 .apt_generated
@@ -502,3 +503,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# secrets.properties (구글 로그인: 구글 클라이언트 정보)
+src/main/resources/secrets.properties
