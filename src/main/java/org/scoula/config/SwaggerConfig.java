@@ -14,9 +14,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
-    private final String API_NAME = "Board API";
+
+    private final String API_NAME = "청약 API";
     private final String API_VERSION = "1.0";
-    private final String API_DESCRIPTION = "Board API 명세서";
+    private final String API_DESCRIPTION = "MyHomeCatch API 명세서";
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
@@ -25,6 +26,7 @@ public class SwaggerConfig {
                 .version(API_VERSION)
                 .build();
     }
+
 
     @Bean
     public Docket api() {
@@ -35,4 +37,5 @@ public class SwaggerConfig {
                 .build()
                 .apiInfo(apiInfo());
     }
+
 }
