@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class CHOfficetelModelVO {
 
-    private int id;
+    private int modelUid;
 
     private String excluseAr;
 

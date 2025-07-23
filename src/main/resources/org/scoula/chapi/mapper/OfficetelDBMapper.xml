@@ -33,7 +33,7 @@
     </resultMap>
 
     <resultMap id="OfficetelModel" type="org.scoula.chapi.domain.CHOfficetelModelVO">
-        <id property="id" column="ID"/>
+        <id property="modelUid" column="MODEL_UID"/>
         <result property="excluseAr" column="EXCLUSE_AR"/>
         <result property="gp" column="GP"/>
         <result property="houseManageNo" column="HOUSE_MANAGE_NO"/>
@@ -46,7 +46,7 @@
     </resultMap>
 
     <resultMap id="OfficetelCmpet" type="org.scoula.chapi.domain.CHOfficetelCmpetVO">
-        <id property="cmpetId" column="CMPET_ID"/>
+        <id property="cmpetUid" column="CMPET_UID"/>
         <result property="cmpetRate" column="CMPET_RATE"/>
         <result property="houseManageNo" column="HOUSE_MANAGE_NO"/>
         <result property="houseTy" column="HOUSE_TY"/>
@@ -230,7 +230,7 @@
             O.TOT_SUPLY_HSHLDCO AS O_TOT_SUPLY_HSHLDCO,
 
             -- Officetel model info (aliased with M_)
-            M.ID AS M_ID,
+            M.MODEL_UID AS M_MODEL_UID,
             M.EXCLUSE_AR AS M_EXCLUSE_AR,
             M.GP AS M_GP,
             M.HOUSE_MANAGE_NO AS M_HOUSE_MANAGE_NO,
@@ -242,7 +242,7 @@
             M.TP AS M_TP,
 
             -- Officetel competition info (aliased with C_)
-            C.CMPET_ID AS C_CMPET_ID,
+            C.CMPET_UID AS C_CMPET_UID,
             C.CMPET_RATE AS C_CMPET_RATE,
             C.HOUSE_MANAGE_NO AS C_HOUSE_MANAGE_NO,
             C.HOUSE_TY AS C_HOUSE_TY,
