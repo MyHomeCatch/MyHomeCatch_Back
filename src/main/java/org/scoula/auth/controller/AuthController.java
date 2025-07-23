@@ -125,7 +125,7 @@ public class AuthController {
     @PostMapping("/password/reset")
     @ResponseBody
     public ResponseEntity<?> resetPassword(@RequestBody PasswordResetRequestDto dto) {
-        boolean result = authService.resetPassword(dto.getToken(), dto.getNewPassword());
+        boolean result = authService.resetPassword(dto.getEmail(), dto.getNewPassword());
         if (result) {
             return ResponseEntity.ok(Map.of("success", true, "message", "비밀번호가 성공적으로 변경되었습니다."));
         } else {
