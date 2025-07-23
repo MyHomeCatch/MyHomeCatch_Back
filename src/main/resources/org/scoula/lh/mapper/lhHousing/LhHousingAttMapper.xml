@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.scoula.lh.mapper.lhHousing.LhHousingAttMapper">
+
+    <select id="getByPanId" parameterType="string" resultType="org.scoula.lh.domain.housing.LhHousingAttVO">
+        SELECT
+            *
+        FROM LH_housing_att
+        WHERE pan_id = #{panId}
+        ORDER BY lh_housing_att_id
+    </select>
+
+    <select id="getById" parameterType="int" resultType="org.scoula.lh.domain.housing.LhHousingAttVO">
+        SELECT
+            *
+        FROM LH_housing_att
+        WHERE lh_housing_att_id = #{id}
+    </select>
+
+    <select id="getByBzdtNm" resultType="org.scoula.lh.domain.housing.LhHousingAttVO">
+        SELECT
+            *
+        FROM LH_housing_att
+        WHERE bzdt_nm = #{bzdtNm}
+    </select>
+
+    <insert id="create" parameterType="org.scoula.lh.domain.housing.LhHousingAttVO">
+        INSERT INTO LH_housing_att (
+            pan_id,
+            bzdt_nm,
+            sl_pan_ahfl_ds_cd_nm,
+            cmn_ahfl_nm,
+            ahfl_url
+        )
+        VALUES (
+                   #{panId},
+                   #{bzdtNm},
+                   #{slPanAhflDsCdNm},
+                   #{cmnAhflNm},
+                   #{ahflUrl}
+               )
+    </insert>
+
+    <insert id="createAll" parameterType="java.util.List">
+        INSERT INTO LH_housing_att (
+        pan_id,
+        bzdt_nm,
+        sl_pan_ahfl_ds_cd_nm,
+        cmn_ahfl_nm,
+        ahfl_url
+        )
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.panId},
+            #{item.bzdtNm},
+            #{item.slPanAhflDsCdNm},
+            #{item.cmnAhflNm},
+            #{item.ahflUrl}
+            )
+        </foreach>
+    </insert>
+
+</mapper>
