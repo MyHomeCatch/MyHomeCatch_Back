@@ -2,7 +2,12 @@ package org.scoula.applyHome.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.scoula.applyHome.domain.ApplyHomeAnalysisVO;
+import org.scoula.applyHome.domain.ApplyHomeSpecialVO;
+import org.scoula.applyHome.domain.ApplyHomeVO;
+import org.scoula.applyHome.dto.ApplyHomeAnalysisDTO;
 import org.scoula.applyHome.dto.ApplyHomeDTO;
+import org.scoula.applyHome.dto.ApplyHomeSpecialDTO;
 import org.scoula.applyHome.mapper.ApplyHomeMapper;
 import org.springframework.stereotype.Service;
 
@@ -19,20 +24,21 @@ public class ApplyHomeServiceImpl implements ApplyHomeService {
 
     @Override
     public int create(ApplyHomeDTO dto) {
-        int row = mapper.create(dto);
-        return row;
+        ApplyHomeVO vo = dto.toVO();
+        return mapper.create(vo);
     }
 
     @Override
-    public ApplyHomeDTO getApplyHome(String NOTICE_ID) {
-        log.info("get ApplyHomeDTO....");
-        ApplyHomeDTO applyhome = ApplyHomeDTO.of(mapper.get(NOTICE_ID));
-        return Optional.ofNullable(applyhome).orElseThrow(NoSuchElementException::new);
+    public int createAnalysis(ApplyHomeAnalysisDTO dto){
+        ApplyHomeAnalysisVO vo = ApplyHomeAnalysisDTO.toVO(dto);
+        return mapper.createAnalysis(vo);
     }
 
     @Override
-    public List<ApplyHomeDTO> getApplyHomeList() {
-        log.info("get ApplyHome List....");
-        return mapper.getList().stream().map(ApplyHomeDTO::of).toList();
+    public int createSpecial(ApplyHomeSpecialDTO dto){
+        ApplyHomeSpecialVO vo = ApplyHomeSpecialDTO.toVO(dto);
+        return mapper.createSpecial(vo);
     }
+
+
 }
