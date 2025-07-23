@@ -78,11 +78,6 @@ public class AuthController {
         return ResponseEntity.ok(Map.of("available", !exists));
     }
 
-//    @PostMapping("/login")
-//    public AuthResponse login(@RequestBody LoginRequest request) {
-//        return authServiceImpl.login(request);
-//    }
-
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, BindingResult result) {
         if (result.hasErrors()) {
@@ -95,11 +90,6 @@ public class AuthController {
 
         return ResponseEntity.ok(authService.login(request));
     }
-
-//    @PostMapping("/signup")
-//    public AuthResponse signup(@RequestBody SignupRequest request) {
-//        return authServiceImpl.signup(request);
-//    }
 
     @PostMapping(value = "/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request, BindingResult result) {
@@ -130,6 +120,17 @@ public class AuthController {
 
         authService.deleteByEmail(email);
         return ResponseEntity.ok(Map.of("message", "회원 탈퇴 완료"));
+    }
+
+    @PostMapping("/password/reset")
+    @ResponseBody
+    public ResponseEntity<?> resetPassword(@RequestBody PasswordResetRequestDto dto) {
+        boolean result = authService.resetPassword(dto.getToken(), dto.getNewPassword());
+        if (result) {
+            return ResponseEntity.ok(Map.of("success", true, "message", "비밀번호가 성공적으로 변경되었습니다."));
+        } else {
+            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "해당 이메일을 가진 사용자를 찾을 수 없습니다."));
+        }
     }
 
     private String extractToken(HttpServletRequest request) {
