@@ -4,6 +4,6 @@ import javax.mail.internet.MimeMessage;
 
 public interface MailService {
 
-    public MimeMessage CreateMail(String mail);
+    public MimeMessage createMail(String mail);
     public int sendMail(String mail);
 }

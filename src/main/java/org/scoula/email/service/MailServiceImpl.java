@@ -26,7 +26,7 @@ public class MailServiceImpl implements MailService {
     }
 
     @Override
-    public MimeMessage CreateMail(String mail) {
+    public MimeMessage createMail(String mail) {
         createNumber();
         MimeMessage message = javaMailSender.createMimeMessage();
 
@@ -51,7 +51,7 @@ public class MailServiceImpl implements MailService {
 
     @Override
     public int sendMail(String mail) {
-        MimeMessage message = CreateMail(mail);
+        MimeMessage message = createMail(mail);
         javaMailSender.send(message);
 
         return number;
