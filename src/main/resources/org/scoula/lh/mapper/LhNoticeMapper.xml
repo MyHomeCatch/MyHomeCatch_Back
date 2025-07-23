@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.scoula.lh.mapper.LhNoticeMapper">
+
+    <insert id="create">
+        INSERT INTO LH_notice
+        (pan_id,
+         upp_ais_tp_cd,
+         ais_tp_cd_nm,
+         pan_nm,
+         cnp_cd_nm,
+         pan_ss,
+         all_cnt,
+         dtl_url,
+         spl_inf_tp_cd,
+         ccr_cnnt_sys_ds_cd,
+         ais_tp_cd)
+        VALUES (#{panId},
+                #{uppAisTpCd},
+                #{aisTpCdNm},
+                #{panNm},
+                #{cnpCdNm},
+                #{panSs},
+                #{allCnt},
+                #{dtlUrl},
+                #{splInfTpCd},
+                #{ccrCnntSysDsCd},
+                #{aisTpCd})
+        ON DUPLICATE KEY UPDATE upp_ais_tp_cd      = VALUES(upp_ais_tp_cd),
+                                ais_tp_cd_nm       = VALUES(ais_tp_cd_nm),
+                                pan_nm             = VALUES(pan_nm),
+                                cnp_cd_nm          = VALUES(cnp_cd_nm),
+                                pan_ss             = VALUES(pan_ss),
+                                all_cnt            = VALUES(all_cnt),
+                                dtl_url            = VALUES(dtl_url),
+                                spl_inf_tp_cd      = VALUES(spl_inf_tp_cd),
+                                ccr_cnnt_sys_ds_cd = VALUES(ccr_cnnt_sys_ds_cd),
+                                ais_tp_cd          = VALUES(ais_tp_cd);
+    </insert>
+
+    <insert id="createAll" parameterType="java.util.List">
+        INSERT INTO LH_notice (
+        pan_id,
+        upp_ais_tp_cd,
+        ais_tp_cd_nm,
+        pan_nm,
+        cnp_cd_nm,
+        pan_ss,
+        all_cnt,
+        dtl_url,
+        spl_inf_tp_cd,
+        ccr_cnnt_sys_ds_cd,
+        ais_tp_cd
+        )
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.panId},
+            #{item.uppAisTpCd},
+            #{item.aisTpCdNm},
+            #{item.panNm},
+            #{item.cnpCdNm},
+            #{item.panSs},
+            #{item.allCnt},
+            #{item.dtlUrl},
+            #{item.splInfTpCd},
+            #{item.ccrCnntSysDsCd},
+            #{item.aisTpCd}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        upp_ais_tp_cd = VALUES(upp_ais_tp_cd),
+        ais_tp_cd_nm = VALUES(ais_tp_cd_nm),
+        pan_nm = VALUES(pan_nm),
+        cnp_cd_nm = VALUES(cnp_cd_nm),
+        pan_ss = VALUES(pan_ss),
+        all_cnt = VALUES(all_cnt),
+        dtl_url = VALUES(dtl_url),
+        spl_inf_tp_cd = VALUES(spl_inf_tp_cd),
+        ccr_cnnt_sys_ds_cd = VALUES(ccr_cnnt_sys_ds_cd),
+        ais_tp_cd = VALUES(ais_tp_cd);
+    </insert>
+
+    <select id="getLhNotice" resultType="org.scoula.lh.domain.LhNoticeVO">
+        SELECT * FROM LH_notice WHERE pan_id = #{pandId}
+    </select>
+    <select id="getLhNotices" resultType="org.scoula.lh.domain.LhNoticeVO">
+        SELECT * FROM LH_notice
+    </select>
+</mapper>

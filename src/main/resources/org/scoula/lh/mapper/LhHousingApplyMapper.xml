@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.scoula.lh.mapper.LhHousingApplyMapper">
+    <select id="getByPanId" parameterType="string" resultType="org.scoula.lh.domain.LhHousingApplyVO">
+        SELECT
+            lh_housing_id,
+            pan_id,
+            hs_sbsc_acp_trg_cd_nm,
+            acp_dttm,
+            rmk,
+            pzwr_anc_dt,
+            pzwr_ppr_sbm_st_dt,
+            pzwr_ppr_sbm_ed_dt,
+            ctrt_st_dt,
+            ctrt_ed_dt
+        FROM LH_housing_apply
+        WHERE pan_id = #{panId}
+        ORDER BY lh_housing_id
+    </select>
+
+    <insert id="create" parameterType="org.scoula.lh.domain.LhHousingApplyVO">
+        INSERT INTO LH_housing_apply (
+            pan_id,
+            hs_sbsc_acp_trg_cd_nm,
+            acp_dttm,
+            rmk,
+            pzwr_anc_dt,
+            pzwr_ppr_sbm_st_dt,
+            pzwr_ppr_sbm_ed_dt,
+            ctrt_st_dt,
+            ctrt_ed_dt
+        )
+        VALUES (
+                   #{panId},
+                   #{hsSbscAcpTrgCdNm},
+                   #{acpDttm},
+                   #{rmk},
+                   #{pzwrAncDt},
+                   #{pzwrPprSbmStDt},
+                   #{pzwrPprSbmEdDt},
+                   #{ctrtStDt},
+                   #{ctrtEdDt}
+               )
+    </insert>
+
+    <insert id="createAll" parameterType="java.util.List">
+        INSERT INTO LH_housing_apply (
+        pan_id,
+        hs_sbsc_acp_trg_cd_nm,
+        acp_dttm,
+        rmk,
+        pzwr_anc_dt,
+        pzwr_ppr_sbm_st_dt,
+        pzwr_ppr_sbm_ed_dt,
+        ctrt_st_dt,
+        ctrt_ed_dt
+        )
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.panId},
+            #{item.hsSbscAcpTrgCdNm},
+            #{item.acpDttm},
+            #{item.rmk},
+            #{item.pzwrAncDt},
+            #{item.pzwrPprSbmStDt},
+            #{item.pzwrPprSbmEdDt},
+            #{item.ctrtStDt},
+            #{item.ctrtEdDt}
+            )
+        </foreach>
+    </insert>
+
+</mapper>
