@@ -8,7 +8,6 @@
         select * from applicant_region where regionId = #{regionId} and stat_de = #{date}
     </select>
 
-
     <select id="getWinner" resultMap="winnerResultMap">
         select * from winner_region where regionId = #{regionId} and stat_de = #{date}
     </select>
@@ -34,6 +33,28 @@
             (#{item.regionId}, #{item.statDe}, #{item.age30Win}, #{item.age40Win}, #{item.age50Win}, #{item.age60Win})
         </foreach>
     </insert>
+
+    <select id="getAPTList" resultType="org.scoula.statics.domain.HousingInfoVO">
+        select PBLANC_NO, HOUSE_NM, RCEPT_ENDDE, SUBSCRPT_AREA_CODE_NM from APPLYHOME_APT
+        where <!-- 지역, 오늘 날짜 이후 종료일, 1/2순위-->
+    </select>
+
+    <select id="getOfficetelList" resultType="org.scoula.statics.domain.HousingInfoVO">
+        select PBLANC_NO, HOUSE_NM, SUBSCRPT_RCEPT_ENDDE, SUBSCRPT_AREA_CODE_NM from APPLYHOME_officetel
+        where <!-- 지역, 오늘 날짜 이후 종료일, 1/2순위 / resultMap 사용-->
+    </select>
+
+    <select id="getAPTCmpet" resultType="org.scoula.statics.domain.CompetitionRateVO">
+        select PBLANC_NO, CMPET_RATE, SUPLY_HSHLDCO, REQ_CNT, HOUSE_TY, SUBSCRPT_RANK_CODE, RESIDE_SENM
+        from APPLYHOME_APT_competition
+        where <!-- 공고번호, 거주지역, 순위-->
+    </select>
+
+    <select id="getOfficetelCmpet" resultType="org.scoula.statics.domain.CompetitionRateVO">
+        select PPBLANC_NO, CMPET_RATE, SUPLY_HSHLDCO, REQ_CNT, HOUSE_TY from APPLYHOME_officetel_cmpet
+        where <!-- 공고번호 -->
+    </select>
+
 
     <resultMap id="applicantResultMap" type="org.scoula.statics.domain.ApplicantRegionVO">
         <id property="id" column="id" />
