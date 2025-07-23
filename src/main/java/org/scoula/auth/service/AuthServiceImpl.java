@@ -108,14 +108,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public boolean resetPassword(String token, String newPassword) {
-        if(!jwtUtil.isValidToken(token)) {
+    public boolean resetPassword(String email, String newPassword) {
+        // 1. 이메일 존재 확인
+        if (!emailExists(email)) {
             return false;
         }
 
-        String email = jwtUtil.extractEmail(token);
+        // 2. 비밀번호 암호화 후 업데이트
         String hashedPassword = passwordEncoder.encode(newPassword);
-
         authMapper.updatePasswordByEmail(email, hashedPassword);
         return true;
     }
