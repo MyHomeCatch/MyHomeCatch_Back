@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 // 청약 가점 통계 조회 요청
-// 예시 : http://localhost:8080/api/winner-stats/region-score?region=(지역 번호)
+// 예시 : http://localhost:8080/winner-stats/region-score?region=(지역 번호)
 // 지역번호 : 100, 200 등
 public class ScoreWinnerDTO {
     @JsonProperty("STAT_DE")
