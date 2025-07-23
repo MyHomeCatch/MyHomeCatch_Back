@@ -12,7 +12,7 @@ import org.scoula.chapi.domain.CHOfficetelModelVO;
 @Data
 @Builder
 public class CHOfficetelModelDTO {
-	private int id;
+	private int modelUid;
 
 	@JsonProperty("EXCLUSE_AR")
 	private String excluseAr;
@@ -43,7 +43,7 @@ public class CHOfficetelModelDTO {
 
 	public static CHOfficetelModelDTO of(CHOfficetelModelVO vo) {
 		return CHOfficetelModelDTO.builder()
-				.id(vo.getId())
+				.modelUid(vo.getModelUid())
 				.excluseAr(vo.getExcluseAr())
 				.gp(vo.getGp())
 				.houseManageNo(vo.getHouseManageNo())
@@ -58,7 +58,7 @@ public class CHOfficetelModelDTO {
 
 	public CHOfficetelModelVO toVO() {
 		return CHOfficetelModelVO.builder()
-				.id(this.id)
+				.modelUid(this.modelUid)
 				.excluseAr(this.excluseAr)
 				.gp(this.gp)
 				.houseManageNo(this.houseManageNo)
