@@ -14,6 +14,8 @@ public interface AuthService {
 
     void deleteByEmail(String email);
 
+    boolean resetPassword(String token, String newPassword);
+
     KakaoLoginInfoDto kakaoLogin(String code);
 
     ResponseEntity<?> googleSignupOrLogin(String code);

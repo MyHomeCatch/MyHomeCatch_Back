@@ -107,6 +107,18 @@ public class AuthServiceImpl implements AuthService {
         authMapper.deleteByEmail(email);
     }
 
+    @Override
+    public boolean resetPassword(String token, String newPassword) {
+        if(!jwtUtil.isValidToken(token)) {
+            return false;
+        }
+
+        String email = jwtUtil.extractEmail(token);
+        String hashedPassword = passwordEncoder.encode(newPassword);
+
+        authMapper.updatePasswordByEmail(email, hashedPassword);
+        return true;
+    }
 
     public KakaoLoginInfoDto kakaoLogin(String code) {
         String url = "https://kauth.kakao.com/oauth/token";

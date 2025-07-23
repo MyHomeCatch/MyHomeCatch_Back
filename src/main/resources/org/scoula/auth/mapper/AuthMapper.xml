@@ -25,4 +25,9 @@
         DELETE FROM users WHERE email = #{email}
     </delete>
 
+    <update id="updatePasswordByEmail">
+        UPDATE users
+        SET password = #{password}
+        WHERE email = #{email}
+    </update>
 </mapper>
