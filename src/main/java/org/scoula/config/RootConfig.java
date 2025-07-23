@@ -16,16 +16,25 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.web.client.RestTemplate;
+
+
 import javax.sql.DataSource;
+import java.util.Properties;
 
 @Configuration
-@PropertySource("classpath:application.properties")
+
 @EnableScheduling
-@MapperScan(basePackages = {"org.scoula.applyHome.mapper"})
 @ComponentScan(basePackages = {
         "org.scoula.applyHome.service",
         "org.scoula.applyHome.scheduler"})
 @Log4j2
+@MapperScan(basePackages = {"org.scoula.lh.mapper"})
+@EnableScheduling
+@PropertySource({"classpath:application.properties", "classpath:secrets.properties"})
+@MapperScan(basePackages={"org.scoula"})
 public class RootConfig {
     @Value("${driver}")
     String driver;
@@ -35,6 +44,17 @@ public class RootConfig {
     String username;
     @Value("${spring.datasource.password}")
     String password;
+
+
+    @Value("${spring.mail.host}")
+    private String host;
+
+    @Value("${spring.mail.username}")
+    private String emailUsername;
+
+    @Value("${spring.mail.password}")
+    private String emailPassword;
+
 
     @Bean
     public DataSource dataSource() {
@@ -66,10 +86,39 @@ public class RootConfig {
     }
 
     @Bean
-    public DataSourceTransactionManager transactionManager(DataSource dataSource) {
-        return new DataSourceTransactionManager(dataSource);
+
+    public DataSourceTransactionManager transactionManager() {
+        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
+        transactionManager.setDataSource(dataSource());
+        return transactionManager;
     }
 
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+
+    @Bean
+    public JavaMailSender javaMailSender() {
+
+
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost(host);
+        mailSender.setPort(587);
+
+        mailSender.setUsername(emailUsername);
+        mailSender.setPassword(emailPassword);
+
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+        props.put("mail.debug", "true");
+
+        return mailSender;
+    }
 }
 
 
