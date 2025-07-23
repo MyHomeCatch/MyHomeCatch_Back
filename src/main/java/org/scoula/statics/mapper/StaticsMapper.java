@@ -3,6 +3,7 @@ package org.scoula.statics.mapper;
 import org.apache.ibatis.annotations.Param;
 import org.scoula.statics.domain.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface StaticsMapper {
@@ -16,11 +17,11 @@ public interface StaticsMapper {
     ApplicantRegionVO getApplicant(@Param("regionId") long regionId, @Param("date") String date);
     // 2. 지역 연령대별 당첨 정보 조회
     WinnerRegionVO getWinner(@Param("regionId") long regionId, @Param("date") String date);
-    // 지역 공고 조회(모집 중 공고만)
-    List<HousingInfoVO> getAPTList();
-    List<HousingInfoVO> getOfficetelList();
-    // 공고 경쟁률 조회
-    CompetitionRateVO getAPTCmpet();
-    CompetitionRateVO getOfficetelCmpet();
+    // 지역 공고 조회(모집 중 공고만) (파라미터: 지역, 오늘 날짜)
+    List<HousingInfoVO> getAPTList(@Param("region") String region, @Param("date") String date);
+    List<HousingInfoVO> getOfficetelList(@Param("region") String region, @Param("date") String date);
+    // 공고 경쟁률 조회 (파라미터: 공고번호, | 거주지역(현재, 기타), 순위(아파트만))
+    CompetitionRateVO getAPTCmpet(@Param("no") String no, @Param("reside") String reside, @Param("rank") int rank);
+    CompetitionRateVO getOfficetelCmpet(@Param("no") String no);
 
 }
