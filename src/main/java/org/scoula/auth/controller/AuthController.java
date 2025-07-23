@@ -66,18 +66,37 @@ public class AuthController {
     private final String TOKEN_URI = "https://oauth2.googleapis.com/token";
     private final String USERINFO_URI = "https://www.googleapis.com/oauth2/v2/userinfo";
 
+
+    @ApiOperation(value = "이메일 중복 체크", notes = "이메일 중복 여부를 체크합니다")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "성공적으로 요청이 처리되었습니다.", response = AuthResponse.class),
+            @ApiResponse(code = 401, message = "잘못된 요청입니다."),
+            @ApiResponse(code = 500, message = "서버에서 오류가 발생했습니다.")
+    })
     @GetMapping("/check-email")
     public ResponseEntity<?> checkEmail(@RequestParam String email) {
         boolean exists = authService.emailExists(email);
         return ResponseEntity.ok(Map.of("available", !exists));
     }
 
+    @ApiOperation(value = "닉네임 중복 체크", notes = "닉네임 중복 여부를 체크합니다")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "성공적으로 요청이 처리되었습니다.", response = AuthResponse.class),
+            @ApiResponse(code = 401, message = "잘못된 요청입니다."),
+            @ApiResponse(code = 500, message = "서버에서 오류가 발생했습니다.")
+    })
     @GetMapping("/check-nickname")
     public ResponseEntity<?> checkNickname(@RequestParam String nickname) {
         boolean exists = authService.nicknameExists(nickname);
         return ResponseEntity.ok(Map.of("available", !exists));
     }
 
+    @ApiOperation(value = "일반 로그인", notes = "일반 계정으로 로그인을 진행합니다")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "성공적으로 요청이 처리되었습니다.", response = AuthResponse.class),
+            @ApiResponse(code = 401, message = "잘못된 요청입니다."),
+            @ApiResponse(code = 500, message = "서버에서 오류가 발생했습니다.")
+    })
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, BindingResult result) {
         if (result.hasErrors()) {
@@ -91,6 +110,12 @@ public class AuthController {
         return ResponseEntity.ok(authService.login(request));
     }
 
+    @ApiOperation(value = "일반 회원가입", notes = "입력한 정보로 회원가입을 진행합니다")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "성공적으로 요청이 처리되었습니다.", response = AuthResponse.class),
+            @ApiResponse(code = 401, message = "잘못된 요청입니다."),
+            @ApiResponse(code = 500, message = "서버에서 오류가 발생했습니다.")
+    })
     @PostMapping(value = "/signup")
     public ResponseEntity<?> signup(@Valid @RequestBody SignupRequest request, BindingResult result) {
         if (result.hasErrors()) {
@@ -109,6 +134,12 @@ public class AuthController {
     }
 
 
+    @ApiOperation(value = "회원탈퇴", notes = "회원탈퇴를 진행합니다")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "성공적으로 요청이 처리되었습니다.", response = AuthResponse.class),
+            @ApiResponse(code = 401, message = "잘못된 요청입니다."),
+            @ApiResponse(code = 500, message = "서버에서 오류가 발생했습니다.")
+    })
     @DeleteMapping("/withdraw")
     public ResponseEntity<?> withdraw(HttpServletRequest request) {
         String token = extractToken(request);
@@ -122,6 +153,12 @@ public class AuthController {
         return ResponseEntity.ok(Map.of("message", "회원 탈퇴 완료"));
     }
 
+    @ApiOperation(value = "비밀번호 변경", notes = "해당 이메일의 비밀번호를 변경합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "성공적으로 요청이 처리되었습니다.", response = AuthResponse.class),
+            @ApiResponse(code = 401, message = "잘못된 요청입니다."),
+            @ApiResponse(code = 500, message = "서버에서 오류가 발생했습니다.")
+    })
     @PostMapping("/password/reset")
     @ResponseBody
     public ResponseEntity<?> resetPassword(@RequestBody PasswordResetRequestDto dto) {
