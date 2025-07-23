@@ -2,6 +2,7 @@ package org.scoula.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -14,8 +15,10 @@ import org.springframework.web.servlet.view.JstlView;
 @EnableWebMvc
 @ComponentScan(basePackages = {
         "org.scoula.exception",
-        "org.scoula.controller"
-}) // Spring MVC용 컴포넌트 등록을 위한 스캔 패키지
+        "org.scoula.controller",
+        "org.scoula.lh",
+})
+@EnableScheduling
 public class ServletConfig implements WebMvcConfigurer {
 
     @Override
