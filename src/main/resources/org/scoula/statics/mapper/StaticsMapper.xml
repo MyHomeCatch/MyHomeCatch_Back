@@ -4,6 +4,78 @@
 
 <mapper namespace="org.scoula.statics.mapper.StaticsMapper">
 
+    <select id="getApplicant" resultMap="applicantResultMap">
+        select * from applicant_region where regionId = #{regionId} and stat_de = #{date}
+    </select>
+
+    <select id="getWinner" resultMap="winnerResultMap">
+        select * from winner_region where regionId = #{regionId} and stat_de = #{date}
+    </select>
+
+    <select id="getRegionId" resultType="Integer">
+        select id from region where name = #{region}
+    </select>
+
+    <insert id="insertApplicantList" parameterType="org.scoula.statics.domain.ApplicantRegionVO"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into applicant_region(regionId, stat_de, age_30, age_40, age_50, age_60)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.regionId}, #{item.statDe}, #{item.age30}, #{item.age40}, #{item.age50}, #{item.age60})
+        </foreach>
+    </insert>
+
+    <insert id="insertWinnerList" parameterType="org.scoula.statics.domain.WinnerRegionVO"
+            useGeneratedKeys="true" keyProperty="id">
+        insert into winner_region(regionId, stat_de, age_30_win, age_40_win, age_50_win, age_60_win)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.regionId}, #{item.statDe}, #{item.age30Win}, #{item.age40Win}, #{item.age50Win}, #{item.age60Win})
+        </foreach>
+    </insert>
+
+    <select id="getAPTList" resultType="org.scoula.statics.domain.HousingInfoVO">
+        select PBLANC_NO, HOUSE_NM, RCEPT_ENDDE, SUBSCRPT_AREA_CODE_NM from APPLYHOME_APT
+        where SUBSCRPT_AREA_CODE_NM = #{region} and RCEPT_ENDDE >= #{date} <!-- 지역, 오늘 날짜 이후 종료일, 1/2순위-->
+    </select>
+
+    <select id="getOfficetelList" resultType="org.scoula.statics.domain.HousingInfoVO">
+        select PBLANC_NO, HOUSE_NM, SUBSCRPT_RCEPT_ENDDE, SUBSCRPT_AREA_CODE_NM from APPLYHOME_officetel
+        where SUBSCRPT_AREA_CODE_NM = #{region} and SUBSCRPT_RCEPT_ENDDE >= #{date} <!-- 지역, 오늘 날짜 이후 종료일, 1/2순위 / resultMap 사용-->
+    </select>
+
+    <select id="getAPTCmpet" resultType="org.scoula.statics.domain.CompetitionRateVO">
+        select PBLANC_NO, CMPET_RATE, SUPLY_HSHLDCO, REQ_CNT, HOUSE_TY, SUBSCRPT_RANK_CODE, RESIDE_SENM
+        from APPLYHOME_APT_competition
+        where PBLANC_NO = #{no} and RESIDE_SENM = {reside} and SUBSCRPT_RANK_CODE = #{rank}<!-- 공고번호, 거주지역, 순위-->
+    </select>
+
+    <select id="getOfficetelCmpet" resultType="org.scoula.statics.domain.CompetitionRateVO">
+        select PPBLANC_NO, CMPET_RATE, SUPLY_HSHLDCO, REQ_CNT, HOUSE_TY from APPLYHOME_officetel_cmpet
+        where PBLANC_NO = #{no}<!-- 공고번호 -->
+    </select>
+
+
+    <resultMap id="applicantResultMap" type="org.scoula.statics.domain.ApplicantRegionVO">
+        <id property="id" column="id" />
+        <result property="regionId" column="regionId" />
+        <result property="statDe" column="stat_de" />
+        <result property="age30" column="age_30" />
+        <result property="age40" column="age_40" />
+        <result property="age50" column="age_50" />
+        <result property="age60" column="age_60" />
+    </resultMap>
+
+    <resultMap id="winnerResultMap" type="org.scoula.statics.domain.WinnerRegionVO">
+        <id property="id" column="id" />
+        <result property="regionId" column="regionId" />
+        <result property="statDe" column="stat_de" />
+        <result property="age30Win" column="age_30_win" />
+        <result property="age40Win" column="age_40_win" />
+        <result property="age50Win" column="age_50_win" />
+        <result property="age60Win" column="age_60_win" />
+    </resultMap>
+
     <!-- 1. 지역별 청약 가점제 정보 조회 -->
     <select id="getScoreWinnersByRegion" parameterType="string" resultType="org.scoula.statics.dto.ScoreWinnerDTO">
         SELECT

@@ -15,6 +15,14 @@ build/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+src/main/resources/.env
+
+# 파일
+application.properties
+
+# 잘못올라간 커밋 관리용
+MyHomeCatch_Back.git.bfg-report/
+MyHomeCatch_Back.git/
 
 ### Eclipse ###
 .apt_generated
@@ -502,3 +510,6 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# secrets.properties (구글 로그인: 구글 클라이언트 정보)
+src/main/resources/secrets.properties

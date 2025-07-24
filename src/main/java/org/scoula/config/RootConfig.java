@@ -2,6 +2,7 @@ package org.scoula.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.extern.log4j.Log4j2;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -15,18 +16,49 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
 import javax.sql.DataSource;
+import java.util.Properties;
 
 @Configuration
-@PropertySource("classpath:application.properties")
-@MapperScan(basePackages = {"org.scoula.statics.mapper"})
-@ComponentScan(basePackages={"org.scoula.config", "org.scoula.statics.service"})
+@Log4j2
 @EnableTransactionManagement
+@EnableScheduling
+@PropertySource({"classpath:application.properties", "classpath:secrets.properties"})
+@MapperScan(basePackages = {"org.scoula.**.mapper"})
+@ComponentScan(basePackages = {
+        "org.scoula.config",              // winner-stats
+        "org.scoula.statics.service",     // winner-stats
+        "org.scoula.applyHome",           // develop
+        "org.scoula.chapi",               // develop
+        "org.scoula.lh"                   // develop
+})
 public class RootConfig {
-    @Value("${jdbc.driver}") String driver;
-    @Value("${jdbc.url}") String url;
-    @Value("${jdbc.username}") String username;
-    @Value("${jdbc.password}") String password;
+    @Value("${jdbc.driver}")
+    String driver;
+    @Value("${jdbc.url}")
+    String url;
+    @Value("${jdbc.username}")
+    String username;
+    @Value("${jdbc.password}")
+    String password;
+
+
+    @Value("${spring.mail.host}")
+    private String host;
+
+    @Value("${spring.mail.username}")
+    private String emailUsername;
+
+    @Value("${spring.mail.password}")
+    private String emailPassword;
+
 
     @Bean
     public DataSource dataSource() {
@@ -44,8 +76,6 @@ public class RootConfig {
     @Autowired
     ApplicationContext applicationContext;
 
-
-
     // MyBatis용 SqlSessionFactory를 생성하는 빈 등록 메서드
     @Bean
     public SqlSessionFactory sqlSessionFactory() throws Exception {
@@ -60,12 +90,40 @@ public class RootConfig {
     }
 
     @Bean
+
     public DataSourceTransactionManager transactionManager() {
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
         transactionManager.setDataSource(dataSource());
         return transactionManager;
     }
 
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+
+
+    @Bean
+    public JavaMailSender javaMailSender() {
+
+
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost(host);
+        mailSender.setPort(587);
+
+        mailSender.setUsername(emailUsername);
+        mailSender.setPassword(emailPassword);
+
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+        props.put("mail.debug", "true");
+
+        return mailSender;
+    }
 
 }
 
