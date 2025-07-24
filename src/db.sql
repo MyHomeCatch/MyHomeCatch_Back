@@ -68,7 +68,7 @@ CREATE TABLE APPLYHOME_APT_competition (
                                            LWET_SCORE            VARCHAR(8),                                  -- 최저점
                                            TOP_SCORE             VARCHAR(8),                                  -- 최고점
                                            AVRG_SCORE            VARCHAR(8),                                  -- 평균점
-                                           Constraint apt_cmpet unique (PBLANC_NO, MODEL_NO,RESIDE_SENM)
+                                           Constraint apt_cmpet unique (PBLANC_NO, MODEL_NO,RESIDE_SECD)
 );
 
 CREATE TABLE APPLYHOME_APT_special (

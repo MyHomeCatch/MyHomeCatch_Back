@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.scoula.house.mapper.ApplyHomeOfficetelDetailMapper">
+    <resultMap id="OfficetelCmpet" type="org.scoula.chapi.dto.CHOfficetelCmpetDTO">
+        <id property="cmpetUid" column="CMPET_UID"/>
+        <result property="cmpetRate" column="CMPET_RATE"/>
+        <result property="houseManageNo" column="HOUSE_MANAGE_NO"/>
+        <result property="houseTy" column="HOUSE_TY"/>
+        <result property="modelNo" column="MODEL_NO"/>
+        <result property="pblancNo" column="PBLANC_NO"/>
+        <result property="reqCnt" column="REQ_CNT"/>
+        <result property="residntPriorAt" column="RESIDNT_PRIOR_AT"/>
+        <result property="residntPriorSenm" column="RESIDNT_PRIOR_SENM"/>
+        <result property="suplyHshldco" column="SUPLY_HSHLDCO"/>
+    </resultMap>
+
+    <resultMap id="ApplyHomeOfficetelDetailDTOMap" type="org.scoula.house.dto.ApplyHomeOfficetelDetailDTO">
+        <id property="modelUid" column="MODEL_UID"/>
+        <result property="excluseAr" column="EXCLUSE_AR"/>
+        <result property="gp" column="GP"/>
+        <result property="houseManageNo" column="HOUSE_MANAGE_NO"/>
+        <result property="modelNo" column="MODEL_NO"/>
+        <result property="pblancNo" column="PBLANC_NO"/>
+        <result property="subscrptReqstAmount" column="SUBSCRPT_REQST_AMOUNT"/>
+        <result property="suplyAmount" column="SUPLY_AMOUNT"/>
+        <result property="suplyHshldco" column="SUPLY_HSHLDCO"/>
+        <result property="tp" column="TP"/>
+
+        <collection property="cmpetList" resultMap="OfficetelCmpet"/>
+    </resultMap>
+
+    <select id="getApplyHomeOfficetelDetail" resultMap="ApplyHomeOfficetelDetailDTOMap" parameterType="String">
+        SELECT
+            T1.MODEL_UID, T1.EXCLUSE_AR, T1.GP, T1.HOUSE_MANAGE_NO, T1.MODEL_NO, T1.PBLANC_NO,
+            T1.SUBSCRPT_REQST_AMOUNT, T1.SUPLY_AMOUNT, T1.SUPLY_HSHLDCO, T1.TP,
+            T2.CMPET_UID, T2.CMPET_RATE, T2.HOUSE_TY, T2.REQ_CNT, T2.RESIDNT_PRIOR_AT,
+            T2.RESIDNT_PRIOR_SENM, T2.SUPLY_HSHLDCO
+        FROM
+            APPLYHOME_officetel_model T1
+                LEFT JOIN
+            APPLYHOME_officetel_cmpet T2 ON T1.PBLANC_NO = T2.PBLANC_NO
+                AND T1.HOUSE_MANAGE_NO = T2.HOUSE_MANAGE_NO
+                AND T1.MODEL_NO = T2.MODEL_NO
+        WHERE
+            T1.PBLANC_NO = #{pblancNo}
+        ORDER BY T1.MODEL_NO, T2.RESIDNT_PRIOR_AT DESC
+    </select>
+
+</mapper>
