@@ -102,11 +102,46 @@ public class StaticsServiceImpl implements StaticsService {
         List<ApartmentScoreDTO> result = new ArrayList<>();
         for (JsonNode node : jsonNodes) {
             try {
-                result.add(objectMapper.treeToValue(node, ApartmentScoreDTO.class));
+                ApartmentScoreDTO dto = objectMapper.treeToValue(node, ApartmentScoreDTO.class);
+
+                String houseName = fetchApartmentName(dto.getHouseManageNo(), dto.getPublicNoticeNo());
+                dto.setHouseName(houseName);
+
+                result.add(dto);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         return result;
+    }
+
+
+    // 주택 이름 별도로 받기
+    private String fetchApartmentName(String houseManageNo, String pblancNo) {
+        String detailApiPath = "/api/ApplyhomeInfoDetailSvc/v1/getAPTLttotPblancDetail";
+
+        try {
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiConfig.getBaseUrl() + detailApiPath)
+                    .queryParam("HOUSE_MANAGE_NO", houseManageNo)
+                    .queryParam("PBLANC_NO", pblancNo)
+                    .queryParam("returnType", "JSON");
+
+            String urlWithoutKey = builder.toUriString();
+            String url = urlWithoutKey + "&serviceKey=" + apiConfig.getServiceKey();
+
+            URI uri = new URI(url);
+            String jsonResponse = restTemplate.getForObject(uri, String.class);
+
+            JsonNode root = objectMapper.readTree(jsonResponse);
+            JsonNode data = root.path("data");
+            if (data.isArray() && data.size() > 0) {
+                return data.get(0).path("HOUSE_NM").asText(); // 아파트 이름
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

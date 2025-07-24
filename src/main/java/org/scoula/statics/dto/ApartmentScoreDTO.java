@@ -49,4 +49,8 @@ public class ApartmentScoreDTO {
     // 평균 당첨 점수
     @JsonProperty("AVRG_SCORE")
     private String averageScore;
+
+    // 주택 이름 (청약홈 apt 사용)
+    @JsonProperty("HOUSE_NM")
+    private String houseName;
 }
