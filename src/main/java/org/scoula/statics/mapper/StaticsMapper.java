@@ -24,4 +24,7 @@ public interface StaticsMapper {
     CompetitionRateVO getAPTCmpet(@Param("no") String no, @Param("reside") String reside, @Param("rank") int rank);
     CompetitionRateVO getOfficetelCmpet(@Param("no") String no);
 
+    List<ScoreWinnerDTO> getScoreWinnersByRegion(String region);
+
+    List<ApartmentScoreDTO> getTop5ApartmentsWithLowestScore(String region);
 }

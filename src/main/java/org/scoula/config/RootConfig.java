@@ -20,7 +20,7 @@ import javax.sql.DataSource;
 @Configuration
 @PropertySource("classpath:application.properties")
 @MapperScan(basePackages = {"org.scoula.statics.mapper"})
-@ComponentScan(basePackages={ "org.scoula.statics.service"})
+@ComponentScan(basePackages={"org.scoula.config", "org.scoula.statics.service"})
 @EnableTransactionManagement
 public class RootConfig {
     @Value("${jdbc.driver}") String driver;
@@ -61,9 +61,11 @@ public class RootConfig {
 
     @Bean
     public DataSourceTransactionManager transactionManager() {
-        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager(dataSource());
+        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
+        transactionManager.setDataSource(dataSource());
         return transactionManager;
     }
+
 
 }
 
