@@ -18,7 +18,8 @@ import org.springframework.web.servlet.view.JstlView;
         "org.scoula",
         "org.scoula.exception",
         "org.scoula.controller",
-}) // Spring MVC용 컴포넌트 등록을 위한 스캔 패키지
+        "org.scoula.statics.controller"
+})
 @PropertySource("classpath:application.properties")
 @EnableScheduling
 public class ServletConfig implements WebMvcConfigurer {
