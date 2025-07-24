@@ -34,6 +34,7 @@ import java.util.Properties;
         "org.scoula.applyHome",
         "org.scoula.chapi",
         "org.scoula.lh",
+        "org.scoula.house",
 })
 @Log4j2
 @PropertySource({"classpath:application.properties", "classpath:secrets.properties"})
