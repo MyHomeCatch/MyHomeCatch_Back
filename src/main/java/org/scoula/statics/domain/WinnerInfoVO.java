@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class WinnerInfo {
+public class WinnerInfoVO {
     private Long id;
     private Long regionId;
     private int medianScoreRegion;
