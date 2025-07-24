@@ -71,4 +71,10 @@ SELECT * FROM APPLYHOME_officetel_cmpet;
 
 SHOW INDEX FROM APPLYHOME_officetel_cmpet;
 
+select distinct cnp_cd_nm from LH_notice;
+
+select distinct HOUSE_SECD_NM from APPLYHOME_APT;
+
+select * from LH_rental;
+select * from LH_housing;
 
