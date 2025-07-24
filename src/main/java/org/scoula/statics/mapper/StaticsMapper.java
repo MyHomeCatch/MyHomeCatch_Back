@@ -2,6 +2,9 @@ package org.scoula.statics.mapper;
 
 import org.apache.ibatis.annotations.Param;
 import org.scoula.statics.domain.*;
+import org.scoula.statics.dto.ScoreWinnerDTO;
+import org.scoula.statics.dto.ApartmentScoreDTO;
+
 
 import java.time.LocalDate;
 import java.util.List;
@@ -24,7 +27,7 @@ public interface StaticsMapper {
     CompetitionRateVO getAPTCmpet(@Param("no") String no, @Param("reside") String reside, @Param("rank") int rank);
     CompetitionRateVO getOfficetelCmpet(@Param("no") String no);
 
+    // 청약 가점 관련
     List<ScoreWinnerDTO> getScoreWinnersByRegion(String region);
-
     List<ApartmentScoreDTO> getTop5ApartmentsWithLowestScore(String region);
 }
