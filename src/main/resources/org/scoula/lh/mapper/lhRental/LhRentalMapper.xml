@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.scoula.lh.mapper.lhRental.LhRentalMapper">
+    <insert id="create" parameterType="org.scoula.lh.domain.rental.LhRentalVO">
+        INSERT INTO LH_rental (
+            pan_id,
+            lcc_nt_nm,
+            lgdn_adr,
+            lgdn_dtl_adr,
+            ddo_ar,
+            hsh_cnt,
+            htn_fmla_desc,
+            mvin_xpc_ym
+        )
+        VALUES (
+                   #{panId},
+                   #{lccNtNm},
+                   #{lgdnAdr},
+                   #{lgdnDtlAdr},
+                   #{ddoAr},
+                   #{hshCnt},
+                   #{htnFmlaDesc},
+                   #{mvinXpcYm}
+               )
+    </insert>
+
+    <insert id="createAll" parameterType="java.util.List">
+        INSERT INTO LH_rental (
+        pan_id,
+        lcc_nt_nm,
+        lgdn_adr,
+        lgdn_dtl_adr,
+        ddo_ar,
+        hsh_cnt,
+        htn_fmla_desc,
+        mvin_xpc_ym
+        )
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.panId},
+            #{item.lccNtNm},
+            #{item.lgdnAdr},
+            #{item.lgdnDtlAdr},
+            #{item.ddoAr},
+            #{item.hshCnt},
+            #{item.htnFmlaDesc},
+            #{item.mvinXpcYm}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getById" parameterType="int" resultType="org.scoula.lh.domain.rental.LhRentalVO">
+        SELECT
+            lh_rental_id,
+            pan_id,
+            lcc_nt_nm,
+            lgdn_adr,
+            lgdn_dtl_adr,
+            ddo_ar,
+            hsh_cnt,
+            htn_fmla_desc,
+            mvin_xpc_ym
+        FROM LH_rental
+        WHERE lh_rental_id = #{id}
+    </select>
+
+    <select id="getByPanId" parameterType="string" resultType="org.scoula.lh.domain.rental.LhRentalVO">
+        SELECT
+            lh_rental_id,
+            pan_id,
+            lcc_nt_nm,
+            lgdn_adr,
+            lgdn_dtl_adr,
+            ddo_ar,
+            hsh_cnt,
+            htn_fmla_desc,
+            mvin_xpc_ym
+        FROM LH_rental
+        WHERE pan_id = #{panId}
+        ORDER BY lh_rental_id
+    </select>
+</mapper>
