@@ -1,11 +1,19 @@
 package org.scoula.statics.service;
 
+
+import org.scoula.statics.dto.LowCompetitionRateDTO;
+import org.scoula.statics.dto.RegionAgeDTO;
+
 import org.scoula.statics.dto.ApartmentScoreDTO;
 import org.scoula.statics.dto.ScoreWinnerDTO;
 
 import java.util.List;
 
 public interface StaticsService {
+
+    public RegionAgeDTO getRegionAge(String region, String date);
+
+    public List<LowCompetitionRateDTO> getLowCmpetRate(String region, String reside, int rank);
     /**
      * 지역별 청약 가점제 정보 조회
      */
