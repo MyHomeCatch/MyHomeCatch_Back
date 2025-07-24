@@ -4,9 +4,18 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.scoula.house.domain.LhRentalHouseVO;
+import org.scoula.house.util.DateParser;
+import org.scoula.house.util.RegionMapper;
+import org.scoula.lh.domain.LhNoticeVO;
+import org.scoula.lh.domain.rental.LhRentalApplyVO;
+import org.scoula.lh.dto.NoticeAttDTO;
+import org.scoula.lh.dto.NoticeDTO;
+import org.scoula.lh.dto.lhRental.LhRentalAttDTO;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -121,5 +130,36 @@ public class HouseDTO {
     /**
      * LH 임대건물상세정보
      */
-    private List<LhRentalDetailDTO> lhRentalDetails;
+    private LhRentalDetailDTO lhRentalDetail;
+
+    public static HouseDTO ofLhRentalHouseVO(LhRentalHouseVO vo) {
+        LhRentalApplyVO apply = vo.getApply();
+        LhNoticeVO notice = vo.getNotice();
+
+        LhRentalDetailDTO lhRentalDetailDTO = LhRentalDetailDTO.builder()
+                .notice(NoticeDTO.of(vo.getNotice()))
+                .lhRentalAtts(vo.getLhRentalAttList().stream().map(LhRentalAttDTO::of).toList())
+                .noticeAtts(vo.getNoticeAttList().stream().map(NoticeAttDTO::of).toList())
+                .build();
+
+        return HouseDTO.builder()
+                .houseId("lhrental-" + vo.getLhRentalId())
+                .houseName(vo.getLccNtNm())
+                .noticeUrl(notice != null ? notice.getDtlUrl() : null)
+                .totalSupply(Integer.parseInt(vo.getHshCnt()))
+                .noticeDate(null)
+                .applyBeginDate(apply != null ? DateParser.parseDate(apply.getSbscAcpStDt()) : null)
+                .applyEndDate(apply != null ? DateParser.parseDate(apply.getSbscAcpClsgDt()) : null)
+                .contractBeginDate(apply != null ? apply.getCtrtStDt() : null)
+                .contractEndDate(apply != null ? apply.getCtrtEdDt() : null)
+                .announceDate(apply != null ? apply.getPzwrAncDt() : null)
+                .moveInMonth(DateParser.parseDate(vo.getMvinXpcYm()))
+                .region(notice != null ? RegionMapper.mapToShortRegion(notice.getCnpCdNm()) : "기타")
+                .address(vo.getLgdnAdr())
+                .houseType("APT")
+                .supplyType("APT")
+                .company("LH")
+                .lhRentalDetails(null)
+                .build();
+    }
 }
