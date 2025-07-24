@@ -52,12 +52,12 @@ public class StaticsController {
     @GetMapping("/region-score")
     public List<ScoreWinnerDTO> getScoreWinnersByRegion(@RequestParam("region") String regionCode) {
         log.info("청약 가점 통계 조회 요청 - regionCode: {}", regionCode);
-        return staticsService.getScoreWinnersByRegion(regionCode);
+        return service.getScoreWinnersByRegion(regionCode);
     }
 
     @GetMapping("/low-score")
     public List<ApartmentScoreDTO> getLowScoreApartments(@RequestParam("region") String regionCode) {
         log.info("가점 하위 TOP5 조회 요청 - regionCode: {}", regionCode);
-        return staticsService.getTop5ApartmentsWithLowestScore(regionCode);
+        return service.getTop5ApartmentsWithLowestScore(regionCode);
     }
 }

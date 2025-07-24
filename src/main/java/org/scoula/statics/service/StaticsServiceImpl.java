@@ -22,15 +22,11 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.*;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.stream.Collectors;
 
 @Log4j2
 @Service
@@ -79,21 +75,18 @@ public class StaticsServiceImpl implements StaticsService {
         ));
         return lowCmpetList;
     }
-  
+
     private List<JsonNode> fetchDataFromApi(String apiPath, int page, int perPage, String conditionKey, String conditionValue) {
         try {
-            // UriComponentsBuilder 로 URL 구성
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(apiConfig.getBaseUrl() + apiPath)
                     .queryParam("page", page)
                     .queryParam("perPage", perPage)
                     .queryParam("returnType", "JSON");
 
-            // 조건 파라미터가 있으면 추가
             if (conditionKey != null && conditionValue != null) {
                 builder.queryParam(conditionKey, conditionValue);
             }
 
-            // serviceKey는 별도 덧붙임 (인코딩 문제 방지)
             String urlWithoutKey = builder.toUriString();
             String url = urlWithoutKey + "&serviceKey=" + apiConfig.getServiceKey();
 
@@ -119,7 +112,6 @@ public class StaticsServiceImpl implements StaticsService {
         }
         return new ArrayList<>();
     }
-
 
     @Override
     public List<ScoreWinnerDTO> getScoreWinnersByRegion(String regionCode) {
@@ -148,30 +140,75 @@ public class StaticsServiceImpl implements StaticsService {
     public List<ApartmentScoreDTO> getTop5ApartmentsWithLowestScore(String regionCode) {
         String scoreApiPath = "/api/ApplyhomeInfoCmpetRtSvc/v1/getAptLttotPblancScore";
 
+        // 100개 정도 뽑아서 필터링: API 페이징 고려
         List<JsonNode> jsonNodes = fetchDataFromApi(
                 scoreApiPath,
                 1,
-                5,
+                100,
                 "cond[RESIDE_SECD::EQ]",
                 regionCode
         );
 
-        List<ApartmentScoreDTO> result = new ArrayList<>();
+        // houseManageNo 별 이름 캐시 맵
+        Map<String, String> houseNameCache = new HashMap<>();
+
+        List<ApartmentScoreDTO> allDtos = new ArrayList<>();
         for (JsonNode node : jsonNodes) {
             try {
                 ApartmentScoreDTO dto = objectMapper.treeToValue(node, ApartmentScoreDTO.class);
 
-                String houseName = fetchApartmentName(dto.getHouseManageNo(), dto.getPublicNoticeNo());
-                dto.setHouseName(houseName);
+                // 점수 파싱 및 0점 제외
+                String rawScore = dto.getLowestScore();
+                if (rawScore == null || rawScore.equals("-")) {
+                    continue; // 점수 없으면 건너뜀
+                }
+                double score;
+                try {
+                    score = Double.parseDouble(rawScore);
+                    if (score == 0.0) {
+                        continue; // 0점도 제외
+                    }
+                } catch (NumberFormatException e) {
+                    continue; // 파싱 실패 시 건너뜀
+                }
+                dto.setParsedLowestScore(score);
 
-                result.add(dto);
+                // 아파트 이름 캐시에서 꺼내기 or API 호출
+                String houseManageNo = dto.getHouseManageNo();
+                String houseName = houseNameCache.get(houseManageNo);
+                if (houseName == null) {
+                    houseName = fetchApartmentName(houseManageNo, dto.getPublicNoticeNo());
+                    if (houseName == null || houseName.isEmpty()) {
+                        houseName = "아파트코드_" + houseManageNo;
+                    }
+                    houseNameCache.put(houseManageNo, houseName);
+                }
+
+                // 이름 + 코드 조합
+                String combinedName = houseName + " (" + houseManageNo + ")";
+                dto.setHouseName(combinedName);
+
+                log.info("Apartment name set (cached): " + combinedName);
+
+                allDtos.add(dto);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        return result;
-    }
 
+        // 아파트 이름 기준으로 그룹화 후, 최저 점수 선택
+        Map<String, ApartmentScoreDTO> lowestByApt = allDtos.stream()
+                .collect(Collectors.toMap(
+                        ApartmentScoreDTO::getHouseName,
+                        dto -> dto,
+                        (a, b) -> a.getParsedLowestScore() <= b.getParsedLowestScore() ? a : b
+                ));
+
+        return lowestByApt.values().stream()
+                .sorted(Comparator.comparingDouble(ApartmentScoreDTO::getParsedLowestScore))
+                .limit(5)
+                .collect(Collectors.toList());
+    }
 
     // 주택 이름 별도로 받기
     private String fetchApartmentName(String houseManageNo, String pblancNo) {
