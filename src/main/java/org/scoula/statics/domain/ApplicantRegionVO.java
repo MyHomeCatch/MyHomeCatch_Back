@@ -9,17 +9,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class WinnerRate {
+public class ApplicantRegionVO {
     private Long id;
     private Long regionId;
     private String statDe;
     private int age30;
-    private int age30Win;
     private int age40;
-    private int age40Win;
     private int age50;
-    private int age50Win;
     private int age60;
-    private int age60Win;
-
 }
