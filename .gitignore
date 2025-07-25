@@ -514,3 +514,4 @@ $RECYCLE.BIN/
 # secrets.properties (구글 로그인: 구글 클라이언트 정보)
 src/main/resources/secrets.properties
 src/main/resources/application.properties
+src/main/resources/application.properties
