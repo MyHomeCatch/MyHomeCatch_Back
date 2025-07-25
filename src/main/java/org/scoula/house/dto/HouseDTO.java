@@ -4,15 +4,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.scoula.house.domain.LhHousingHouseVO;
 import org.scoula.house.domain.LhRentalHouseVO;
 import org.scoula.house.util.DateParser;
+import org.scoula.house.util.DateRangeParser;
 import org.scoula.house.util.RegionMapper;
 import org.scoula.lh.domain.LhNoticeVO;
 import org.scoula.lh.domain.NoticeAttVO;
+import org.scoula.lh.domain.housing.LhHousingApplyVO;
+import org.scoula.lh.domain.housing.LhHousingAttVO;
 import org.scoula.lh.domain.rental.LhRentalApplyVO;
 import org.scoula.lh.domain.rental.LhRentalAttVO;
 import org.scoula.lh.dto.NoticeAttDTO;
 import org.scoula.lh.dto.NoticeDTO;
+import org.scoula.lh.dto.lhHousing.LhHousingApplyDTO;
+import org.scoula.lh.dto.lhHousing.LhHousingAttDTO;
 import org.scoula.lh.dto.lhRental.LhRentalAttDTO;
 
 import java.util.Date;
@@ -127,12 +133,44 @@ public class HouseDTO {
     /**
      * LH 분양건물상세정보
      */
-    private List<LhHousingDetailDTO> lhHousingDetails;
+    private LhHousingDetailDTO lhHousingDetail;
 
     /**
      * LH 임대건물상세정보
      */
     private LhRentalDetailDTO lhRentalDetail;
+
+    public static HouseDTO ofLhHousingHouseVO(LhHousingHouseVO vo) {
+        LhNoticeVO notice = vo.getNotice();
+        List<LhHousingApplyVO> applyList = vo.getApplyList();
+
+        LhHousingDetailDTO lhHousingDetail = LhHousingDetailDTO.builder()
+                .notice(NoticeDTO.of(vo.getNotice()))
+                .applyList(vo.getApplyList().stream().map(LhHousingApplyDTO::of).toList())
+                .lhHousingAttList(vo.getHousingAttList().stream().map(LhHousingAttDTO::of).toList())
+                .noticeAttList(vo.getNoticeAttList().stream().map(NoticeAttDTO::of).toList())
+                .build();
+
+        return HouseDTO.builder()
+                .houseId("lhhousing-" + vo.getLhHousingId())
+                .houseName(vo.getBzdtNm())
+                .noticeUrl(notice != null ? notice.getDtlUrl() : null)
+                .totalSupply(Integer.parseInt(vo.getSumTotHshCnt()))
+                .noticeDate(null)
+                .applyBeginDate(applyList != null ? DateRangeParser.parseStartDate(applyList.get(0).getAcpDttm()) : null)
+                .applyEndDate(applyList != null ? DateRangeParser.parseEndDate(applyList.get(0).getAcpDttm()) : null)
+                .contractBeginDate(applyList != null ? applyList.get(0).getCtrtStDt() : null)
+                .contractEndDate(applyList != null ? applyList.get(0).getCtrtEdDt() : null)
+                .announceDate(applyList != null ? applyList.get(0).getPzwrAncDt() : null)
+                .moveInMonth(DateParser.parseDate(vo.getMvinXpcYm()))
+                .region(notice != null ? RegionMapper.mapToShortRegion(notice.getCnpCdNm()) : "기타")
+                .address(vo.getLctAraAdr())
+                .houseType("APT")
+                .supplyType("APT")
+                .company("LH")
+                .lhHousingDetail(lhHousingDetail)
+                .build();
+    }
 
     public static HouseDTO ofLhRentalHouseVO(LhRentalHouseVO vo) {
         LhRentalApplyVO apply = vo.getApply();

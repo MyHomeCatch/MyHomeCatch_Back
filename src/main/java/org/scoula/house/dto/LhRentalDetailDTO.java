@@ -20,5 +20,4 @@ public class LhRentalDetailDTO {
     public LhRentalApplyDTO apply;
     public List<NoticeAttDTO> noticeAtts;
     public List<LhRentalAttDTO> lhRentalAtts;
-
 }
