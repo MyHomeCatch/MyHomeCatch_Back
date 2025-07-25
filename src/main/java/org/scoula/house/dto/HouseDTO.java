@@ -8,7 +8,9 @@ import org.scoula.house.domain.LhRentalHouseVO;
 import org.scoula.house.util.DateParser;
 import org.scoula.house.util.RegionMapper;
 import org.scoula.lh.domain.LhNoticeVO;
+import org.scoula.lh.domain.NoticeAttVO;
 import org.scoula.lh.domain.rental.LhRentalApplyVO;
+import org.scoula.lh.domain.rental.LhRentalAttVO;
 import org.scoula.lh.dto.NoticeAttDTO;
 import org.scoula.lh.dto.NoticeDTO;
 import org.scoula.lh.dto.lhRental.LhRentalAttDTO;
@@ -135,11 +137,13 @@ public class HouseDTO {
     public static HouseDTO ofLhRentalHouseVO(LhRentalHouseVO vo) {
         LhRentalApplyVO apply = vo.getApply();
         LhNoticeVO notice = vo.getNotice();
+        List<LhRentalAttVO> lhRentalAttList = vo.getLhRentalAttList();
+        List<NoticeAttVO> noticeAttList = vo.getNoticeAttList();
 
         LhRentalDetailDTO lhRentalDetailDTO = LhRentalDetailDTO.builder()
                 .notice(NoticeDTO.of(vo.getNotice()))
-                .lhRentalAtts(vo.getLhRentalAttList().stream().map(LhRentalAttDTO::of).toList())
-                .noticeAtts(vo.getNoticeAttList().stream().map(NoticeAttDTO::of).toList())
+                .lhRentalAtts(lhRentalAttList != null ? vo.getLhRentalAttList().stream().map(LhRentalAttDTO::of).toList(): null)
+                .noticeAtts(noticeAttList != null ? vo.getNoticeAttList().stream().map(NoticeAttDTO::of).toList() : null)
                 .build();
 
         return HouseDTO.builder()
@@ -159,7 +163,7 @@ public class HouseDTO {
                 .houseType("APT")
                 .supplyType("APT")
                 .company("LH")
-                .lhRentalDetails(null)
+                .lhRentalDetail(lhRentalDetailDTO)
                 .build();
     }
 }
