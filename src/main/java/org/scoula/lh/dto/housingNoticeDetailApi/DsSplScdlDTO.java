@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.scoula.house.util.DateParser;
 import org.scoula.lh.domain.housing.LhHousingApplyVO;
 
 import java.text.ParseException;
@@ -56,11 +55,42 @@ public class DsSplScdlDTO {
                 .hsSbscAcpTrgCdNm(this.hsSbscAcpTrgCdNm)
                 .acpDttm(this.acpDttm)
                 .rmk(this.rmk)
-                .pzwrAncDt(DateParser.parseDate(this.pzwrAncDt))
-                .pzwrPprSbmStDt(DateParser.parseDate(this.pzwrPprSbmStDt))
-                .pzwrPprSbmEdDt(DateParser.parseDate(this.pzwrPprSbmEdDt))
-                .ctrtStDt(DateParser.parseDate(this.ctrtStDt))
-                .ctrtEdDt(DateParser.parseDate(this.ctrtEdDt))
+                .pzwrAncDt(parseDate(this.pzwrAncDt))
+                .pzwrPprSbmStDt(parseDate(this.pzwrPprSbmStDt))
+                .pzwrPprSbmEdDt(parseDate(this.pzwrPprSbmEdDt))
+                .ctrtStDt(parseDate(this.ctrtStDt))
+                .ctrtEdDt(parseDate(this.ctrtEdDt))
                 .build();
+    }
+
+    private Date parseDate(String dateString) {
+        if (dateString == null || dateString.trim().isEmpty()) {
+            return null;
+        }
+
+        String cleanDateString = dateString.trim();
+
+        // 지원할 날짜 형식들
+        String[] dateFormats = {
+                "yyyyMMdd",        // 20200101
+                "yyyy.MM.dd",      // 2025.06.30
+                "yyyy-MM-dd",      // 2025-06-30 (추가로 지원)
+                "yyyy/MM/dd"       // 2025/06/30 (추가로 지원)
+        };
+
+        for (String format : dateFormats) {
+            try {
+                SimpleDateFormat formatter = new SimpleDateFormat(format);
+                formatter.setLenient(false); // 엄격한 파싱 모드
+                return formatter.parse(cleanDateString);
+            } catch (ParseException e) {
+                // 현재 형식으로 파싱 실패, 다음 형식 시도
+                continue;
+            }
+        }
+
+        // 파싱 실패시 로그 출력 후 null 반환
+        System.err.println("날짜 파싱 실패: " + dateString);
+        return null;
     }
 }

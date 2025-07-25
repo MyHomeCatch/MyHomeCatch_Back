@@ -28,55 +28,55 @@ public class LhRentalApplyDTO {
      * 단지명
      * 예시: "오산세교 A-6BL 국민임대주택"
      */
-    private String houseName;
+    private String sbdLgoNm;
 
     /**
      * 접수기간시작일
      * 예시: "2025.07.07"
      */
-    private String applyStartDate;
+    private String sbscAcpStDt;
 
     /**
      * 접수기간종료일
      * 예시: "2025.07.09"
      */
-    private String applyEndDate;
+    private String sbscAcpClsgDt;
 
     /**
      * 서류제출대상자발표일
      * 예시: "2025.07.11"
      */
-    private String docSubmitTargetAnnounceDate;
+    private String pprSbmOpeAncDt;
 
     /**
      * 서류접수기간시작일
      * 예시: 2025-07-11
      */
-    private Date docSubmitStartDate;
+    private Date pprAcpStDt;
 
     /**
      * 서류접수기간종료일
      * 예시: 2025-07-16
      */
-    private Date docSubmitEndDate;
+    private Date pprAcpClsgDt;
 
     /**
      * 당첨자발표일
      * 예시: 2025-09-22
      */
-    private Date announceDate;
+    private Date pzwrAncDt;
 
     /**
      * 계약체결기간시작일
      * 예시: 2025-10-13
      */
-    private Date contractStartDate;
+    private Date ctrtStDt;
 
     /**
      * 계약체결기간종료일
      * 예시: 2025-10-15
      */
-    private Date contractEndDate;
+    private Date ctrtEdDt;
 
     /**
      * LhRentalApplyVO를 LhRentalApplyDTO로 변환
@@ -87,15 +87,15 @@ public class LhRentalApplyDTO {
         return LhRentalApplyDTO.builder()
                 .lhRentalId(vo.getLhRentalId())
                 .panId(vo.getPanId())
-                .houseName(vo.getSbdLgoNm())
-                .applyStartDate(vo.getSbscAcpStDt())
-                .applyEndDate(vo.getSbscAcpClsgDt())
-                .docSubmitTargetAnnounceDate(vo.getPprSbmOpeAncDt())
-                .docSubmitStartDate(vo.getPprAcpStDt())
-                .docSubmitEndDate(vo.getPprAcpClsgDt())
-                .announceDate(vo.getPzwrAncDt())
-                .contractStartDate(vo.getCtrtStDt())
-                .contractEndDate(vo.getCtrtEdDt())
+                .sbdLgoNm(vo.getSbdLgoNm())
+                .sbscAcpStDt(vo.getSbscAcpStDt())
+                .sbscAcpClsgDt(vo.getSbscAcpClsgDt())
+                .pprSbmOpeAncDt(vo.getPprSbmOpeAncDt())
+                .pprAcpStDt(vo.getPprAcpStDt())
+                .pprAcpClsgDt(vo.getPprAcpClsgDt())
+                .pzwrAncDt(vo.getPzwrAncDt())
+                .ctrtStDt(vo.getCtrtStDt())
+                .ctrtEdDt(vo.getCtrtEdDt())
                 .build();
     }
 
@@ -108,15 +108,15 @@ public class LhRentalApplyDTO {
         return LhRentalApplyVO.builder()
                 .lhRentalId(this.lhRentalId)
                 .panId(this.panId)
-                .sbdLgoNm(this.houseName)
-                .sbscAcpStDt(this.applyStartDate)
-                .sbscAcpClsgDt(this.applyEndDate)
-                .pprSbmOpeAncDt(this.docSubmitTargetAnnounceDate)
-                .pprAcpStDt(this.docSubmitStartDate)
-                .pprAcpClsgDt(this.docSubmitEndDate)
-                .pzwrAncDt(this.announceDate)
-                .ctrtStDt(this.contractStartDate)
-                .ctrtEdDt(this.contractEndDate)
+                .sbdLgoNm(this.sbdLgoNm)
+                .sbscAcpStDt(this.sbscAcpStDt)
+                .sbscAcpClsgDt(this.sbscAcpClsgDt)
+                .pprSbmOpeAncDt(this.pprSbmOpeAncDt)
+                .pprAcpStDt(this.pprAcpStDt)
+                .pprAcpClsgDt(this.pprAcpClsgDt)
+                .pzwrAncDt(this.pzwrAncDt)
+                .ctrtStDt(this.ctrtStDt)
+                .ctrtEdDt(this.ctrtEdDt)
                 .build();
     }
 }
