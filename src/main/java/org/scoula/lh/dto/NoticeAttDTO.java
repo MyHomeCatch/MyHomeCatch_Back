@@ -25,19 +25,19 @@ public class NoticeAttDTO {
      * 파일구분명
      * 예시: "공고문(PDF)", "기타 첨부파일", "정정공고문(HWP)" 등
      */
-    private String fileTypeName;
+    private String slPanAhflDsCdNm;
 
     /**
      * 첨부파일명
      * 예시: "고양장항_S-1블록_팸플릿.pdf", "위임장.hwp" 등
      */
-    private String fileName;
+    private String cmnAhflNm;
 
     /**
      * 다운로드 URL
      * 예시: "https://apply.lh.or.kr/lhapply/lhFile.do?fileid=62586087"
      */
-    private String downloadUrl;
+    private String ahflUrl;
 
 
     /**
@@ -49,9 +49,9 @@ public class NoticeAttDTO {
         return NoticeAttDTO.builder()
                 .lhNoticeAttId(vo.getLhNoticeAttId())
                 .panId(vo.getPanId())
-                .fileTypeName(vo.getSlPanAhflDsCdNm())
-                .fileName(vo.getCmnAhflNm())
-                .downloadUrl(vo.getAhflUrl())
+                .slPanAhflDsCdNm(vo.getSlPanAhflDsCdNm())
+                .cmnAhflNm(vo.getCmnAhflNm())
+                .ahflUrl(vo.getAhflUrl())
                 .build();
     }
 }

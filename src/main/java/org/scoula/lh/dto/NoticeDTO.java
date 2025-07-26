@@ -14,12 +14,12 @@ import org.scoula.lh.domain.LhNoticeVO;
 public class NoticeDTO {
     private String panId;
     private String uppAisTpCd;
-    private String supplyCategory;
-    private String panName;
+    private String aisTpCdNm;
+    private String panNm;
     private String cnpCdNm;
-    private String panState;
+    private String panSs;
     private String allCnt;
-    private String noticeUrl;
+    private String dtlUrl;
     private String splInfTpCd;
     private String ccrCnntSysDsCd;
     private String aisTpCd;
@@ -29,11 +29,11 @@ public class NoticeDTO {
                 .panId(vo.getPanId())
                 .uppAisTpCd(vo.getUppAisTpCd())
                 .aisTpCd(vo.getAisTpCd())
-                .panName(vo.getPanNm())
+                .panNm(vo.getPanNm())
                 .cnpCdNm(vo.getCnpCdNm())
-                .panState(vo.getPanSs())
+                .panSs(vo.getPanSs())
                 .allCnt(vo.getAllCnt())
-                .noticeUrl(vo.getDtlUrl())
+                .dtlUrl(vo.getDtlUrl())
                 .splInfTpCd(vo.getSplInfTpCd())
                 .ccrCnntSysDsCd(vo.getCcrCnntSysDsCd())
                 .aisTpCd(vo.getAisTpCd())

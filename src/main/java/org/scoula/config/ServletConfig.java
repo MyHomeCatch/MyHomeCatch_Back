@@ -3,7 +3,6 @@ package org.scoula.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.multipart.MultipartResolver;
 import org.springframework.web.multipart.support.StandardServletMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -18,10 +17,9 @@ import org.springframework.web.servlet.view.JstlView;
         "org.scoula",
         "org.scoula.exception",
         "org.scoula.controller",
-        "org.scoula.house"
-}) // Spring MVC용 컴포넌트 등록을 위한 스캔 패키지
+        "org.scoula.statics.controller"
+})
 @PropertySource("classpath:application.properties")
-@EnableScheduling
 public class ServletConfig implements WebMvcConfigurer {
 
     @Override
@@ -29,7 +27,6 @@ public class ServletConfig implements WebMvcConfigurer {
         registry
                 .addResourceHandler("/resources/**") // url이 /resources/로 시작하는 모든 경로
                 .addResourceLocations("/resources/"); // webapp/resources/경로로 매핑
-
 
 
         // Swagger UI 리소스를 위한 핸들러 설정

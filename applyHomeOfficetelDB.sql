@@ -2,7 +2,7 @@ use MyHomeCatch;
 
 CREATE TABLE APPLYHOME_officetel
 (
-    `BSNS_MBY_NM`           VARCHAR(255) COMMENT '사업주체명(시행사)',
+    `BSNS_MBY_NM`           VARCHAR(255) COMMENT '사업주체명',
     `CNTRCT_CNCLS_BGNDE`    DATE COMMENT '계약시작일',
     `CNTRCT_CNCLS_ENDDE`    DATE COMMENT '계약종료일',
     `HMPG_ADRES`            VARCHAR(500) COMMENT '홈페이지주소(분양건물)',

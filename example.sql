@@ -9,13 +9,3 @@ CREATE TABLE users (
 );
 
 SELECT * FROM users;
-
-
-show databases;
-
-use MyHomeCatch;
-show tables;
-select pan_id from LH_notice;
-
-show tables;
-select * from APPLYHOME_officetel where PBLANC_NO in (select pan_id from LH_notice);

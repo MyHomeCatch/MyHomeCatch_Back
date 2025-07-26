@@ -14,39 +14,33 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
-
 import javax.sql.DataSource;
-import java.util.Properties;
 
 @Configuration
-
+@Log4j2
 @EnableTransactionManagement
 @EnableScheduling
-@ComponentScan(basePackages = {
-        "org.scoula.applyHome",
-        "org.scoula.applyHome",
-        "org.scoula.chapi",
-        "org.scoula.lh",
-        "org.scoula.house",
-})
-@Log4j2
 @PropertySource({"classpath:application.properties", "classpath:secrets.properties"})
-@MapperScan(basePackages={"org.scoula.**.mapper"})
+@MapperScan(basePackages = {"org.scoula.**.mapper"})
+@ComponentScan(basePackages = {
+        "org.scoula.config",              // winner-stats
+        "org.scoula.statics.service",     // winner-stats
+        "org.scoula.applyHome",           // develop
+        "org.scoula.chapi",               // develop
+        "org.scoula.lh"                   // develop
+})
 public class RootConfig {
-    @Value("${jdbc.driver}")
+    @Value("${driver}")
     String driver;
-    @Value("${jdbc.url}")
+    @Value("${spring.datasource.url}")
     String url;
-    @Value("${jdbc.username}")
+    @Value("${spring.datasource.username}")
     String username;
-    @Value("${jdbc.password}")
+    @Value("${spring.datasource.password}")
     String password;
 
 
@@ -124,6 +118,7 @@ public class RootConfig {
 
         return mailSender;
     }
+
 }
 
 
