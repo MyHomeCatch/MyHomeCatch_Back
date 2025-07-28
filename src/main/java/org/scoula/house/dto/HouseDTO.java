@@ -9,6 +9,7 @@ import org.scoula.house.domain.LhRentalHouseVO;
 import org.scoula.house.util.DateParser;
 import org.scoula.house.util.DateRangeParser;
 import org.scoula.house.util.RegionMapper;
+import org.scoula.house.util.SupplyTypeMapper;
 import org.scoula.lh.domain.LhNoticeVO;
 import org.scoula.lh.domain.NoticeAttVO;
 import org.scoula.lh.domain.housing.LhHousingApplyVO;
@@ -166,7 +167,7 @@ public class HouseDTO {
                 .region(notice != null ? RegionMapper.mapToShortRegion(notice.getCnpCdNm()) : "기타")
                 .address(vo.getLctAraAdr())
                 .houseType("APT")
-                .supplyType("APT")
+                .supplyType(SupplyTypeMapper.getHousingTypeString(notice))
                 .company("LH")
                 .lhHousingDetail(lhHousingDetail)
                 .build();
@@ -199,7 +200,7 @@ public class HouseDTO {
                 .region(notice != null ? RegionMapper.mapToShortRegion(notice.getCnpCdNm()) : "기타")
                 .address(vo.getLgdnAdr())
                 .houseType("APT")
-                .supplyType("APT")
+                .supplyType(SupplyTypeMapper.getHousingTypeString(notice))
                 .company("LH")
                 .lhRentalDetail(lhRentalDetailDTO)
                 .build();

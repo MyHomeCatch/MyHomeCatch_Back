@@ -60,17 +60,7 @@
     <!-- 별도 쿼리 1: 공고 정보 조회 -->
     <select id="selectNoticeByPanId" parameterType="String" resultType="org.scoula.lh.domain.LhNoticeVO">
         SELECT
-            pan_id as panId,
-            upp_ais_tp_cd as uppAisTpCd,
-            ais_tp_cd_nm as aisTpCdNm,
-            pan_nm as panNm,
-            cnp_cd_nm as cnpCdNm,
-            pan_ss as panSs,
-            all_cnt as allCnt,
-            dtl_url as dtlUrl,
-            spl_inf_tp_cd as splInfTpCd,
-            ccr_cnnt_sys_ds_cd as ccrCnntSysDsCd,
-            ais_tp_cd as aisTpCd
+            *
         FROM LH_notice
         WHERE pan_id = #{panId}
     </select>
@@ -85,17 +75,7 @@
     <!-- 별도 쿼리 2: 신청 정보 조회 -->
     <select id="selectApplyByPanIdAndName" resultType="org.scoula.lh.domain.rental.LhRentalApplyVO">
         SELECT
-            lh_rental_id as lhRentalId,
-            pan_id as panId,
-            sbd_lgo_nm as sbdLgoNm,
-            sbsc_acp_st_dt as sbscAcpStDt,
-            sbsc_acp_clsg_dt as sbscAcpClsgDt,
-            ppr_sbm_ope_anc_dt as pprSbmOpeAncDt,
-            ppr_acp_st_dt as pprAcpStDt,
-            ppr_acp_clsg_dt as pprAcpClsgDt,
-            pzwr_anc_dt as pzwrAncDt,
-            ctrt_st_dt as ctrtStDt,
-            ctrt_ed_dt as ctrtEdDt
+            *
         FROM LH_rental_apply
         WHERE pan_id = #{panId}
           AND sbd_lgo_nm = #{lccNtNm}
@@ -104,12 +84,7 @@
     <!-- 별도 쿼리 3: 첨부파일 목록 조회 -->
     <select id="selectAttachmentsByPanIdAndName" resultType="org.scoula.lh.domain.rental.LhRentalAttVO">
         SELECT
-            LH_rental_att_id as lhRentalAttId,
-            pan_id as panId,
-            loc_nt_nm as locNtNm,
-            ls_spl_inf_upl_fl_ds_cd_nm as lsSplInfUplFlDsCdNm,
-            cmn_ahfl_nm as cmnAhflNm,
-            ahfl_url as ahflUrl
+            *
         FROM LH_rental_att
         WHERE pan_id = #{panId}
           AND loc_nt_nm = #{locNtNm}
