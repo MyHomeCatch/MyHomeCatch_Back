@@ -63,9 +63,9 @@ public class LhNoticeScheduler {
         List<NoticeDTO> newNotices = updateLhNotices();
 
 //         새로 추가된 notice들에 대해서만 상세 정보 API 호출
-//        for(NoticeDTO notice : newNotices) {
-//            processNoticeDetails(notice);
-//        }
+        for(NoticeDTO notice : newNotices) {
+            processNoticeDetails(notice);
+        }
 
         log.info("=== LH 공고 데이터 업데이트 스케줄러 완료 ===");
     }
