@@ -174,7 +174,7 @@ public class HouseDTO {
     }
 
     public static HouseDTO ofLhRentalHouseVO(LhRentalHouseVO vo) {
-        LhRentalApplyVO apply = vo.getApply();
+        List<LhRentalApplyVO> applyList = vo.getApply();
         LhNoticeVO notice = vo.getNotice();
         List<LhRentalAttVO> lhRentalAttList = vo.getLhRentalAttList();
         List<NoticeAttVO> noticeAttList = vo.getNoticeAttList();
@@ -191,11 +191,11 @@ public class HouseDTO {
                 .noticeUrl(notice != null ? notice.getDtlUrl() : null)
                 .totalSupply(Integer.parseInt(vo.getHshCnt()))
                 .noticeDate(notice != null ? vo.getNotice().getPanNtStDt(): null)
-                .applyBeginDate(apply != null ? DateParser.parseDate(apply.getSbscAcpStDt()) : null)
-                .applyEndDate(apply != null ? DateParser.parseDate(apply.getSbscAcpClsgDt()) : null)
-                .contractBeginDate(apply != null ? apply.getCtrtStDt() : null)
-                .contractEndDate(apply != null ? apply.getCtrtEdDt() : null)
-                .announceDate(apply != null ? apply.getPzwrAncDt() : null)
+                .applyBeginDate(applyList != null && !applyList.isEmpty() ? DateParser.parseDate(applyList.get(0).getSbscAcpStDt()) : null)
+                .applyEndDate(applyList != null && !applyList.isEmpty() ? DateParser.parseDate(applyList.get(0).getSbscAcpClsgDt()) : null)
+                .contractBeginDate(applyList != null && !applyList.isEmpty() ? applyList.get(0).getCtrtStDt() : null)
+                .contractEndDate(applyList != null && !applyList.isEmpty() ? applyList.get(0).getCtrtEdDt() : null)
+                .announceDate(applyList != null && !applyList.isEmpty() ? applyList.get(0).getPzwrAncDt() : null)
                 .moveInMonth(DateParser.parseDate(vo.getMvinXpcYm()))
                 .region(notice != null ? RegionMapper.mapToShortRegion(notice.getCnpCdNm()) : "기타")
                 .address(vo.getLgdnAdr())

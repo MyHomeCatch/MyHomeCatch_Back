@@ -3,6 +3,8 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.scoula.house.mapper.LhRentalHouseMapper">
+
+    <!-- 최적화된 ResultMap - pan_id로만 조회 -->
     <resultMap id="LhRentalHouseResultMap" type="org.scoula.house.domain.LhRentalHouseVO">
         <!-- 임대주택 기본 정보 -->
         <id property="lhRentalId" column="lh_rental_id"/>
@@ -15,31 +17,86 @@
         <result property="htnFmlaDesc" column="htn_fmla_desc"/>
         <result property="mvinXpcYm" column="mvin_xpc_ym"/>
 
-        <!-- 공고 정보 (별도 쿼리로 조회) -->
+        <!-- 공고 정보 (pan_id로 조회) -->
         <association property="notice"
                      javaType="org.scoula.lh.domain.LhNoticeVO"
                      column="pan_id"
                      select="selectNoticeByPanId"/>
 
-        <!-- 신청 정보 (별도 쿼리로 조회) -->
-        <association property="apply"
-                     javaType="org.scoula.lh.domain.rental.LhRentalApplyVO"
-                     column="{panId=pan_id, lccNtNm=lcc_nt_nm}"
-                     select="selectApplyByPanIdAndName"/>
+        <!-- 신청 정보 (pan_id로만 조회) -->
+        <collection property="apply"
+                    ofType="org.scoula.lh.domain.rental.LhRentalApplyVO"
+                    column="pan_id"
+                    select="selectApplyByPanId"/>
 
-        <!-- 공고 첨부파일 (별도 쿼리로 조회) -->
+        <!-- 공고 첨부파일 (pan_id로 조회) -->
         <collection property="noticeAttList"
-                    javaType="org.scoula.lh.domain.NoticeAttVO"
+                    ofType="org.scoula.lh.domain.NoticeAttVO"
                     column="pan_id"
                     select="selectNoticeAttachmentsByPanId"/>
 
+        <!-- 첨부파일 목록 (pan_id로만 조회) -->
+        <collection property="lhRentalAttList"
+                    ofType="org.scoula.lh.domain.rental.LhRentalAttVO"
+                    column="pan_id"
+                    select="selectAttachmentsByPanId"/>
+    </resultMap>
 
-        <!-- 첨부파일 목록 (별도 쿼리로 조회) -->
+    <!-- 배치 처리용 ResultMap - IN절로 한번에 조회 -->
+    <resultMap id="LhRentalHouseBatchResultMap" type="org.scoula.house.domain.LhRentalHouseVO">
+        <!-- 임대주택 기본 정보 -->
+        <id property="lhRentalId" column="lh_rental_id"/>
+        <result property="panId" column="pan_id"/>
+        <result property="lccNtNm" column="lcc_nt_nm"/>
+        <result property="lgdnAdr" column="lgdn_adr"/>
+        <result property="lgdnDtlAdr" column="lgdn_dtl_adr"/>
+        <result property="ddoAr" column="ddo_ar"/>
+        <result property="hshCnt" column="hsh_cnt"/>
+        <result property="htnFmlaDesc" column="htn_fmla_desc"/>
+        <result property="mvinXpcYm" column="mvin_xpc_ym"/>
+
+        <!-- 공고 정보 (배치로 조회) -->
+        <association property="notice"
+                     javaType="org.scoula.lh.domain.LhNoticeVO"
+                     column="pan_id"
+                     select="selectNoticesBatch"/>
+
+        <!-- 신청 정보 (배치로 조회) -->
+        <collection property="apply"
+                    ofType="org.scoula.lh.domain.rental.LhRentalApplyVO"
+                    column="{panId=pan_id, lccNtNm=lcc_nt_nm}"
+                    select="selectApplyBatch"/>
+
+        <!-- 공고 첨부파일 (배치로 조회) -->
+        <collection property="noticeAttList"
+                    ofType="org.scoula.lh.domain.NoticeAttVO"
+                    column="pan_id"
+                    select="selectNoticeAttachmentsBatch"/>
+
+        <!-- 첨부파일 목록 (배치로 조회) -->
         <collection property="lhRentalAttList"
                     ofType="org.scoula.lh.domain.rental.LhRentalAttVO"
                     column="{panId=pan_id, locNtNm=lcc_nt_nm}"
-                    select="selectAttachmentsByPanIdAndName"/>
+                    select="selectAttachmentsBatch"/>
     </resultMap>
+
+    <!-- 최적화된 최근 주택 조회 - 기본 전략: 기존 방식 유지하되 쿼리 최적화 -->
+    <select id="getRecentHouses" resultMap="LhRentalHouseResultMap">
+        SELECT
+            r.lh_rental_id,
+            r.pan_id,
+            r.lcc_nt_nm,
+            r.lgdn_adr,
+            r.lgdn_dtl_adr,
+            r.ddo_ar,
+            r.hsh_cnt,
+            r.htn_fmla_desc,
+            r.mvin_xpc_ym
+        FROM LH_rental r
+                 INNER JOIN LH_notice n ON r.pan_id = n.pan_id
+        ORDER BY n.pan_nt_st_dt DESC
+        LIMIT 10
+    </select>
 
     <!-- 메인 쿼리: 임대주택 기본 정보 조회 -->
     <select id="get" parameterType="int" resultMap="LhRentalHouseResultMap">
@@ -57,36 +114,66 @@
         WHERE lh_rental_id = #{lhRentalId}
     </select>
 
-    <!-- 별도 쿼리 1: 공고 정보 조회 -->
+    <!-- 개별 쿼리들 - pan_id로만 조회 -->
     <select id="selectNoticeByPanId" parameterType="String" resultType="org.scoula.lh.domain.LhNoticeVO">
-        SELECT
-            *
+        SELECT *
         FROM LH_notice
         WHERE pan_id = #{panId}
     </select>
 
     <select id="selectNoticeAttachmentsByPanId" parameterType="String" resultType="org.scoula.lh.domain.NoticeAttVO">
-        SELECT
-            *
+        SELECT *
         FROM LH_notice_att
         WHERE pan_id = #{panId}
     </select>
 
-    <!-- 별도 쿼리 2: 신청 정보 조회 -->
-    <select id="selectApplyByPanIdAndName" resultType="org.scoula.lh.domain.rental.LhRentalApplyVO">
-        SELECT
-            *
+    <select id="selectApplyByPanId" parameterType="String" resultType="org.scoula.lh.domain.rental.LhRentalApplyVO">
+        SELECT *
         FROM LH_rental_apply
         WHERE pan_id = #{panId}
-          AND sbd_lgo_nm = #{lccNtNm}
     </select>
 
-    <!-- 별도 쿼리 3: 첨부파일 목록 조회 -->
-    <select id="selectAttachmentsByPanIdAndName" resultType="org.scoula.lh.domain.rental.LhRentalAttVO">
-        SELECT
-            *
+    <select id="selectAttachmentsByPanId" parameterType="String" resultType="org.scoula.lh.domain.rental.LhRentalAttVO">
+        SELECT *
         FROM LH_rental_att
         WHERE pan_id = #{panId}
-          AND loc_nt_nm = #{locNtNm}
     </select>
+
+    <!-- 배치 처리용 쿼리들 (대용량 처리시 사용) -->
+    <select id="selectNoticesBatch" parameterType="list" resultType="org.scoula.lh.domain.LhNoticeVO">
+        SELECT *
+        FROM LH_notice
+        WHERE pan_id IN
+        <foreach collection="list" item="panId" open="(" separator="," close=")">
+            #{panId}
+        </foreach>
+    </select>
+
+    <select id="selectApplyBatch" parameterType="map" resultType="org.scoula.lh.domain.rental.LhRentalApplyVO">
+        SELECT *
+        FROM LH_rental_apply
+        WHERE (pan_id, sbd_lgo_nm) IN
+        <foreach collection="panIdAndNames" item="item" open="(" separator="," close=")">
+            (#{item.panId}, #{item.lccNtNm})
+        </foreach>
+    </select>
+
+    <select id="selectNoticeAttachmentsBatch" parameterType="list" resultType="org.scoula.lh.domain.NoticeAttVO">
+        SELECT *
+        FROM LH_notice_att
+        WHERE pan_id IN
+        <foreach collection="list" item="panId" open="(" separator="," close=")">
+            #{panId}
+        </foreach>
+    </select>
+
+    <select id="selectAttachmentsBatch" parameterType="map" resultType="org.scoula.lh.domain.rental.LhRentalAttVO">
+        SELECT *
+        FROM LH_rental_att
+        WHERE (pan_id, loc_nt_nm) IN
+        <foreach collection="panIdAndNames" item="item" open="(" separator="," close=")">
+            (#{item.panId}, #{item.locNtNm})
+        </foreach>
+    </select>
+
 </mapper>

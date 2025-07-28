@@ -31,6 +31,6 @@ public class LhRentalHouseVO {
     // 관련 객체들
     private LhNoticeVO notice;                    // 공고 정보 (1:1)
     private List<NoticeAttVO> noticeAttList;      // 공고 첨부파일 (1:N)
-    private LhRentalApplyVO apply;               // 신청 정보 (1:1)
+    private List<LhRentalApplyVO> apply;               // 신청 정보 (1:N)
     private List<LhRentalAttVO> lhRentalAttList;  // 첨부파일 목록 (1:N)
 }
