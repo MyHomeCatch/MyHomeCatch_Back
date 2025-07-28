@@ -72,5 +72,4 @@
             )
         </foreach>
     </insert>
-
 </mapper>

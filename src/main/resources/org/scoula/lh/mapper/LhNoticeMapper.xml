@@ -17,7 +17,8 @@
          dtl_url,
          spl_inf_tp_cd,
          ccr_cnnt_sys_ds_cd,
-         ais_tp_cd)
+         ais_tp_cd,
+         pan_nt_st_dt)
         VALUES (#{panId},
                 #{uppAisTpCd},
                 #{aisTpCdNm},
@@ -28,7 +29,8 @@
                 #{dtlUrl},
                 #{splInfTpCd},
                 #{ccrCnntSysDsCd},
-                #{aisTpCd})
+                #{aisTpCd},
+                #{panNtStDt})
         ON DUPLICATE KEY UPDATE upp_ais_tp_cd      = VALUES(upp_ais_tp_cd),
                                 ais_tp_cd_nm       = VALUES(ais_tp_cd_nm),
                                 pan_nm             = VALUES(pan_nm),
@@ -38,7 +40,8 @@
                                 dtl_url            = VALUES(dtl_url),
                                 spl_inf_tp_cd      = VALUES(spl_inf_tp_cd),
                                 ccr_cnnt_sys_ds_cd = VALUES(ccr_cnnt_sys_ds_cd),
-                                ais_tp_cd          = VALUES(ais_tp_cd);
+                                ais_tp_cd          = VALUES(ais_tp_cd),
+                                pan_nt_st_dt       = VALUES(pan_nt_st_dt);
     </insert>
 
     <insert id="createAll" parameterType="java.util.List">
@@ -53,7 +56,8 @@
         dtl_url,
         spl_inf_tp_cd,
         ccr_cnnt_sys_ds_cd,
-        ais_tp_cd
+        ais_tp_cd,
+        pan_nt_st_dt
         )
         VALUES
         <foreach collection="list" item="item" separator=",">
@@ -68,7 +72,8 @@
             #{item.dtlUrl},
             #{item.splInfTpCd},
             #{item.ccrCnntSysDsCd},
-            #{item.aisTpCd}
+            #{item.aisTpCd},
+            #{item.panNtStDt}
             )
         </foreach>
         ON DUPLICATE KEY UPDATE
@@ -81,14 +86,18 @@
         dtl_url = VALUES(dtl_url),
         spl_inf_tp_cd = VALUES(spl_inf_tp_cd),
         ccr_cnnt_sys_ds_cd = VALUES(ccr_cnnt_sys_ds_cd),
-        ais_tp_cd = VALUES(ais_tp_cd);
+        ais_tp_cd = VALUES(ais_tp_cd),
+        pan_nt_st_dt = VALUES(pan_nt_st_dt);
     </insert>
 
     <select id="getLhNotice" resultType="org.scoula.lh.domain.LhNoticeVO">
-        SELECT * FROM LH_notice WHERE pan_id = #{pandId}
+        SELECT *
+        FROM LH_notice
+        WHERE pan_id = #{pandId}
     </select>
     <select id="getLhNotices" resultType="org.scoula.lh.domain.LhNoticeVO">
-        SELECT * FROM LH_notice
+        SELECT *
+        FROM LH_notice
     </select>
 
     <select id="existsByPanId" resultType="java.lang.Boolean">

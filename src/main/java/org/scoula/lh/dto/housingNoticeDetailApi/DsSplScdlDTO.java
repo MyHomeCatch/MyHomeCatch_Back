@@ -51,10 +51,15 @@ public class DsSplScdlDTO {
      * @return LhHousingApplyVO 객체
      */
     public LhHousingApplyVO toVO(String panId) {
+
+        Date[] parsedDates = parseDateTimeRange(this.acpDttm);
+
         return LhHousingApplyVO.builder()
                 .panId(panId)
                 .hsSbscAcpTrgCdNm(this.hsSbscAcpTrgCdNm)
                 .acpDttm(this.acpDttm)
+                .startDttm(parsedDates[0])
+                .endDttm(parsedDates[1])
                 .rmk(this.rmk)
                 .pzwrAncDt(DateParser.parseDate(this.pzwrAncDt))
                 .pzwrPprSbmStDt(DateParser.parseDate(this.pzwrPprSbmStDt))
@@ -62,5 +67,32 @@ public class DsSplScdlDTO {
                 .ctrtStDt(DateParser.parseDate(this.ctrtStDt))
                 .ctrtEdDt(DateParser.parseDate(this.ctrtEdDt))
                 .build();
+    }
+
+    private Date[] parseDateTimeRange(String acpDttm) {
+        if (acpDttm == null || acpDttm.trim().isEmpty()) {
+            return new Date[]{null, null};
+        }
+
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy.MM.dd HH:mm");
+
+            // "~"로 분리
+            String[] parts = acpDttm.split("~");
+            if (parts.length != 2) {
+                return new Date[]{null, null};
+            }
+
+            String startDateStr = parts[0].trim();
+            String endDateStr = parts[1].trim();
+
+            Date startDate = formatter.parse(startDateStr);
+            Date endDate = formatter.parse(endDateStr);
+
+            return new Date[]{startDate, endDate};
+
+        } catch (ParseException e) {
+            return new Date[]{null, null};
+        }
     }
 }

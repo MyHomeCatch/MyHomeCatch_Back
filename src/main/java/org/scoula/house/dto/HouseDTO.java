@@ -12,6 +12,7 @@ import org.scoula.house.domain.LhRentalHouseVO;
 import org.scoula.house.util.DateParser;
 import org.scoula.house.util.DateRangeParser;
 import org.scoula.house.util.RegionMapper;
+import org.scoula.house.util.SupplyTypeMapper;
 import org.scoula.lh.domain.LhNoticeVO;
 import org.scoula.lh.domain.NoticeAttVO;
 import org.scoula.lh.domain.housing.LhHousingApplyVO;
@@ -159,7 +160,7 @@ public class HouseDTO {
                 .houseName(vo.getBzdtNm())
                 .noticeUrl(notice != null ? notice.getDtlUrl() : null)
                 .totalSupply(Integer.parseInt(vo.getSumTotHshCnt()))
-                .noticeDate(null)
+                .noticeDate(notice != null ? vo.getNotice().getPanNtStDt(): null)
                 .applyBeginDate(applyList != null ? DateRangeParser.parseStartDate(applyList.get(0).getAcpDttm()) : null)
                 .applyEndDate(applyList != null ? DateRangeParser.parseEndDate(applyList.get(0).getAcpDttm()) : null)
                 .contractBeginDate(applyList != null ? applyList.get(0).getCtrtStDt() : null)
@@ -169,14 +170,14 @@ public class HouseDTO {
                 .region(notice != null ? RegionMapper.mapToShortRegion(notice.getCnpCdNm()) : "기타")
                 .address(vo.getLctAraAdr())
                 .houseType("APT")
-                .supplyType("APT")
+                .supplyType(SupplyTypeMapper.getHousingTypeString(notice))
                 .company("LH")
                 .lhHousingDetail(lhHousingDetail)
                 .build();
     }
 
     public static HouseDTO ofLhRentalHouseVO(LhRentalHouseVO vo) {
-        LhRentalApplyVO apply = vo.getApply();
+        List<LhRentalApplyVO> applyList = vo.getApply();
         LhNoticeVO notice = vo.getNotice();
         List<LhRentalAttVO> lhRentalAttList = vo.getLhRentalAttList();
         List<NoticeAttVO> noticeAttList = vo.getNoticeAttList();
@@ -192,17 +193,17 @@ public class HouseDTO {
                 .houseName(vo.getLccNtNm())
                 .noticeUrl(notice != null ? notice.getDtlUrl() : null)
                 .totalSupply(Integer.parseInt(vo.getHshCnt()))
-                .noticeDate(null)
-                .applyBeginDate(apply != null ? DateParser.parseDate(apply.getSbscAcpStDt()) : null)
-                .applyEndDate(apply != null ? DateParser.parseDate(apply.getSbscAcpClsgDt()) : null)
-                .contractBeginDate(apply != null ? apply.getCtrtStDt() : null)
-                .contractEndDate(apply != null ? apply.getCtrtEdDt() : null)
-                .announceDate(apply != null ? apply.getPzwrAncDt() : null)
+                .noticeDate(notice != null ? vo.getNotice().getPanNtStDt(): null)
+                .applyBeginDate(applyList != null && !applyList.isEmpty() ? DateParser.parseDate(applyList.get(0).getSbscAcpStDt()) : null)
+                .applyEndDate(applyList != null && !applyList.isEmpty() ? DateParser.parseDate(applyList.get(0).getSbscAcpClsgDt()) : null)
+                .contractBeginDate(applyList != null && !applyList.isEmpty() ? applyList.get(0).getCtrtStDt() : null)
+                .contractEndDate(applyList != null && !applyList.isEmpty() ? applyList.get(0).getCtrtEdDt() : null)
+                .announceDate(applyList != null && !applyList.isEmpty() ? applyList.get(0).getPzwrAncDt() : null)
                 .moveInMonth(DateParser.parseDate(vo.getMvinXpcYm()))
                 .region(notice != null ? RegionMapper.mapToShortRegion(notice.getCnpCdNm()) : "기타")
                 .address(vo.getLgdnAdr())
                 .houseType("APT")
-                .supplyType("APT")
+                .supplyType(SupplyTypeMapper.getHousingTypeString(notice))
                 .company("LH")
                 .lhRentalDetail(lhRentalDetailDTO)
                 .build();

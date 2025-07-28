@@ -51,6 +51,12 @@ public class LhNoticeSchedulerServiceImp implements LhNoticeSchedulerService {
                     NoticeDTO newNotice = getNotice(apiNotice.getPanId());
                     newNotices.add(newNotice);
                 }
+            } else if(!noticeMapper.getLhNotice(apiNotice.getPanId()).getPanNm().equals(apiNotice.getPanNm())) {
+                int result = create(apiNotice);
+                if (result > 0) {
+                    NoticeDTO newNotice = getNotice(apiNotice.getPanId());
+                    newNotices.add(newNotice);
+                }
             }
         }
 

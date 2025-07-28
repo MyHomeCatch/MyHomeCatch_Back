@@ -39,6 +39,18 @@ public class LhHousingApplyVO {
     private String acpDttm;
 
     /**
+     * 신청 시작일시 (파싱된 데이터)
+     * acpDttm에서 "~" 앞부분을 파싱한 시작 날짜/시간
+     */
+    private Date startDttm;
+
+    /**
+     * 신청 종료일시 (파싱된 데이터)
+     * acpDttm에서 "~" 뒷부분을 파싱한 종료 날짜/시간
+     */
+    private Date endDttm;
+
+    /**
      * 신청방법
      * 예시: "인터넷접수"
      */
