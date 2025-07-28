@@ -4,49 +4,140 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="org.scoula.house.mapper.ApplyHomeOfficetelDetailMapper">
+    <resultMap id="OfficetelHouseVO" type="org.scoula.house.domain.ApplyHomeOfficetelHouseVO">
+        <id property="pblancNo" column="O_PBLANC_NO"/>
+        <result property="bsnsMbyNm" column="O_BSNS_MBY_NM"/>
+        <result property="cntrctCnclsBgnde" column="O_CNTRCT_CNCLS_BGNDE"/>
+        <result property="cntrctCnclsEndde" column="O_CNTRCT_CNCLS_ENDDE"/>
+        <result property="hmpgAdres" column="O_HMPG_ADRES"/>
+        <result property="houseDtlSecd" column="O_HOUSE_DTL_SECD"/>
+        <result property="houseDtlSecdNm" column="O_HOUSE_DTL_SECD_NM"/>
+        <result property="houseManageNo" column="O_HOUSE_MANAGE_NO"/>
+        <result property="houseNm" column="O_HOUSE_NM"/>
+        <result property="houseSecd" column="O_HOUSE_SECD"/>
+        <result property="houseSecdNm" column="O_HOUSE_SECD_NM"/>
+        <result property="hssplyAdres" column="O_HSSPLY_ADRES"/>
+        <result property="hssplyZip" column="O_HSSPLY_ZIP"/>
+        <result property="mdhsTelno" column="O_MDHS_TELNO"/>
+        <result property="mvnPrearngeYm" column="O_MVN_PREARNGE_YM"/>
+        <result property="nsprcNm" column="O_NSPRC_NM"/>
+        <result property="pblancUrl" column="O_PBLANC_URL"/>
+        <result property="przwnerPresnatnDe" column="O_PRZWNER_PRESNATN_DE"/>
+        <result property="rcritPblancDe" column="O_RCRIT_PBLANC_DE"/>
+        <result property="searchHouseSecd" column="O_SEARCH_HOUSE_SECD"/>
+        <result property="subscrptAreaCode" column="O_SUBSCRPT_AREA_CODE"/>
+        <result property="subscrptAreaCodeNm" column="O_SUBSCRPT_AREA_CODE_NM"/>
+        <result property="subscrptRceptBgnde" column="O_SUBSCRPT_RCEPT_BGNDE"/>
+        <result property="subscrptRceptEndde" column="O_SUBSCRPT_RCEPT_ENDDE"/>
+        <result property="totSuplyHshldco" column="O_TOT_SUPLY_HSHLDCO"/>
+
+        <collection property="details" resultMap="ApplyHomeOfficetelDetailDTOMap"/>
+    </resultMap>
+
     <resultMap id="OfficetelCmpet" type="org.scoula.chapi.dto.CHOfficetelCmpetDTO">
-        <id property="cmpetUid" column="CMPET_UID"/>
-        <result property="cmpetRate" column="CMPET_RATE"/>
-        <result property="houseManageNo" column="HOUSE_MANAGE_NO"/>
-        <result property="houseTy" column="HOUSE_TY"/>
-        <result property="modelNo" column="MODEL_NO"/>
-        <result property="pblancNo" column="PBLANC_NO"/>
-        <result property="reqCnt" column="REQ_CNT"/>
-        <result property="residntPriorAt" column="RESIDNT_PRIOR_AT"/>
-        <result property="residntPriorSenm" column="RESIDNT_PRIOR_SENM"/>
-        <result property="suplyHshldco" column="SUPLY_HSHLDCO"/>
+        <id property="cmpetUid" column="C_CMPET_UID"/>
+        <result property="cmpetRate" column="C_CMPET_RATE"/>
+        <result property="houseManageNo" column="C_HOUSE_MANAGE_NO"/>
+        <result property="houseTy" column="C_HOUSE_TY"/>
+        <result property="modelNo" column="C_MODEL_NO"/>
+        <result property="pblancNo" column="C_PBLANC_NO"/>
+        <result property="reqCnt" column="C_REQ_CNT"/>
+        <result property="residntPriorAt" column="C_RESIDNT_PRIOR_AT"/>
+        <result property="residntPriorSenm" column="C_RESIDNT_PRIOR_SENM"/>
+        <result property="suplyHshldco" column="C_SUPLY_HSHLDCO"/>
     </resultMap>
 
     <resultMap id="ApplyHomeOfficetelDetailDTOMap" type="org.scoula.house.dto.ApplyHomeOfficetelDetailDTO">
-        <id property="modelUid" column="MODEL_UID"/>
-        <result property="excluseAr" column="EXCLUSE_AR"/>
-        <result property="gp" column="GP"/>
-        <result property="houseManageNo" column="HOUSE_MANAGE_NO"/>
-        <result property="modelNo" column="MODEL_NO"/>
-        <result property="pblancNo" column="PBLANC_NO"/>
-        <result property="subscrptReqstAmount" column="SUBSCRPT_REQST_AMOUNT"/>
-        <result property="suplyAmount" column="SUPLY_AMOUNT"/>
-        <result property="suplyHshldco" column="SUPLY_HSHLDCO"/>
-        <result property="tp" column="TP"/>
+        <id property="modelUid" column="M_MODEL_UID"/>
+        <result property="excluseAr" column="M_EXCLUSE_AR"/>
+        <result property="gp" column="M_GP"/>
+        <result property="houseManageNo" column="M_HOUSE_MANAGE_NO"/>
+        <result property="modelNo" column="M_MODEL_NO"/>
+        <result property="pblancNo" column="M_PBLANC_NO"/>
+        <result property="subscrptReqstAmount" column="M_SUBSCRPT_REQST_AMOUNT"/>
+        <result property="suplyAmount" column="M_SUPLY_AMOUNT"/>
+        <result property="suplyHshldco" column="M_SUPLY_HSHLDCO"/>
+        <result property="tp" column="M_TP"/>
 
         <collection property="cmpetList" resultMap="OfficetelCmpet"/>
     </resultMap>
 
-    <select id="getApplyHomeOfficetelDetail" resultMap="ApplyHomeOfficetelDetailDTOMap" parameterType="String">
+
+
+<!--    <select id="get" resultMap="ApplyHomeOfficetelDetailDTOMap" parameterType="String">-->
+<!--        SELECT-->
+<!--            T1.MODEL_UID, T1.EXCLUSE_AR, T1.GP, T1.HOUSE_MANAGE_NO, T1.MODEL_NO, T1.PBLANC_NO,-->
+<!--            T1.SUBSCRPT_REQST_AMOUNT, T1.SUPLY_AMOUNT, T1.SUPLY_HSHLDCO, T1.TP,-->
+<!--            T2.CMPET_UID, T2.CMPET_RATE, T2.HOUSE_TY, T2.REQ_CNT, T2.RESIDNT_PRIOR_AT,-->
+<!--            T2.RESIDNT_PRIOR_SENM, T2.SUPLY_HSHLDCO-->
+<!--        FROM-->
+<!--            APPLYHOME_officetel_model T1-->
+<!--                LEFT JOIN-->
+<!--            APPLYHOME_officetel_cmpet T2 ON T1.PBLANC_NO = T2.PBLANC_NO-->
+<!--                AND T1.HOUSE_MANAGE_NO = T2.HOUSE_MANAGE_NO-->
+<!--                AND T1.MODEL_NO = T2.MODEL_NO-->
+<!--        WHERE-->
+<!--            T1.PBLANC_NO = #{pblancNo}-->
+<!--        ORDER BY T1.MODEL_NO, T2.RESIDNT_PRIOR_AT DESC-->
+<!--    </select>-->
+
+    <select id="get" resultMap="OfficetelHouseVO">
         SELECT
-            T1.MODEL_UID, T1.EXCLUSE_AR, T1.GP, T1.HOUSE_MANAGE_NO, T1.MODEL_NO, T1.PBLANC_NO,
-            T1.SUBSCRPT_REQST_AMOUNT, T1.SUPLY_AMOUNT, T1.SUPLY_HSHLDCO, T1.TP,
-            T2.CMPET_UID, T2.CMPET_RATE, T2.HOUSE_TY, T2.REQ_CNT, T2.RESIDNT_PRIOR_AT,
-            T2.RESIDNT_PRIOR_SENM, T2.SUPLY_HSHLDCO
-        FROM
-            APPLYHOME_officetel_model T1
-                LEFT JOIN
-            APPLYHOME_officetel_cmpet T2 ON T1.PBLANC_NO = T2.PBLANC_NO
-                AND T1.HOUSE_MANAGE_NO = T2.HOUSE_MANAGE_NO
-                AND T1.MODEL_NO = T2.MODEL_NO
-        WHERE
-            T1.PBLANC_NO = #{pblancNo}
-        ORDER BY T1.MODEL_NO, T2.RESIDNT_PRIOR_AT DESC
+            -- Officetel basic info (aliased with O_)
+            O.PBLANC_NO AS O_PBLANC_NO,
+            O.BSNS_MBY_NM AS O_BSNS_MBY_NM,
+            O.CNTRCT_CNCLS_BGNDE AS O_CNTRCT_CNCLS_BGNDE,
+            O.CNTRCT_CNCLS_ENDDE AS O_CNTRCT_CNCLS_ENDDE,
+            O.HMPG_ADRES AS O_HMPG_ADRES,
+            O.HOUSE_DTL_SECD AS O_HOUSE_DTL_SECD,
+            O.HOUSE_DTL_SECD_NM AS O_HOUSE_DTL_SECD_NM,
+            O.HOUSE_MANAGE_NO AS O_HOUSE_MANAGE_NO,
+            O.HOUSE_NM AS O_HOUSE_NM,
+            O.HOUSE_SECD AS O_HOUSE_SECD,
+            O.HOUSE_SECD_NM AS O_HOUSE_SECD_NM,
+            O.HSSPLY_ADRES AS O_HSSPLY_ADRES,
+            O.HSSPLY_ZIP AS O_HSSPLY_ZIP,
+            O.MDHS_TELNO AS O_MDHS_TELNO,
+            O.MVN_PREARNGE_YM AS O_MVN_PREARNGE_YM,
+            O.NSPRC_NM AS O_NSPRC_NM,
+            O.PBLANC_URL AS O_PBLANC_URL,
+            O.PRZWNER_PRESNATN_DE AS O_PRZWNER_PRESNATN_DE,
+            O.RCRIT_PBLANC_DE AS O_RCRIT_PBLANC_DE,
+            O.SEARCH_HOUSE_SECD AS O_SEARCH_HOUSE_SECD,
+            O.SUBSCRPT_AREA_CODE AS O_SUBSCRPT_AREA_CODE,
+            O.SUBSCRPT_AREA_CODE_NM AS O_SUBSCRPT_AREA_CODE_NM,
+            O.SUBSCRPT_RCEPT_BGNDE AS O_SUBSCRPT_RCEPT_BGNDE,
+            O.SUBSCRPT_RCEPT_ENDDE AS O_SUBSCRPT_RCEPT_ENDDE,
+            O.TOT_SUPLY_HSHLDCO AS O_TOT_SUPLY_HSHLDCO,
+
+            -- Officetel model info (aliased with M_)
+            M.MODEL_UID AS M_MODEL_UID,
+            M.EXCLUSE_AR AS M_EXCLUSE_AR,
+            M.GP AS M_GP,
+            M.HOUSE_MANAGE_NO AS M_HOUSE_MANAGE_NO,
+            M.MODEL_NO AS M_MODEL_NO,
+            M.PBLANC_NO AS M_PBLANC_NO,
+            M.SUBSCRPT_REQST_AMOUNT AS M_SUBSCRPT_REQST_AMOUNT,
+            M.SUPLY_AMOUNT AS M_SUPLY_AMOUNT,
+            M.SUPLY_HSHLDCO AS M_SUPLY_HSHLDCO,
+            M.TP AS M_TP,
+
+            -- Officetel competition info (aliased with C_)
+            C.CMPET_UID AS C_CMPET_UID,
+            C.CMPET_RATE AS C_CMPET_RATE,
+            C.HOUSE_MANAGE_NO AS C_HOUSE_MANAGE_NO,
+            C.HOUSE_TY AS C_HOUSE_TY,
+            C.MODEL_NO AS C_MODEL_NO,
+            C.PBLANC_NO AS C_PBLANC_NO,
+            C.REQ_CNT AS C_REQ_CNT,
+            C.RESIDNT_PRIOR_AT AS C_RESIDNT_PRIOR_AT,
+            C.RESIDNT_PRIOR_SENM AS C_RESIDNT_PRIOR_SEMN,
+            C.SUPLY_HSHLDCO AS C_SUPLY_HSHLDCO
+        FROM APPLYHOME_officetel O
+                 LEFT JOIN APPLYHOME_officetel_model M ON O.PBLANC_NO = M.PBLANC_NO
+                 LEFT JOIN APPLYHOME_officetel_cmpet C ON O.PBLANC_NO = C.PBLANC_NO AND M.MODEL_NO = C.MODEL_NO
+        WHERE O.PBLANC_NO = #{pblancNo}
+        ORDER BY O.PBLANC_NO, M.MODEL_NO, C.RESIDNT_PRIOR_AT DESC
     </select>
 
 </mapper>

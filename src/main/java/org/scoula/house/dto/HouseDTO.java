@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.scoula.chapi.dto.CHOfficetelDTO;
+import org.scoula.chapi.mapper.OfficetelDBMapper;
+import org.scoula.house.domain.ApplyHomeOfficetelHouseVO;
 import org.scoula.house.domain.LhHousingHouseVO;
 import org.scoula.house.domain.LhRentalHouseVO;
 import org.scoula.house.util.DateParser;
@@ -202,6 +205,28 @@ public class HouseDTO {
                 .supplyType("APT")
                 .company("LH")
                 .lhRentalDetail(lhRentalDetailDTO)
+                .build();
+    }
+
+    public static HouseDTO ofApplyHomeOfficetelHouseVO(ApplyHomeOfficetelHouseVO vo) {
+        return HouseDTO.builder()
+                .houseId("ahOfficetel-"+vo.getPblancNo())
+                .houseName(vo.getHouseNm())
+                .noticeUrl(vo.getPblancUrl())
+                .totalSupply(vo.getTotSuplyHshldco())
+                .noticeDate(vo.getRcritPblancDe())
+                .applyBeginDate(vo.getSubscrptRceptBgnde())
+                .applyEndDate(vo.getSubscrptRceptEndde())
+                .contractBeginDate(vo.getCntrctCnclsBgnde())
+                .contractEndDate(vo.getCntrctCnclsEndde())
+                .announceDate(vo.getPrzwnerPresnatnDe())
+                .moveInMonth(DateParser.parseDate(vo.getMvnPrearngeYm()))
+                .region(vo.getSubscrptAreaCodeNm())
+                .address(vo.getHssplyAdres())
+                .houseType("준주택")
+                .supplyType(vo.getHouseSecdNm())
+                .company(vo.getBsnsMbyNm())
+                .applyHomeOfficetelDetails(vo.getDetails())
                 .build();
     }
 }

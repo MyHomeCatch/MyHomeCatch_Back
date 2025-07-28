@@ -3,6 +3,7 @@ package org.scoula.house.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.scoula.house.dto.HouseDTO;
+import org.scoula.house.mapper.ApplyHomeOfficetelDetailMapper;
 import org.scoula.house.mapper.LhHousingHouseMapper;
 import org.scoula.house.mapper.LhRentalHouseMapper;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ public class HouseServiceImp implements HouseService {
 
     private final LhRentalHouseMapper lhRentalHouseMapper;
     private final LhHousingHouseMapper lhHousingHouseMapper;
+    private final ApplyHomeOfficetelDetailMapper applyHomeOfficetelDetailMapper;
 
     @Override
     public HouseDTO getHouse(String houseId) {
@@ -29,6 +31,10 @@ public class HouseServiceImp implements HouseService {
 
         if(table.equals("lhhousing")) {
             return HouseDTO.ofLhHousingHouseVO(lhHousingHouseMapper.get(Integer.parseInt(id)));
+        }
+
+        if(table.equals("ahOfficetel")) {
+            return HouseDTO.ofApplyHomeOfficetelHouseVO(applyHomeOfficetelDetailMapper.get(id));
         }
 
         return null;
