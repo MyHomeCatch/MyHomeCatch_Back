@@ -9,12 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.scoula.lh.dto.*;
 import org.scoula.lh.dto.housingNoticeDetailApi.*;
-import org.scoula.lh.dto.lhHousing.LhHousingApplyDTO;
-import org.scoula.lh.dto.lhHousing.LhHousingAttDTO;
-import org.scoula.lh.dto.lhHousing.LhHousingDTO;
-import org.scoula.lh.dto.lhRental.LhRentalApplyDTO;
-import org.scoula.lh.dto.lhRental.LhRentalAttDTO;
-import org.scoula.lh.dto.lhRental.LhRentalDTO;
 import org.scoula.lh.dto.rentalNoticeDetailApi.RentalDsSbdAhflDTO;
 import org.scoula.lh.dto.rentalNoticeDetailApi.RentalDsSbdDTO;
 import org.scoula.lh.dto.rentalNoticeDetailApi.RentalDsSplScdlDTO;
@@ -58,26 +52,27 @@ public class LhNoticeScheduler {
     private final LhRentalApplyService lhRentalApplyService;
     private final LhRentalAttService lhRentalAttService;
 
-    //    @Scheduled(cron = "0/20 * * * * ?")  // 초 분 시 일 월 요일 (6개 필드!)
-//    @Scheduled(fixedDelay = 6000000, initialDelay = 0)
-    @Scheduled(cron = "0 0 2 * * *")
+    private final int NUMBER_OF_PAGE = 35;
+
+//        @Scheduled(fixedDelay = 6000000, initialDelay = 0)
+    @Scheduled(cron = "0 0,30 * * * *") // 매시 0분, 30분
     public void schedule() {
         log.info("=== LH 공고 데이터 업데이트 스케줄러 시작 ===");
 
         // 새로 추가된 notice들만 반환받도록 수정
         List<NoticeDTO> newNotices = updateLhNotices();
 
-        // 새로 추가된 notice들에 대해서만 상세 정보 API 호출
-        for(NoticeDTO notice : newNotices) {
-            processNoticeDetails(notice);
-        }
+//         새로 추가된 notice들에 대해서만 상세 정보 API 호출
+//        for(NoticeDTO notice : newNotices) {
+//            processNoticeDetails(notice);
+//        }
 
         log.info("=== LH 공고 데이터 업데이트 스케줄러 완료 ===");
     }
 
     public List<NoticeDTO> updateLhNotices() {
         try {
-            List<NoticeApiDTO> allNotices = fetchLhNotice(10);
+            List<NoticeApiDTO> allNotices = fetchLhNotice(NUMBER_OF_PAGE);
             if (allNotices == null || allNotices.isEmpty()) {
                 log.warn("가져온 공고 데이터가 없습니다.");
                 return new ArrayList<>();
@@ -85,9 +80,9 @@ public class LhNoticeScheduler {
 
             // 새로 추가된 notice들만 반환
             List<NoticeDTO> newNotices = lhNoticeSchedulerService.createAllAndReturnNew(allNotices);
+
             log.info("새로 추가된 공고 수: {}", newNotices.size());
             return newNotices;
-
         } catch (Exception e) {
             log.error("스케줄러 실행 중 오류 발생: {}", e.getMessage(), e);
             return new ArrayList<>();
@@ -115,6 +110,7 @@ public class LhNoticeScheduler {
 
             if (noticeDetail == null) {
                 log.warn("주택 공고 상세 정보를 가져올 수 없음: {}", notice.getPanId());
+                log.warn(notice);
                 return;
             }
 

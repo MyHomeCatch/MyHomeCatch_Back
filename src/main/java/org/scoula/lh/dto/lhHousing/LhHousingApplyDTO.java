@@ -38,6 +38,18 @@ public class LhHousingApplyDTO {
     private String applyDateRange;
 
     /**
+     * 신청 시작일시 (파싱된 데이터)
+     * acpDttm에서 "~" 앞부분을 파싱한 시작 날짜/시간
+     */
+    private Date applyStartDate;
+
+    /**
+     * 신청 종료일시 (파싱된 데이터)
+     * acpDttm에서 "~" 뒷부분을 파싱한 종료 날짜/시간
+     */
+    private Date applyEndDate;
+
+    /**
      * 신청방법
      * 예시: "인터넷접수"
      */
@@ -79,6 +91,8 @@ public class LhHousingApplyDTO {
                 .panId(vo.getPanId())
                 .supplyType(vo.getHsSbscAcpTrgCdNm())
                 .applyDateRange(vo.getAcpDttm())
+                .applyStartDate(vo.getStartDttm())
+                .applyEndDate(vo.getEndDttm())
                 .applyMethod(vo.getRmk())
                 .annouceDate(vo.getPzwrAncDt())
                 .docSubmitStartDate(vo.getPzwrPprSbmStDt())
@@ -98,6 +112,8 @@ public class LhHousingApplyDTO {
                 .panId(this.panId)
                 .hsSbscAcpTrgCdNm(this.supplyType)
                 .acpDttm(this.applyDateRange)
+                .startDttm(this.applyStartDate)
+                .endDttm(this.applyEndDate)
                 .rmk(this.applyMethod)
                 .pzwrAncDt(this.annouceDate)
                 .pzwrPprSbmStDt(this.docSubmitStartDate)
@@ -106,5 +122,4 @@ public class LhHousingApplyDTO {
                 .ctrtEdDt(this.contractEndDate)
                 .build();
     }
-
 }

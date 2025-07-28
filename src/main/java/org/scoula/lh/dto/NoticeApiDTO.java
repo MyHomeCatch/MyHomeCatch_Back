@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.scoula.house.util.DateParser;
 import org.scoula.lh.domain.LhNoticeVO;
 
 @Data
@@ -76,6 +77,7 @@ public class NoticeApiDTO {
                 .splInfTpCd(this.splInfTpCd)
                 .ccrCnntSysDsCd(this.ccrCnntSysDsCd)
                 .aisTpCd(this.aisTpCd)
+                .panNtStDt(DateParser.parseDate(this.panNtStDt))
                 .build();
     }
 }

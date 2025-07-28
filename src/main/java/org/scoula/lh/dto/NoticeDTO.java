@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.scoula.lh.domain.LhNoticeVO;
 
+import java.util.Date;
+
 
 @Data
 @AllArgsConstructor
@@ -23,6 +25,7 @@ public class NoticeDTO {
     private String splInfTpCd;
     private String ccrCnntSysDsCd;
     private String aisTpCd;
+    private Date noticeDate;
 
     public static NoticeDTO of(LhNoticeVO vo) {
         return NoticeDTO.builder()
@@ -37,6 +40,7 @@ public class NoticeDTO {
                 .splInfTpCd(vo.getSplInfTpCd())
                 .ccrCnntSysDsCd(vo.getCcrCnntSysDsCd())
                 .aisTpCd(vo.getAisTpCd())
+                .noticeDate(vo.getPanNtStDt())
                 .build();
     }
 
