@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.scoula.house.mapper.LhHousingHouseMapper">
+    <!-- 주택 상세정보 ResultMap -->
+    <resultMap id="housingDetailResultMap" type="org.scoula.house.domain.LhHousingHouseVO">
+        <!-- LH_housing 기본 정보 -->
+        <id property="lhHousingId" column="lh_housing_id"/>
+        <result property="panId" column="pan_id"/>
+        <result property="bzdtNm" column="bzdt_nm"/>
+        <result property="lctAraAdr" column="lct_ara_adr"/>
+        <result property="lctAraDtlAdr" column="lct_ara_dtl_adr"/>
+        <result property="minMaxRsdnDdoAr" column="min_max_rsdn_ddo_ar"/>
+        <result property="sumTotHshCnt" column="sum_tot_hsh_cnt"/>
+        <result property="htnFmlaDsCdNm" column="htn_fmla_ds_cd_nm"/>
+        <result property="mvinXpcYm" column="mvin_xpc_ym"/>
+
+        <!-- 공고 정보 (별도 쿼리로 조회) -->
+        <association property="notice"
+                     javaType="org.scoula.lh.domain.LhNoticeVO"
+                     column="pan_id"
+                     select="selectNoticeByPanId"/>
+
+        <!-- 신청 정보 리스트 (별도 쿼리로 조회) -->
+        <collection property="applyList"
+                    ofType="org.scoula.lh.domain.housing.LhHousingApplyVO"
+                    column="pan_id"
+                    select="selectHousingApplyByPanId"/>
+
+        <!-- 공고 첨부파일 리스트 (별도 쿼리로 조회) -->
+        <collection property="noticeAttList"
+                    ofType="org.scoula.lh.domain.NoticeAttVO"
+                    column="pan_id"
+                    select="selectNoticeAttByPanId"/>
+
+        <!-- 주택 첨부파일 리스트 (별도 쿼리로 조회) -->
+        <collection property="housingAttList"
+                    ofType="org.scoula.lh.domain.housing.LhHousingAttVO"
+                    column="pan_id"
+                    select="selectHousingAttByPanId"/>
+    </resultMap>
+
+    <!-- 메인 쿼리: 주택 기본 정보 조회 -->
+    <select id="get" parameterType="int" resultMap="housingDetailResultMap">
+        SELECT
+            *
+        FROM LH_housing
+        WHERE lh_housing_id = #{lhHousinglId}
+    </select>
+
+    <!-- 별도 쿼리 1: 공고 정보 조회 -->
+    <select id="selectNoticeByPanId" parameterType="String" resultType="org.scoula.lh.domain.LhNoticeVO">
+        SELECT
+           *
+        FROM LH_notice
+        WHERE pan_id = #{panId}
+    </select>
+
+    <!-- 별도 쿼리 2: 주택 신청 정보 조회 -->
+    <select id="selectHousingApplyByPanId" parameterType="String" resultType="org.scoula.lh.domain.housing.LhHousingApplyVO">
+        SELECT
+            *
+        FROM LH_housing_apply
+        WHERE pan_id = #{panId}
+    </select>
+
+    <!-- 별도 쿼리 3: 공고 첨부파일 조회 -->
+    <select id="selectNoticeAttByPanId" parameterType="String" resultType="org.scoula.lh.domain.NoticeAttVO">
+        SELECT
+            *
+        FROM LH_notice_att
+        WHERE pan_id = #{panId}
+    </select>
+
+    <!-- 별도 쿼리 4: 주택 첨부파일 조회 -->
+    <select id="selectHousingAttByPanId" parameterType="String" resultType="org.scoula.lh.domain.housing.LhHousingAttVO">
+        SELECT
+            *
+        FROM LH_housing_att
+        WHERE pan_id = #{panId}
+    </select>
+
+</mapper>

@@ -35,7 +35,7 @@
 
 
         <!-- 첨부파일 목록 (별도 쿼리로 조회) -->
-        <collection property="attachmentList"
+        <collection property="lhRentalAttList"
                     ofType="org.scoula.lh.domain.rental.LhRentalAttVO"
                     column="{panId=pan_id, locNtNm=lcc_nt_nm}"
                     select="selectAttachmentsByPanIdAndName"/>
@@ -78,7 +78,7 @@
     <select id="selectNoticeAttachmentsByPanId" parameterType="String" resultType="org.scoula.lh.domain.NoticeAttVO">
         SELECT
             *
-        FROM LH_rental_att
+        FROM LH_notice_att
         WHERE pan_id = #{panId}
     </select>
 
