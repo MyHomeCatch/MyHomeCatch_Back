@@ -71,6 +71,13 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-annotations:2.15.0'
     implementation 'com.fasterxml.jackson.core:jackson-core:2.15.0'
 
+    // https://mvnrepository.com/artifact/net.coobird/thumbnailator
+    implementation("net.coobird:thumbnailator:0.4.20")
+
+    // 이미지 태그 파싱용
+    // https://mvnrepository.com/artifact/org.jsoup/jsoup
+    implementation 'org.jsoup:jsoup:1.17.2'
+
     // 보안
     implementation("org.springframework.security:spring-security-web:${springSecurityVersion}")
     implementation("org.springframework.security:spring-security-config:${springSecurityVersion}")
