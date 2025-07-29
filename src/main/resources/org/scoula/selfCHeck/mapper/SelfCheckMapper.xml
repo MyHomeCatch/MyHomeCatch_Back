@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.scoula.selfCheck.mapper.SelfCheckMapper">
+    <insert id="insertResult">
+        INSERT INTO self_check_result (user_id, result)
+        VALUES (#{userId}, #{result});
+    </insert>
+
+    <delete id="deleteByUserId">
+        DELETE
+        FROM self_check_result
+        WHERE user_id = #{userId};
+    </delete>
+
+    <select id="findResultsByUserId" resultType="java.lang.String">
+        SELECT result
+        FROM self_check_result
+        WHERE user_id = #{userId};
+    </select>
+</mapper>
