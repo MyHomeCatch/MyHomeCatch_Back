@@ -12,8 +12,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
-    private final AuthMapper authMapper;
-    private final PasswordEncoder passwordEncoder;
+    private final AuthMapper authMapper; // 사용자 데이터베이스 접근을 위한 매퍼
+    private final PasswordEncoder passwordEncoder; // 비밀번호 암호화를 위한 인코더 (Spring Security 사용 시)
+
 
     @Override
     public UserInfoDto findUserInfoByEmail(String email) {
@@ -31,6 +32,7 @@ public class MemberServiceImpl implements MemberService {
                 .build();
     }
 
+
     @Override
     @Transactional
     public void updateUserInfo(UserInfoDto userInfoDto) {
@@ -40,8 +42,6 @@ public class MemberServiceImpl implements MemberService {
             throw new IllegalArgumentException("업데이트할 사용자를 찾을 수 없습니다: " + userInfoDto.getEmail());
         }
 
-        // 1. 현재 비밀번호 검증 (필수)
-        // 프론트엔드에서 모든 업데이트 요청에 currentPassword를 보내도록 했으므로, 여기서 검증합니다.
         if (userInfoDto.getCurrentPassword() == null || userInfoDto.getCurrentPassword().isEmpty()) {
             throw new IllegalArgumentException("회원 정보를 수정하려면 현재 비밀번호를 입력해야 합니다.");
         }
@@ -49,7 +49,6 @@ public class MemberServiceImpl implements MemberService {
             throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
         }
 
-        // 2. 다른 정보 업데이트
         if (userInfoDto.getNickname() != null) {
             existingUser.setNickname(userInfoDto.getNickname());
         }
@@ -57,11 +56,16 @@ public class MemberServiceImpl implements MemberService {
             existingUser.setAddress(userInfoDto.getAddress());
         }
 
-        // 3. 새 비밀번호 업데이트 (newPassword로 변경)
+
         if (userInfoDto.getNewPassword() != null && !userInfoDto.getNewPassword().isEmpty()) {
+            if (passwordEncoder.matches(userInfoDto.getNewPassword(), existingUser.getPassword())) {
+                throw new IllegalArgumentException("새 비밀번호는 현재 비밀번호와 달라야 합니다.");
+            }
+
             existingUser.setPassword(passwordEncoder.encode(userInfoDto.getNewPassword()));
         }
 
-        authMapper.update(existingUser); // AuthMapper에 update 메서드가 있다고 가정
+
+        authMapper.update(existingUser);
     }
 }
