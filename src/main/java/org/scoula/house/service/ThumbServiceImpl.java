@@ -12,6 +12,7 @@ import org.scoula.house.domain.ThumbVO;
 import org.scoula.house.dto.ThumbDTO;
 import org.scoula.house.mapper.ThumbMapper;
 import org.scoula.lh.domain.housing.LhHousingAttVO;
+import org.scoula.lh.domain.rental.LhRentalAttVO;
 import org.scoula.lh.dto.lhHousing.LhHousingAttDTO;
 import org.scoula.lh.dto.lhRental.LhRentalAttDTO;
 import org.springframework.beans.factory.annotation.Value;
@@ -93,4 +94,45 @@ public class ThumbServiceImpl implements ThumbService {
 
     }
 
+    @Override
+    public String createRentalThumb(LhRentalAttVO vo) {
+
+        LhRentalAttDTO dto = LhRentalAttDTO.of(vo);
+        String pageUrl = dto.getDownloadUrl();
+
+        disableSSLCertificateChecking();
+
+        try {
+            // 1. Jsoup으로 진짜 이미지 src 데이터 가져오기
+            Document doc = (Document) Jsoup.connect(pageUrl).get();
+            Element img = doc.selectFirst("img");
+            if (img == null) {
+                System.err.println("이미지 태그를 찾을 수 없습니다: " + pageUrl);
+                return null;
+            }
+
+            // 2. <img> 태그의 'src' 속성 값
+            // 예: /upload/Files/... .jpg
+            String relativeUrl = img.attr("src");
+
+            // 3. 상대 경로 앞에 도메인을 붙여 전체 URL 만들기
+            String absoluteUrl = DOMAIN + relativeUrl;
+
+            ThumbVO result = ThumbVO.builder().
+                    panId(dto.getPanId())
+                    .district(dto.getHouseName())
+                    .flDsCdNm(dto.getFileTypeName())
+                    .imgPath(absoluteUrl)
+                    .build();
+
+            mapper.create(result);
+
+            return absoluteUrl;
+
+        } catch (IOException e) {
+            System.err.println("페이지 파싱 중 오류 발생: " + pageUrl);
+            throw new RuntimeException(e);
+        }
+
+    }
 }

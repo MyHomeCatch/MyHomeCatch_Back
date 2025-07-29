@@ -95,3 +95,10 @@ CREATE TABLE APPLYHOME_APT_special (
                                            UNIQUE (PBLANC_NO, MODEL_NO)
 );
 
+-- 삭제할 행들을 확인하는 SELECT 문 (안전하게 먼저 실행)
+SELECT t1.*
+FROM lh_thumb t1
+         INNER JOIN lh_thumb t2
+WHERE
+    t1.att_id > t2.att_id AND  -- id가 더 큰 쪽을 중복으로 간주
+    t1.pan_id = t2.pan_id AND t1.district = t2.district AND t1.fl_ds_cd_nm = t2.fl_ds_cd_nm;

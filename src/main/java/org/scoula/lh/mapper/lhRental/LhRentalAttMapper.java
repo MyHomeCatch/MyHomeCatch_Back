@@ -7,5 +7,6 @@ import java.util.List;
 public interface LhRentalAttMapper {
     int create(LhRentalAttVO lhRentalAttVO);
     List<LhRentalAttVO> getByPanId(String panId);
+    List<LhRentalAttVO> getAll();
     LhRentalAttVO getById(Integer id);
 }
