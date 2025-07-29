@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.scoula.house.mapper.HouseFilterMapper">
+
+    <!-- 통합 주택 정보 조회 -->
+    <select id="getHousingList" parameterType="org.scoula.house.dto.HousePage.HouseSearchRequestDTO"
+            resultType="org.scoula.house.domain.HouseCardVO">
+        <![CDATA[
+        WITH filtered_notices AS (
+            SELECT pan_id, ais_tp_cd_nm, pan_ss, cnp_cd_nm, pan_nt_st_dt
+            FROM LH_notice
+            WHERE pan_nt_st_dt >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+        ]]>
+        <if test="cnpCdNm != null and cnpCdNm != ''">
+            AND cnp_cd_nm = #{cnpCdNm}
+        </if>
+        <if test="aisTpCdNm != null and aisTpCdNm != ''">
+            AND ais_tp_cd_nm = #{aisTpCdNm}
+        </if>
+        <if test="panSs != null and panSs != ''">
+            AND pan_ss = #{panSs}
+        </if>
+        <![CDATA[
+        )
+        SELECT * FROM (
+            SELECT
+                concat('lhhousing-', lh_housing_id) as house_id,
+                bzdt_nm,
+                lct_ara_adr,
+                sum_tot_hsh_cnt,
+                min_max_rsdn_ddo_ar,
+                n.ais_tp_cd_nm,
+                n.pan_ss,
+                n.cnp_cd_nm,
+                n.pan_nt_st_dt,
+                a.ahfl_url
+            FROM LH_housing h
+            JOIN filtered_notices n ON h.pan_id = n.pan_id
+            LEFT JOIN (
+                SELECT pan_id, ahfl_url
+                FROM LH_housing_att
+                WHERE sl_pan_ahfl_ds_cd_nm = '단지조감도'
+            ) a ON a.pan_id = h.pan_id
+
+            UNION ALL
+
+            SELECT
+                concat('lhrental-', lh_rental_id) as house_id,
+                lcc_nt_nm as bzdt_nm,
+                lgdn_adr as lct_ara_adr,
+                hsh_cnt as sum_tot_hsh_cnt,
+                ddo_ar as min_max_rsdn_ddo_ar,
+                n.ais_tp_cd_nm,
+                n.pan_ss,
+                n.cnp_cd_nm,
+                n.pan_nt_st_dt,
+                a.ahfl_url
+            FROM LH_rental r
+            JOIN filtered_notices n ON r.pan_id = n.pan_id
+            LEFT JOIN (
+                SELECT pan_id, ahfl_url
+                FROM LH_rental_att
+                WHERE ls_spl_inf_upl_fl_ds_cd_nm = '단지조감도'
+            ) a ON a.pan_id = r.pan_id
+        ) combined
+        ORDER BY pan_nt_st_dt DESC
+        LIMIT #{size} OFFSET #{offset}
+        ]]>
+    </select>
+
+        <!-- 전체 카운트 조회 -->
+    <select id="getHousingCount" parameterType="org.scoula.house.dto.HousePage.HouseSearchRequestDTO"
+            resultType="int">
+        <![CDATA[
+        WITH filtered_notices AS (
+            SELECT pan_id
+            FROM LH_notice
+            WHERE pan_nt_st_dt >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
+        ]]>
+        <if test="cnpCdNm != null and cnpCdNm != ''">
+            AND cnp_cd_nm = #{cnpCdNm}
+        </if>
+        <if test="aisTpCdNm != null and aisTpCdNm != ''">
+            AND ais_tp_cd_nm = #{aisTpCdNm}
+        </if>
+        <if test="panSs != null and panSs != ''">
+            AND pan_ss = #{panSs}
+        </if>
+        <![CDATA[
+        )
+        SELECT COUNT(*) FROM (
+            SELECT h.pan_id
+            FROM LH_housing h
+            JOIN filtered_notices n ON h.pan_id = n.pan_id
+
+            UNION ALL
+
+            SELECT r.pan_id
+            FROM LH_rental r
+            JOIN filtered_notices n ON r.pan_id = n.pan_id
+        ) combined
+        ]]>
+    </select>
+
+<!--    &lt;!&ndash; 필터 옵션 조회 (하나의 메서드로 통합) &ndash;&gt;-->
+<!--    <select id="getFilterOptions" resultType="com.example.vo.FilterOptionVo">-->
+<!--        <![CDATA[-->
+<!--        SELECT DISTINCT 'region'  as type,-->
+<!--                        cnp_cd_nm as code,-->
+<!--                        cnp_cd_nm as name-->
+<!--        FROM LH_notice n-->
+<!--        WHERE cnp_cd_nm IS NOT NULL-->
+<!--          AND cnp_cd_nm != ''-->
+<!--          AND pan_nt_st_dt >= DATE_SUB(NOW(), INTERVAL 6 MONTH)-->
+<!--          AND (-->
+<!--            EXISTS (SELECT 1 FROM LH_housing h WHERE h.pan_id = n.pan_id)-->
+<!--                OR-->
+<!--            EXISTS (SELECT 1 FROM LH_rental r WHERE r.pan_id = n.pan_id)-->
+<!--            )-->
+
+<!--        UNION ALL-->
+
+<!--        SELECT DISTINCT 'noticeType' as type,-->
+<!--                        ais_tp_cd_nm as code,-->
+<!--                        ais_tp_cd_nm as name-->
+<!--        FROM LH_notice n-->
+<!--        WHERE ais_tp_cd_nm IS NOT NULL-->
+<!--          AND ais_tp_cd_nm != ''-->
+<!--          AND pan_nt_st_dt >= DATE_SUB(NOW(), INTERVAL 6 MONTH)-->
+<!--          AND (-->
+<!--            EXISTS (SELECT 1 FROM LH_housing h WHERE h.pan_id = n.pan_id)-->
+<!--                OR-->
+<!--            EXISTS (SELECT 1 FROM LH_rental r WHERE r.pan_id = n.pan_id)-->
+<!--            )-->
+
+<!--        UNION ALL-->
+
+<!--        SELECT DISTINCT 'noticeStatus' as type,-->
+<!--                        pan_ss         as code,-->
+<!--                        pan_ss         as name-->
+<!--        FROM LH_notice n-->
+<!--        WHERE pan_ss IS NOT NULL-->
+<!--          AND pan_ss != ''-->
+<!--          AND pan_nt_st_dt >= DATE_SUB(NOW(), INTERVAL 6 MONTH)-->
+<!--          AND (-->
+<!--            EXISTS (SELECT 1 FROM LH_housing h WHERE h.pan_id = n.pan_id)-->
+<!--                OR-->
+<!--            EXISTS (SELECT 1 FROM LH_rental r WHERE r.pan_id = n.pan_id)-->
+<!--            )-->
+
+<!--        ORDER BY type, name-->
+<!--        ]]>-->
+<!--    </select>-->
+</mapper>

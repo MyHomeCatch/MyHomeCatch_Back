@@ -1,22 +1,22 @@
-package org.scoula.house.dto;
+package org.scoula.house.dto.HousePage;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.scoula.chapi.dto.CHOfficetelDTO;
-import org.scoula.chapi.mapper.OfficetelDBMapper;
 import org.scoula.house.domain.ApplyHomeOfficetelHouseVO;
 import org.scoula.house.domain.LhHousingHouseVO;
 import org.scoula.house.domain.LhRentalHouseVO;
+import org.scoula.house.dto.ApplyHomeAptDetailDTO;
+import org.scoula.house.dto.ApplyHomeOfficetelDetailDTO;
+import org.scoula.house.dto.LhHousingDetailDTO;
+import org.scoula.house.dto.LhRentalDetailDTO;
 import org.scoula.house.util.DateParser;
 import org.scoula.house.util.DateRangeParser;
 import org.scoula.house.util.RegionMapper;
-import org.scoula.house.util.SupplyTypeMapper;
 import org.scoula.lh.domain.LhNoticeVO;
 import org.scoula.lh.domain.NoticeAttVO;
 import org.scoula.lh.domain.housing.LhHousingApplyVO;
-import org.scoula.lh.domain.housing.LhHousingAttVO;
 import org.scoula.lh.domain.rental.LhRentalApplyVO;
 import org.scoula.lh.domain.rental.LhRentalAttVO;
 import org.scoula.lh.dto.NoticeAttDTO;
@@ -27,7 +27,6 @@ import org.scoula.lh.dto.lhRental.LhRentalAttDTO;
 
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -170,7 +169,7 @@ public class HouseDTO {
                 .region(notice != null ? RegionMapper.mapToShortRegion(notice.getCnpCdNm()) : "기타")
                 .address(vo.getLctAraAdr())
                 .houseType("APT")
-                .supplyType(SupplyTypeMapper.getHousingTypeString(notice))
+                .supplyType(notice != null ? notice.getAisTpCdNm() : null)
                 .company("LH")
                 .lhHousingDetail(lhHousingDetail)
                 .build();
@@ -203,7 +202,7 @@ public class HouseDTO {
                 .region(notice != null ? RegionMapper.mapToShortRegion(notice.getCnpCdNm()) : "기타")
                 .address(vo.getLgdnAdr())
                 .houseType("APT")
-                .supplyType(SupplyTypeMapper.getHousingTypeString(notice))
+                .supplyType(notice != null ? notice.getAisTpCdNm() : null)
                 .company("LH")
                 .lhRentalDetail(lhRentalDetailDTO)
                 .build();

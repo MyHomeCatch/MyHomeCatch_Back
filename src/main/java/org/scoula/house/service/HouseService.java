@@ -1,11 +1,10 @@
 package org.scoula.house.service;
 
-import org.scoula.house.dto.HouseDTO;
-
-import java.util.Date;
-import java.util.List;
+import org.scoula.house.dto.HousePage.HouseDTO;
+import org.scoula.house.dto.HousePage.HousePageResponseDTO;
+import org.scoula.house.dto.HousePage.HouseSearchRequestDTO;
 
 public interface HouseService {
-    List<HouseDTO> getHouses();
+    HousePageResponseDTO getHouses(HouseSearchRequestDTO requestDto);
     HouseDTO getHouse(String houseId);
 }
