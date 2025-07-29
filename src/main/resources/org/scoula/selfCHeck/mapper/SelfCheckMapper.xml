@@ -14,4 +14,10 @@
         FROM self_check_result
         WHERE user_id = #{userId};
     </delete>
+
+    <select id="findResultsByUserId" resultType="java.lang.String">
+        SELECT result
+        FROM self_check_result
+        WHERE user_id = #{userId};
+    </select>
 </mapper>

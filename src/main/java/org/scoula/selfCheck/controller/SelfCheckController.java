@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -87,5 +88,26 @@ public class SelfCheckController {
         selfCheckMapper.deleteByUserId(userId);
 
         return ResponseEntity.ok("기존 자격진단 결과 초기화 완료");
+    }
+
+    @GetMapping("/results")
+    public ResponseEntity<?> getResults(@RequestHeader("Authorization") String tokenHeader) {
+        String token = tokenHeader.replace("Bearer ", "");
+
+        if (!jwtUtil.isValidToken(token)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 토큰입니다.");
+        }
+
+        String email = jwtUtil.extractEmail(token);
+        User user = authMapper.findByEmail(email);
+
+        if (user == null) {
+            return ResponseEntity.badRequest().body("사용자를 찾을 수 없습니다.");
+        }
+
+        int userId = user.getUserId();
+        List<String> results = selfCheckMapper.findResultsByUserId(userId);
+
+        return ResponseEntity.ok(results);
     }
 }
