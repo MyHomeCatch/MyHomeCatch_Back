@@ -16,4 +16,5 @@ public interface AuthMapper {
 
     void updatePasswordByEmail(@Param("email") String email, @Param("password") String password);
 
+    int update(User user);
 }

@@ -30,4 +30,16 @@
         SET password = #{password}
         WHERE email = #{email}
     </update>
+
+    <update id="update" parameterType="org.scoula.user.domain.User">
+        UPDATE users
+        SET
+        nickname = #{nickname},
+        address = #{address},
+        <!-- password 필드는 변경되었을 때만 업데이트하도록 동적 SQL 고려 가능 -->
+        <!-- 현재 MemberServiceImpl에서 이미 passwordEncoder.encode()를 거친 후 User 객체에 설정하므로, -->
+        <!-- 여기서 바로 업데이트해도 무방합니다. -->
+        password = #{password}
+        WHERE email = #{email}
+    </update>
 </mapper>
