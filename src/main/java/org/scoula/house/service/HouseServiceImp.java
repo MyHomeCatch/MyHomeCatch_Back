@@ -8,6 +8,7 @@ import org.scoula.house.mapper.ApplyHomeOfficetelDetailMapper;
 import org.scoula.house.mapper.HouseFilterMapper;
 import org.scoula.house.mapper.LhHousingHouseMapper;
 import org.scoula.house.mapper.LhRentalHouseMapper;
+import org.scoula.house.util.RegionMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class HouseServiceImp implements HouseService {
     @Override
     public HousePageResponseDTO getHouses(HouseSearchRequestDTO requestDto) {
         // DTO에 값이 있으면 자동으로 필터링됨
+        requestDto.setCnpCdNm(RegionMapper.mapToFullRegion(requestDto.getCnpCdNm()));
         List<HouseCardVO> voList = houseFilterMapper.getHousingList(requestDto);
         int totalCount = houseFilterMapper.getHousingCount(requestDto);
 
