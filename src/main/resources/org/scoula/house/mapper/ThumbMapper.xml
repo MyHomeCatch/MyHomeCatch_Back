@@ -6,7 +6,7 @@
 <mapper namespace="org.scoula.house.mapper.ThumbMapper">
 
     <insert id="create" parameterType="org.scoula.house.domain.ThumbVO">
-        insert into lh_thumb (pan_id, district, fl_ds_cd_nm, img_path)
+        insert ignore into lh_thumb (pan_id, district, fl_ds_cd_nm, img_path)
         values ( #{panId}, #{district}, #{flDsCdNm}, #{imgPath})
     </insert>
     
