@@ -10,7 +10,9 @@
         values ( #{panId}, #{district}, #{flDsCdNm}, #{imgPath})
     </insert>
     
-    <select id="getImgPerPanId" resultType="org.scoula.house.domain.ThumbVO">
-        SELECT * FROM lh_thumb WHERE pan_id = #{panId}
+    <select id="getImgGroupByPanId" resultType="String">
+        SELECT img_path AS images
+        FROM lh_thumb
+        WHERE pan_id = #{panId}
     </select>
 </mapper>

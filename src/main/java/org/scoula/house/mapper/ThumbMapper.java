@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ThumbMapper {
     public int create(ThumbVO vo);
-    List<ThumbVO> getImgPerPanId(String panId);
+    List<String> getImgGroupByPanId(String panId);
 }
