@@ -130,10 +130,10 @@ public class MemberController {
     })
     @PutMapping("/additionalPoint")
     public ResponseEntity<?> updateAdditionalPoint(@RequestBody AdditionalPointDto additionalPointDto, HttpServletRequest request) {
-//        String token = extractToken(request);
-//        if (token == null || !jwtUtil.isValidToken(token)) {
-//            return ResponseEntity.status(401).body("유효하지 않은 토큰입니다.");
-//        }
+        String token = extractToken(request);
+        if (token == null || !jwtUtil.isValidToken(token)) {
+            return ResponseEntity.status(401).body("유효하지 않은 토큰입니다.");
+        }
 
         memberService.updateAdditionalPoint(additionalPointDto);
         return ResponseEntity.ok(CommonResponse.response("가점 정보 업데이트"));

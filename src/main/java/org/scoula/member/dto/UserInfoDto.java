@@ -12,6 +12,7 @@ public class UserInfoDto {
     private String nickname;
     private String email;
     private String address;
+    private int additionalPoint;
     private String currentPassword;
     private String newPassword;
 

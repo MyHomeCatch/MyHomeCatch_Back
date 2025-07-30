@@ -37,6 +37,7 @@ public class MemberServiceImpl implements MemberService {
                 .nickname(user.getNickname())
                 .email(user.getEmail())
                 .address(user.getAddress())
+                .additionalPoint(user.getAdditionalPoint())
                 .build();
     }
 
