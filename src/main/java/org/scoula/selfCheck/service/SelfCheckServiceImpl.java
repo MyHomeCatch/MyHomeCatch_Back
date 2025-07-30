@@ -92,7 +92,7 @@ public class SelfCheckServiceImpl implements SelfCheckService{
                 case "청년 계층":
                 case "고령자 계층":
                     if (incomeScope.contains(income) && assetEligible) {
-                        resultText = "행복주택 가능 (" + group + ")";
+                        resultText = "행복주택 가능";
                         result.put("qualified", resultText);
                         saveResultIfQualified(userId, resultText);
                         return result;
@@ -111,7 +111,7 @@ public class SelfCheckServiceImpl implements SelfCheckService{
                         extendedIncomeScope.addAll(Arrays.asList("월평균 소득 120% 이하", "월평균 소득 110% 이하"));
                     }
                     if (extendedIncomeScope.contains(income) && assetEligible) {
-                        resultText = "행복주택 가능 (" + group + ")";
+                        resultText = "행복주택 가능";
                         result.put("qualified", resultText);
                         saveResultIfQualified(userId, resultText);
                         return result;
@@ -235,6 +235,16 @@ public class SelfCheckServiceImpl implements SelfCheckService{
         resultText = "영구임대 불가능";
         result.put("qualified", resultText);
         return result;
+    }
+
+    @Override
+    public void saveSelfCheckContent(SelfCheckRequestDto dto, int userId) {
+        selfCheckMapper.insertSelfCheckContent(dto, userId, dto.getTargetGroupsStr());
+    }
+
+    @Override
+    public void deleteSelfCheckContent(int userId) {
+        selfCheckMapper.deleteSelfCheckContentByUserId(userId);
     }
 
     private void saveResultIfQualified(int userId, String result) {

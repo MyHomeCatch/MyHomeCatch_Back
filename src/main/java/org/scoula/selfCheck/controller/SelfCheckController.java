@@ -110,4 +110,23 @@ public class SelfCheckController {
 
         return ResponseEntity.ok(results);
     }
+
+    @PostMapping("/content/save")
+    public ResponseEntity<?> saveContent(@RequestHeader("Authorization") String tokenHeader,
+                                         @RequestBody SelfCheckRequestDto dto) {
+        int userId = extractUserIdFromToken(tokenHeader);
+        if (userId == -1) return ResponseEntity.badRequest().body("유효하지 않은 사용자입니다.");
+
+        selfCheckService.saveSelfCheckContent(dto, userId);
+        return ResponseEntity.ok("진단 내용 저장 완료");
+    }
+
+    @DeleteMapping("/content/delete")
+    public ResponseEntity<?> deleteContent(@RequestHeader("Authorization") String tokenHeader) {
+        int userId = extractUserIdFromToken(tokenHeader);
+        if (userId == -1) return ResponseEntity.badRequest().body("유효하지 않은 사용자입니다.");
+
+        selfCheckService.deleteSelfCheckContent(userId);
+        return ResponseEntity.ok("진단 내용 삭제 완료");
+    }
 }
