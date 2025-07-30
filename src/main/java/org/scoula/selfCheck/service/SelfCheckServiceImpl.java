@@ -64,7 +64,7 @@ public class SelfCheckServiceImpl implements SelfCheckService{
         String resultText;
 
         if (!"예".equals(dto.getIsHomeless())) {
-            resultText = "행복주택 불가능 (무주택자 아님)";
+            resultText = "행복주택 불가능";
             result.put("qualified", resultText);
             return result;
         }
@@ -97,7 +97,7 @@ public class SelfCheckServiceImpl implements SelfCheckService{
                         saveResultIfQualified(userId, resultText);
                         return result;
                     } else {
-                        resultText = "행복주택 불가능 (" + group + " 기준 불충족)";
+                        resultText = "행복주택 불가능";
                         result.put("qualified", resultText);
                         return result;
                     }
@@ -116,7 +116,7 @@ public class SelfCheckServiceImpl implements SelfCheckService{
                         saveResultIfQualified(userId, resultText);
                         return result;
                     } else {
-                        resultText = "행복주택 불가능 (" + group + " 기준 불충족)";
+                        resultText = "행복주택 불가능";
                         result.put("qualified", resultText);
                         return result;
                     }
@@ -127,14 +127,14 @@ public class SelfCheckServiceImpl implements SelfCheckService{
                 case "북한이탈주민":
                 case "아동복지시설 퇴소자":
                 case "고령 저소득자":
-                    resultText = "행복주택 우선공급 (" + group + ")";
+                    resultText = "행복주택 우선공급";
                     result.put("qualified", resultText);
                     saveResultIfQualified(userId, resultText);
                     return result;
             }
         }
 
-        resultText = "행복주택 불가능 (해당 계층 아님)";
+        resultText = "행복주택 불가능";
         result.put("qualified", resultText);
         return result;
     }
@@ -168,9 +168,9 @@ public class SelfCheckServiceImpl implements SelfCheckService{
         boolean isSpecialSupply = targets.stream().anyMatch(specialGroups::contains);
 
         if (isSpecialSupply) {
-            resultText = "공공분양 특별공급 대상";
+            resultText = "공공분양 특별공급";
         } else {
-            resultText = "공공분양 일반공급 가능";
+            resultText = "공공분양 가능";
         }
 
         if ("12개월 이상".equals(bankSavingPeriod) || "24개월 이상".equals(bankSavingPeriod)) {
@@ -199,7 +199,7 @@ public class SelfCheckServiceImpl implements SelfCheckService{
         String resultText = "";
 
         if (!isHomeless) {
-            resultText = "영구임대 불가능 (무주택 아님)";
+            resultText = "영구임대 불가능";
             result.put("qualified", resultText);
             return result;
         }
@@ -215,33 +215,13 @@ public class SelfCheckServiceImpl implements SelfCheckService{
             }
 
             switch (group) {
-                case "기초생활수급자":
-                    resultText = "영구임대 입주 가능 (기초생활수급자) 1순위";
+                case "기초생활수급자", "고령 저소득자", "한부모 가족", "위안부 피해자":
+                    resultText = "영구임대 가능 1순위";
                     break;
-                case "국가유공자":
+                case "국가유공자", "장애인", "북한이탈주민", "아동복지시설 퇴소자":
                     if (incomeOk && assetOk) {
-                        resultText = "영구임대 입주 가능 (국가유공자) 1순위";
+                        resultText = "영구임대 가능 1순위";
                     }
-                    break;
-                case "위안부 피해자":
-                    resultText = "영구임대 입주 가능 (위안부 피해자) 1순위";
-                    break;
-                case "한부모 가족":
-                    resultText = "영구임대 입주 가능 (한부모 가족) 1순위";
-                    break;
-                case "북한이탈주민":
-                case "아동복지시설 퇴소자":
-                    if (incomeOk && assetOk) {
-                        resultText = "영구임대 입주 가능 (" + group + ") 1순위";
-                    }
-                    break;
-                case "장애인":
-                    if (incomeOk && assetOk) {
-                        resultText = "영구임대 입주 가능 (장애인) 1순위";
-                    }
-                    break;
-                case "고령 저소득자":
-                    resultText = "영구임대 입주 가능 (고령 저소득자) 1순위";
                     break;
             }
 
@@ -252,7 +232,7 @@ public class SelfCheckServiceImpl implements SelfCheckService{
             }
         }
 
-        resultText = "영구임대 불가능 (1순위 조건 미충족)";
+        resultText = "영구임대 불가능";
         result.put("qualified", resultText);
         return result;
     }
