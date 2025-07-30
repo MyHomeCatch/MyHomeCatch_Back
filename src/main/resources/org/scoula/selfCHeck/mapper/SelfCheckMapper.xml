@@ -36,4 +36,10 @@
         FROM self_check_content
         WHERE user_id = #{userId};
     </delete>
+
+    <select id="findSelfCheckContentByUserId" resultType="org.scoula.selfCheck.dto.SelfCheckContentDto">
+        SELECT *
+        FROM self_check_content
+        WHERE user_id = #{userId};
+    </select>
 </mapper>

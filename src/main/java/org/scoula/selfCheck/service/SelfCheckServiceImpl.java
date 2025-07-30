@@ -1,5 +1,6 @@
 package org.scoula.selfCheck.service;
 
+import org.scoula.selfCheck.dto.SelfCheckContentDto;
 import org.scoula.selfCheck.dto.SelfCheckRequestDto;
 import org.scoula.selfCheck.mapper.SelfCheckMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -245,6 +246,11 @@ public class SelfCheckServiceImpl implements SelfCheckService{
     @Override
     public void deleteSelfCheckContent(int userId) {
         selfCheckMapper.deleteSelfCheckContentByUserId(userId);
+    }
+
+    @Override
+    public SelfCheckContentDto getSelfCheckContent(int userId) {
+        return selfCheckMapper.findSelfCheckContentByUserId(userId);
     }
 
     private void saveResultIfQualified(int userId, String result) {

@@ -1,5 +1,6 @@
 package org.scoula.selfCheck.service;
 
+import org.scoula.selfCheck.dto.SelfCheckContentDto;
 import org.scoula.selfCheck.dto.SelfCheckRequestDto;
 
 import java.util.Map;
@@ -17,4 +18,6 @@ public interface SelfCheckService {
     void saveSelfCheckContent(SelfCheckRequestDto dto, int userId);
 
     void deleteSelfCheckContent(int userId);
+
+    SelfCheckContentDto getSelfCheckContent(int userId);
 }
