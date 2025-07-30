@@ -3,7 +3,7 @@ package org.scoula.house.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.scoula.house.domain.ApplyHomeAptPublicVO;
-import org.scoula.house.dto.HouseDTO;
+import org.scoula.house.dto.HousePage.HouseDTO;
 import org.scoula.house.mapper.ApplyHomeAPTMapper;
 import org.scoula.house.domain.HouseCardVO;
 import org.scoula.house.dto.HousePage.*;
