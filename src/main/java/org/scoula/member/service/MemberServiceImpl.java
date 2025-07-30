@@ -1,8 +1,15 @@
 package org.scoula.member.service;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
+import org.scoula.auth.dto.AuthResponse;
 import org.scoula.auth.mapper.AuthMapper;
+import org.scoula.exception.UserNotFoundException;
+import org.scoula.member.dto.AdditionalPointDto;
 import org.scoula.member.dto.UserInfoDto;
+import org.scoula.member.mapper.MemberMapper;
 import org.scoula.user.domain.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -13,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberServiceImpl implements MemberService {
 
     private final AuthMapper authMapper; // 사용자 데이터베이스 접근을 위한 매퍼
+    private final MemberMapper memberMapper;
     private final PasswordEncoder passwordEncoder; // 비밀번호 암호화를 위한 인코더 (Spring Security 사용 시)
 
 
@@ -67,5 +75,19 @@ public class MemberServiceImpl implements MemberService {
 
 
         authMapper.update(existingUser);
+    }
+
+
+    @Override
+    public int updateAdditionalPoint(AdditionalPointDto additionalPointDto) {
+        User existingUser = authMapper.findByEmail(additionalPointDto.getEmail());
+
+        if (existingUser == null) {
+            throw new UserNotFoundException("no user " + additionalPointDto.getEmail());
+        }
+
+        return memberMapper.updateAdditionalPoint(additionalPointDto);
+
+
     }
 }
