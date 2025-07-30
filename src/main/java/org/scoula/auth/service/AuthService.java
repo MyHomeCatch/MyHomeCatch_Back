@@ -2,6 +2,7 @@ package org.scoula.auth.service;
 
 import org.scoula.auth.dto.*;
 import org.springframework.http.ResponseEntity;
+import org.scoula.member.dto.UserInfoDto;
 
 public interface AuthService {
     boolean emailExists(String email);
@@ -13,6 +14,8 @@ public interface AuthService {
     AuthResponse signup(SignupRequest request);
 
     void deleteByEmail(String email);
+
+    void deleteUserWithPasswordVerification(UserInfoDto userInfoDto);
 
     boolean resetPassword(String token, String newPassword);
 

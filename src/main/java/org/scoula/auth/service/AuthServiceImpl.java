@@ -7,6 +7,7 @@ import org.scoula.auth.dto.LoginRequest;
 import org.scoula.auth.dto.SignupRequest;
 import org.scoula.auth.mapper.AuthMapper;
 import org.scoula.common.util.JwtUtil;
+import org.scoula.member.dto.UserInfoDto;
 import org.scoula.user.domain.User;
 import org.scoula.auth.dto.GoogleUserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
@@ -103,9 +105,32 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public void deleteByEmail(String email) {
+        User user = authMapper.findByEmail(email);
+        if (user == null) {
+            throw new IllegalArgumentException("삭제할 사용자를 찾을 수 없습니다: " + email);
+        }
         authMapper.deleteByEmail(email);
     }
+
+    @Override
+    @Transactional
+    public void deleteUserWithPasswordVerification(UserInfoDto userInfoDto) {
+        String email = userInfoDto.getEmail();
+        String currentPassword = userInfoDto.getCurrentPassword();
+
+        User user = authMapper.findByEmail(email);
+        if (user == null) {
+            throw new IllegalArgumentException("삭제할 사용자를 찾을 수 없습니다: " + email);
+        }
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+        }
+        authMapper.deleteByEmail(email);
+    }
+
 
     @Override
     public boolean resetPassword(String email, String newPassword) {
@@ -255,4 +280,24 @@ public class AuthServiceImpl implements AuthService {
         return ResponseEntity.ok(googleUserDto);
 
     }
+
+//    @Override
+//    @Transactional
+//    public void deleteUserWithPasswordVerification(UserInfoDto userInfoDto) { // 매개변수 UserInfoDto로 변경
+//        String email = userInfoDto.getEmail(); // UserInfoDto에서 이메일 추출
+//        String currentPassword = userInfoDto.getCurrentPassword(); // UserInfoDto에서 현재 비밀번호 추출
+//
+//        User user = authMapper.findByEmail(email);
+//        if (user == null) {
+//            throw new IllegalArgumentException("삭제할 사용자를 찾을 수 없습니다: " + email);
+//        }
+//
+//        // 현재 비밀번호 검증
+//        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+//            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+//        }
+//
+//        // 비밀번호가 일치하면 삭제
+//        authMapper.deleteByEmail(email);
+//    }
 }
