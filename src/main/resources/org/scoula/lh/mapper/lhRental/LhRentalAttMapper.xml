@@ -47,4 +47,8 @@
         WHERE LH_rental_att_id = #{id}
     </select>
 
+    <select id="getAll" resultType="org.scoula.lh.domain.rental.LhRentalAttVO">
+        select * from LH_rental_att
+    </select>
+
 </mapper>
