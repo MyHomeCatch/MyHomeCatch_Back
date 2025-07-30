@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.scoula.house.domain.ApplyHomeAptPublicVO;
 import org.scoula.house.domain.ApplyHomeOfficetelHouseVO;
 import org.scoula.house.domain.LhHousingHouseVO;
 import org.scoula.house.domain.LhRentalHouseVO;
@@ -126,7 +127,7 @@ public class HouseDTO {
     /**
      * 청약홈 APT 상세정보
      */
-    private List<ApplyHomeAptDetailDTO> applyHomeAptDetails;
+    private List<ApplyHomeAptPublicDTO> applyHomeAptDetails;
 
     /**
      * 청약홈 오피스텔 상세정보
@@ -227,6 +228,29 @@ public class HouseDTO {
                 .supplyType(vo.getHouseSecdNm())
                 .company(vo.getBsnsMbyNm())
                 .applyHomeOfficetelDetails(vo.getDetails())
+                .build();
+    }
+
+    public static HouseDTO ofApplyHomeAPTPublicVO(ApplyHomeAptPublicVO vo) {
+        if (vo == null) return null;
+
+        return HouseDTO.builder()
+                .houseId(vo.getPblancNo() != null ? "ahApt-" + vo.getPblancNo() : null)
+                .houseName(vo.getHouseNm())
+                .noticeUrl(vo.getHmpgAdres())
+                .totalSupply(vo.getTotSuplyHshldco() != null ? vo.getTotSuplyHshldco() : 0)
+                .noticeDate(vo.getRcritPblancDe() != null ? vo.getRcritPblancDe() : null)
+                .applyBeginDate(vo.getSpsplyRceptBgnde() != null ? vo.getSpsplyRceptBgnde() : null)
+                .applyEndDate(vo.getSpsplyRceptEgnde() != null ? vo.getSpsplyRceptEgnde() : null)
+                .contractBeginDate(vo.getCntrctCnclsBgnde())
+                .contractEndDate(vo.getCntrctCnclsEndde())
+                .announceDate(vo.getPrzwnerPresnatnDe())
+                .moveInMonth(DateParser.parseDate(vo.getMvnPrearngeYm()))
+                .region(vo.getSubscrptAreaCodeNm() != null ? RegionMapper.mapToShortRegion(vo.getSubscrptAreaCodeNm()) : "기타")
+                .address(vo.getHssplyAdres())
+                .houseType(vo.getRentSecdNm())
+                .supplyType(vo.getHouseSecdNm() != null ? vo.getHouseSecdNm() : "미정")
+                .company(vo.getBsnsMbyNm() != null ? vo.getBsnsMbyNm() : "기타")
                 .build();
     }
 }

@@ -2,6 +2,9 @@ package org.scoula.house.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.scoula.house.domain.ApplyHomeAptPublicVO;
+import org.scoula.house.dto.HouseDTO;
+import org.scoula.house.mapper.ApplyHomeAPTMapper;
 import org.scoula.house.domain.HouseCardVO;
 import org.scoula.house.dto.HousePage.*;
 import org.scoula.house.mapper.ApplyHomeOfficetelDetailMapper;
@@ -23,6 +26,7 @@ public class HouseServiceImp implements HouseService {
     private final LhHousingHouseMapper lhHousingHouseMapper;
     private final ApplyHomeOfficetelDetailMapper applyHomeOfficetelDetailMapper;
     private final HouseFilterMapper houseFilterMapper;
+    private final ApplyHomeAPTMapper applyHomeAPTMapper;
 
     @Override
     public HousePageResponseDTO getHouses(HouseSearchRequestDTO requestDto) {
@@ -59,6 +63,10 @@ public class HouseServiceImp implements HouseService {
 
         if(table.equals("ahOfficetel")) {
             return HouseDTO.ofApplyHomeOfficetelHouseVO(applyHomeOfficetelDetailMapper.get(id));
+        }
+
+        if(table.equals("ahApt")) {
+            return HouseDTO.ofApplyHomeAPTPublicVO(applyHomeAPTMapper.getByHouseNo(id));
         }
 
         return null;
