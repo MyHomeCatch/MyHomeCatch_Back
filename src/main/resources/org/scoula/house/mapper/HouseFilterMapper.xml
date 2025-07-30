@@ -39,10 +39,10 @@
             FROM LH_housing h
             JOIN filtered_notices n ON h.pan_id = n.pan_id
             LEFT JOIN (
-                SELECT pan_id, ahfl_url
+                SELECT pan_id, ahfl_url, bzdt_nm as district
                 FROM LH_housing_att
                 WHERE sl_pan_ahfl_ds_cd_nm = '단지조감도'
-            ) a ON a.pan_id = h.pan_id
+            ) a ON a.pan_id = h.pan_id and a.district = h.bzdt_nm
 
             UNION ALL
 
@@ -60,10 +60,10 @@
             FROM LH_rental r
             JOIN filtered_notices n ON r.pan_id = n.pan_id
             LEFT JOIN (
-                SELECT pan_id, ahfl_url
+                SELECT pan_id, ahfl_url, loc_nt_nm
                 FROM LH_rental_att
                 WHERE ls_spl_inf_upl_fl_ds_cd_nm = '단지조감도'
-            ) a ON a.pan_id = r.pan_id
+            ) a ON a.pan_id = r.pan_id and a.loc_nt_nm = r.lcc_nt_nm
         ) combined
         ORDER BY pan_nt_st_dt DESC
         LIMIT #{size} OFFSET #{offset}
