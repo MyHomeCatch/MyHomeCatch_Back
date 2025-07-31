@@ -1,5 +1,7 @@
 package org.scoula.house.mapper;
 
+import org.apache.ibatis.annotations.Param;
+import org.scoula.house.domain.LhHousingApplyVO;
 import org.scoula.house.domain.LhHousingHouseVO;
 import org.scoula.house.domain.LhRentalHouseVO;
 
@@ -9,4 +11,5 @@ import java.util.List;
 public interface LhHousingHouseMapper {
     List<LhHousingHouseVO> getRecentHouses();
     LhHousingHouseVO get(Integer lhHousinglId);
+    List<LhHousingApplyVO> getMonthHouses(@Param("date") String date);
 }

@@ -100,4 +100,26 @@
         WHERE pan_id = #{panId}
     </select>
 
+    <select id="getMonthHouses" parameterType="String" resultMap="housingApplyResultMap">
+        SELECT *
+        FROM LH_housing_apply
+        WHERE start_dttm >= STR_TO_DATE(CONCAT(#{date}, '.01'), '%Y.%m.%d')
+        AND start_dttm &lt; DATE_ADD(STR_TO_DATE(CONCAT(#{date}, '.01'), '%Y.%m.%d'), INTERVAL 1 MONTH);
+    </select>
+
+    <resultMap id="housingApplyResultMap" type="org.scoula.house.domain.LhHousingApplyVO">
+        <id property="lh_housing_apply_id" column="lh_housing_apply_id" />
+        <result property="pan_id" column="pan_id" />
+        <result property="hs_sbsc_acp_trg_cd_nm" column="hs_sbsc_acp_trg_cd_nm" />
+        <result property="acp_dttm" column="acp_dttm" />
+        <result property="start_dttm" column="start_dttm" />
+        <result property="end_dttm" column="end_dttm" />
+        <result property="rmk" column="rmk" />
+        <result property="pzwr_anc_dt" column="pzwr_anc_dt" />
+        <result property="pzwr_ppr_sbm_st_dt" column="pzwr_ppr_sbm_st_dt" />
+        <result property="pzwr_ppr_sbm_ed_dt" column="pzwr_ppr_sbm_ed_dt" />
+        <result property="ctrt_st_dt" column="ctrt_st_dt" />
+        <result property="ctrt_ed_dt" column="ctrt_ed_dt" />
+    </resultMap>
+
 </mapper>

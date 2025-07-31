@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.scoula.house.mapper.LhHouseNoticeMapper">
+
+    <select id="getMonthHouses" resultMap="noticeResultMap">
+        SELECT *
+        FROM LH_notice
+        WHERE pan_id IN
+        <foreach collection="idList" item="panId" open="(" separator="," close=")">
+            #{panId}
+        </foreach>
+    </select>
+
+    <resultMap id="noticeResultMap" type="org.scoula.house.domain.LhNoticeVO">
+        <id property="pan_id" column="pan_id" />
+        <result property="upp_ais_tp_cd" column="pan_id" />
+        <result property="ais_tp_cd_nm" column="ais_tp_cd_nm" />
+        <result property="pan_nm" column="pan_nm" />
+        <result property="cnp_cd_nm" column="cnp_cd_nm" />
+        <result property="pan_ss" column="pan_ss" />
+        <result property="all_cnt" column="all_cnt" />
+        <result property="dtl_url" column="dtl_url" />
+        <result property="spl_inf_tp_cd" column="spl_inf_tp_cd" />
+        <result property="ccr_cnnt_sys_ds_cd" column="ccr_cnnt_sys_ds_cd" />
+        <result property="ais_tp_cd" column="ais_tp_cd" />
+    </resultMap>
+</mapper>

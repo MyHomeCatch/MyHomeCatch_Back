@@ -176,4 +176,24 @@
         </foreach>
     </select>
 
+    <select id="getMonthHouses" parameterType="String" resultMap="rentalApplyResultMap">
+        SELECT *
+        FROM LH_rental_apply
+        WHERE sbsc_acp_st_dt >= STR_TO_DATE(CONCAT(#{date}, '.01'), '%Y.%m.%d')
+          AND sbsc_acp_st_dt &lt; DATE_ADD(STR_TO_DATE(CONCAT(#{date}, '.01'), '%Y.%m.%d'), INTERVAL 1 MONTH);
+    </select>
+
+    <resultMap id="rentalApplyResultMap" type="org.scoula.house.domain.LhRentalApplyVO">
+        <id property="lh_rental_id" column="lh_rental_id" />
+        <result property="pan_id" column="pan_id" />
+        <result property="sbd_lgo_nm" column="sbd_lgo_nm" />
+        <result property="sbsc_acp_st_dt" column="sbsc_acp_st_dt" />
+        <result property="sbsc_acp_clsg_dt" column="sbsc_acp_clsg_dt" />
+        <result property="ppr_sbm_ope_anc_dt" column="ppr_sbm_ope_anc_dt" />
+        <result property="ppr_acp_st_dt" column="ppr_acp_st_dt" />
+        <result property="ppr_acp_clsg_dt" column="ppr_acp_clsg_dt" />
+        <result property="pzwr_anc_dt" column="pzwr_anc_dt" />
+        <result property="ctrt_st_dt" column="ctrt_st_dt" />
+        <result property="ctrt_ed_dt" column="ctrt_ed_dt" />
+    </resultMap>
 </mapper>
