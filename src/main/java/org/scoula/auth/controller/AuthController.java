@@ -4,10 +4,13 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.models.Response;
 import lombok.extern.log4j.Log4j2;
 import org.scoula.auth.dto.*;
+import org.scoula.auth.mapper.AuthMapper;
 import org.scoula.auth.service.AuthServiceImpl;
 import org.scoula.common.util.JwtUtil;
+import org.scoula.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -21,6 +24,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -65,6 +69,8 @@ public class AuthController {
 
     private final String TOKEN_URI = "https://oauth2.googleapis.com/token";
     private final String USERINFO_URI = "https://www.googleapis.com/oauth2/v2/userinfo";
+    @Autowired
+    private AuthMapper authMapper;
 
 
     @ApiOperation(value = "이메일 중복 체크", notes = "이메일 중복 여부를 체크합니다")
@@ -98,7 +104,7 @@ public class AuthController {
             @ApiResponse(code = 500, message = "서버에서 오류가 발생했습니다.")
     })
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, BindingResult result) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, BindingResult result, HttpServletResponse response) {
         if (result.hasErrors()) {
             String message = result.getFieldErrors().stream()
                     .map(FieldError::getDefaultMessage)
@@ -107,8 +113,76 @@ public class AuthController {
             return ResponseEntity.badRequest().body(Map.of("message", message));
         }
 
-        return ResponseEntity.ok(authService.login(request));
+        AuthResponse authResponse = authService.login(request);
+
+        // HttpOnly 쿠키에 저장
+        Cookie refreshCookie = new Cookie("refresh_token", authResponse.getRefreshToken());
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setSecure(true);
+        refreshCookie.setPath("/");
+        refreshCookie.setMaxAge(60 * 60 * 24 * 14);
+        response.addCookie(refreshCookie);
+
+        return ResponseEntity.ok(Map.of(
+                "token", authResponse.getAccessToken(),
+                "nickname", authResponse.getNickname()
+        ));
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        String token = extractToken(request);
+        if (token == null || !jwtUtil.isValidToken(token)) {
+            return ResponseEntity.status(401).body("유효하지 않은 토큰");
+        }
+
+        String email = jwtUtil.extractEmail(token);
+        User user = authMapper.findByEmail(email);
+
+        authMapper.saveRefreshToken(user.getUserId(), null);
+
+        Cookie cookie = new Cookie("refresh_token", null);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok("로그아웃 성공");
+    }
+
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("쿠키가 없습니다.");
+        }
+
+        String refreshToken = null;
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("refresh_token")) {
+                refreshToken = cookie.getValue();
+                break;
+            }
+        }
+
+        if (refreshToken == null || !jwtUtil.isValidToken(refreshToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 리프래시 토큰입니다.");
+        }
+
+        String email = jwtUtil.extractEmail(refreshToken);
+        User user = authMapper.findByEmail(email);
+
+        String storedRefreshToken = authMapper.getRefreshTokenByUserId(user.getUserId());
+        if (!refreshToken.equals(storedRefreshToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("토큰이 일치하지 않습니다.");
+        }
+
+        String newAccessToken = jwtUtil.generateToken(email);
+        return ResponseEntity.ok(Map.of("token", newAccessToken));
+
+    }
+
 
     @ApiOperation(value = "일반 회원가입", notes = "입력한 정보로 회원가입을 진행합니다")
     @ApiResponses(value = {
