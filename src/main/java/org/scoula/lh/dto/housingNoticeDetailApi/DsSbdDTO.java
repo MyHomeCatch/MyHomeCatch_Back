@@ -5,8 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.scoula.lh.domain.housing.LhHousingVO;
-import org.scoula.lh.dto.lhHousing.LhHousingDTO;
+import org.scoula.house.util.DateParser;
+import org.scoula.lh.domain.danzi.DanziVO;
 
 // 단지 DTO
 @Data
@@ -50,29 +50,15 @@ public class DsSbdDTO {
     @JsonProperty("MVIN_XPC_YM")
     private String mvinXpcYm;
 
-    public LhHousingVO toLhHousingVO(String panId) {
-        return LhHousingVO.builder()
-                .panId(panId)
+    public DanziVO toDanziVO() {
+        return DanziVO.builder()
                 .bzdtNm(bzdtNm)
                 .lctAraAdr(lctAraAdr)
                 .lctAraDtlAdr(lctAraDtlAdr)
                 .minMaxRsdnDdoAr(minMaxRsdnDdoAr)
-                .sumTotHshCnt(sumTotHshCnt)
-                .htnFmlaDsCdNm(htnFmlaDsCdNm)
-                .mvinXpcYm(mvinXpcYm)
-                .build();
-    }
-
-    public LhHousingDTO toLhHousingDTO(String panId) {
-        return LhHousingDTO.builder()
-                .panId(panId)
-                .bzdtNm(bzdtNm)
-                .lctAraAdr(lctAraAdr)
-                .lctAraDtlAdr(lctAraDtlAdr)
-                .minMaxRsdnDdoAr(minMaxRsdnDdoAr)
-                .sumTotHshCnt(sumTotHshCnt)
-                .htnFmlaDsCdNm(htnFmlaDsCdNm)
-                .mvinXpcYm(mvinXpcYm)
+                .sumTotHshCnt(Integer.parseInt(sumTotHshCnt))
+                .htnFmlaDeCoNm(htnFmlaDsCdNm)
+                .mvinXpcYm(DateParser.parseDate(mvinXpcYm))
                 .build();
     }
 }

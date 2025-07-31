@@ -5,14 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.extern.log4j.Log4j;
 import lombok.extern.log4j.Log4j2;
 import org.scoula.house.util.DateParser;
-import org.scoula.lh.domain.rental.LhRentalApplyVO;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import org.scoula.lh.domain.danzi.DanziApplyVO;
 
 /**
  * 임대주택 공급일정 DTO
@@ -87,23 +82,20 @@ public class RentalDsSplScdlDTO {
     @JsonProperty("PPR_ACP_ST_DT")
     private String pprAcpStDt;
 
-    /**
-     * LhRentalApplyVO로 변환
-     * @param panId 공고 ID
-     * @return LhRentalApplyVO 객체
-     */
-    public LhRentalApplyVO toLhRentalApplyVO(String panId) {
-        return LhRentalApplyVO.builder()
-                .panId(panId)
-                .sbdLgoNm(this.sbdLgoNm)
-                .sbscAcpStDt(this.sbscAcpStDt)
-                .sbscAcpClsgDt(this.sbscAcpClsgDt)
-                .pprSbmOpeAncDt(this.pprSbmOpeAncDt)
-                .pprAcpStDt(DateParser.parseDate(this.pprAcpStDt))
-                .pprAcpClsgDt(DateParser.parseDate(this.pprAcpClsgDt))
-                .pzwrAncDt(DateParser.parseDate(this.pzwrAncDt))
-                .ctrtStDt(DateParser.parseDate(this.ctrtStDt))
-                .ctrtEdDt(DateParser.parseDate(this.ctrtEdDt))
+    public DanziApplyVO toDanziApplyVO(Integer danziId) {
+        return DanziApplyVO.builder()
+                .danziId(danziId)
+                .sbscAcpStDt(DateParser.parseDate(sbscAcpStDt))
+                .sbscAcpClsgDt(DateParser.parseDate(sbscAcpStDt))
+                .rmk(null)
+                .pprSbmOpeAncDt(DateParser.parseDate(pprSbmOpeAncDt))
+                .pprAcpStDt(DateParser.parseDate(pprAcpStDt))
+                .pprAcpClsgDt(DateParser.parseDate(pprAcpClsgDt))
+                .pzwrAncDt(DateParser.parseDate(pzwrAncDt))
+                .pzwrPprSbmStDt(null)
+                .pzwrPprSbmEdDt(null)
+                .ctrtStDt(DateParser.parseDate(ctrtStDt))
+                .ctrtEdDt(DateParser.parseDate(ctrtEdDt))
                 .build();
     }
 }

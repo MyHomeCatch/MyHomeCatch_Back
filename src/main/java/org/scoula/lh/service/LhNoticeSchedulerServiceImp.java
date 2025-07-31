@@ -5,12 +5,10 @@ import lombok.extern.log4j.Log4j2;
 import org.scoula.lh.dto.NoticeApiDTO;
 import org.scoula.lh.dto.NoticeDTO;
 import org.scoula.lh.mapper.LhNoticeMapper;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,12 +29,12 @@ public class LhNoticeSchedulerServiceImp implements LhNoticeSchedulerService {
 
 
     public int create(NoticeApiDTO noticeApiDTO) {
-        int row = noticeMapper.create(noticeApiDTO.toVO());
+        int row = noticeMapper.create(noticeApiDTO.toLHNoticeVO());
         return row;
     }
 
     public int createAll(List<NoticeApiDTO> noticeApiDTO) {
-        int row = noticeMapper.createAll(noticeApiDTO.stream().map(NoticeApiDTO::toVO).toList());
+        int row = noticeMapper.createAll(noticeApiDTO.stream().map(NoticeApiDTO::toLHNoticeVO).toList());
         return row;
     }
 

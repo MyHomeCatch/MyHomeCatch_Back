@@ -13,7 +13,7 @@ import java.util.Date;
 @Builder
 public class DanziApplyVO {
     private Integer applyId;              // apply ID (PK, AUTO_INCREMENT)
-    private Integer complexId;              // 단지 ID (FK)
+    private Integer danziId;              // 단지 ID (FK)
     private Date sbscAcpStDt;             // 접수기간시작일
     private Date sbscAcpClsgDt;           // 접수기간종료일
     private String rmk;                   // 신청방법(현장접수/인터넷접수)

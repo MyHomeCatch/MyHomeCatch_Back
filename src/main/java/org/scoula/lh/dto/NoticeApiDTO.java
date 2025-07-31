@@ -7,6 +7,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.scoula.house.util.DateParser;
 import org.scoula.lh.domain.LhNoticeVO;
+import org.scoula.lh.domain.danzi.NoticeVO;
+
+import java.util.Date;
 
 @Data
 @AllArgsConstructor
@@ -64,7 +67,7 @@ public class NoticeApiDTO {
     @JsonProperty("DTL_URL_MOB")
     private String dtlUrlMob;
 
-    public LhNoticeVO toVO() {
+    public LhNoticeVO toLHNoticeVO() {
         return LhNoticeVO.builder()
                 .panId(this.panId)
                 .uppAisTpCd(this.uppAisTpCd)
@@ -78,6 +81,24 @@ public class NoticeApiDTO {
                 .ccrCnntSysDsCd(this.ccrCnntSysDsCd)
                 .aisTpCd(this.aisTpCd)
                 .panNtStDt(DateParser.parseDate(this.panNtStDt))
+                .build();
+    }
+
+    public NoticeVO toNoticeVO() {
+        return NoticeVO.builder()
+                .panId(this.panId)
+                .uppAisTpCd(this.uppAisTpCd)
+                .aisTpCdNm(this.aisTpCdNm)
+                .panNm(this.panNm)
+                .cnpCdNm(this.cnpCdNm)
+                .panNm(this.panNm)
+                .panSs(this.panSs)
+                .allCnt(this.allCnt)
+                .panNtStDt(DateParser.parseDate(this.panNtStDt))
+                .dtlUrl(this.dtlUrl)
+                .splInfTpCd(this.splInfTpCd)
+                .ccrCnntSysDsCd(this.ccrCnntSysDsCd)
+                .aisTpCd(this.aisTpCd)
                 .build();
     }
 }

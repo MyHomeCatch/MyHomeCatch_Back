@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class NoticeAttVO {
 
     private Integer noticeAttId;          // notice_att ID (PK, AUTO_INCREMENT)
-    private Long noticeId;                // notice ID (FK)
+    private Integer noticeId;                // notice ID (FK)
     private String slPanAhflDsCdNm;       // 파일구분명
     private String cmnAhflNm;             // 첨부파일명
     private String ahflUrl;               // 다운로드 URL
