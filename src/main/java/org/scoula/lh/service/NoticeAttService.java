@@ -9,4 +9,5 @@ public interface NoticeAttService {
     int create(NoticeAttVO noticeAttVO);
     int createAll(List<NoticeAttVO> noticeAttVOList);
     List<NoticeAttDTO> getNoticeAttByPanId(String panId);
+
 }

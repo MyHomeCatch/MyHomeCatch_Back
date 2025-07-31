@@ -8,7 +8,7 @@ import org.scoula.house.domain.ApplyHomeAptPublicVO;
 import org.scoula.house.domain.ApplyHomeOfficetelHouseVO;
 import org.scoula.house.domain.LhHousingHouseVO;
 import org.scoula.house.domain.LhRentalHouseVO;
-import org.scoula.house.dto.ApplyHomeAptDetailDTO;
+import org.scoula.house.dto.ApplyHomeAptPublicDTO;
 import org.scoula.house.dto.ApplyHomeOfficetelDetailDTO;
 import org.scoula.house.dto.LhHousingDetailDTO;
 import org.scoula.house.dto.LhRentalDetailDTO;

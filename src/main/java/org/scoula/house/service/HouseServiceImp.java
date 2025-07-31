@@ -27,6 +27,7 @@ public class HouseServiceImp implements HouseService {
     private final ApplyHomeOfficetelDetailMapper applyHomeOfficetelDetailMapper;
     private final HouseFilterMapper houseFilterMapper;
     private final ApplyHomeAPTMapper applyHomeAPTMapper;
+//    private final NoticeMapper noticeMapper;
 
     @Override
     public HousePageResponseDTO getHouses(HouseSearchRequestDTO requestDto) {
@@ -71,4 +72,11 @@ public class HouseServiceImp implements HouseService {
 
         return null;
     }
+
+    // 정정공고 boolean 용(Att update용)
+//    public boolean isCorrectedNotice(String panId) {
+//        if (panId == null) return false;
+//        String panSs = noticeMapper.getPanSsByPanId(panId);
+//        return "정정공고".equals(panSs);
+//    }
 }

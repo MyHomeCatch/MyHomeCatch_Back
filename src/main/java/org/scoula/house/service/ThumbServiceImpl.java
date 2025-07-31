@@ -11,6 +11,8 @@ import org.jsoup.nodes.Element;
 import org.scoula.house.domain.ThumbVO;
 import org.scoula.house.dto.ThumbDTO;
 import org.scoula.house.mapper.ThumbMapper;
+import org.scoula.lh.att.domain.DanziAttVO;
+import org.scoula.lh.att.dto.DanziAttDTO;
 import org.scoula.lh.domain.housing.LhHousingAttVO;
 import org.scoula.lh.domain.rental.LhRentalAttVO;
 import org.scoula.lh.dto.lhHousing.LhHousingAttDTO;
@@ -53,7 +55,7 @@ public class ThumbServiceImpl implements ThumbService {
         }
     }
     @Override
-    public String createThumb(LhHousingAttVO vo) {
+    public String createHousingThumb(LhHousingAttVO vo) {
 
         LhHousingAttDTO dto = LhHousingAttDTO.of(vo);
         String pageUrl = dto.getAhflUrl();
@@ -135,4 +137,45 @@ public class ThumbServiceImpl implements ThumbService {
         }
 
     }
+
+    @Override
+    public DanziAttVO createDanziThumbVO(DanziAttVO vo) {
+
+        String pageUrl = vo.getAhflUrl();
+
+        disableSSLCertificateChecking();
+
+        try {
+            // 1. Jsoup으로 진짜 이미지 src 데이터 가져오기
+            Document doc = (Document) Jsoup.connect(pageUrl).get();
+            Element img = doc.selectFirst("img");
+            if (img == null) {
+                System.err.println("이미지 태그를 찾을 수 없습니다: " + pageUrl);
+                return null;
+            }
+
+            // 2. <img> 태그의 'src' 속성 값
+            // 예: /upload/Files/... .jpg
+            String relativeUrl = img.attr("src");
+
+            // 3. 상대 경로 앞에 도메인을 붙여 전체 URL 만들기
+            String absoluteUrl = DOMAIN + relativeUrl;
+
+            // DB 저장용 VO 반환
+            DanziAttVO returnVO = DanziAttVO.builder()
+                    .danziId(vo.getDanziId())
+                    .flDsCdNm(vo.getFlDsCdNm())
+                    .cmnAhflNm(vo.getCmnAhflNm())
+                    .ahflUrl(absoluteUrl)
+                    .build();
+
+            return returnVO;
+
+        } catch (IOException e) {
+            System.err.println("페이지 파싱 중 오류 발생: " + pageUrl);
+            throw new RuntimeException(e);
+        }
+
+    }
+
 }
