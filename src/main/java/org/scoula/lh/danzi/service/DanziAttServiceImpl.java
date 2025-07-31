@@ -1,10 +1,10 @@
-package org.scoula.lh.att.service;
+package org.scoula.lh.danzi.service;
 
 import lombok.RequiredArgsConstructor;
 import org.scoula.house.service.ThumbServiceImpl;
-import org.scoula.lh.att.domain.DanziAttVO;
-import org.scoula.lh.att.dto.DanziAttDTO;
-import org.scoula.lh.att.mapper.DanziAttMapper;
+import org.scoula.lh.danzi.domain.DanziAttVO;
+import org.scoula.lh.danzi.dto.DanziAttDTO;
+import org.scoula.lh.danzi.mapper.DanziAttMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

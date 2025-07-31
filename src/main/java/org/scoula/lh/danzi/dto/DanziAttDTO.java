@@ -1,10 +1,10 @@
-package org.scoula.lh.att.dto;
+package org.scoula.lh.danzi.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.scoula.lh.att.domain.DanziAttVO;
+import org.scoula.lh.danzi.domain.DanziAttVO;
 import org.scoula.lh.domain.housing.LhHousingAttVO;
 import org.scoula.lh.domain.rental.LhRentalAttVO;
 import org.scoula.lh.dto.lhHousing.LhHousingAttDTO;

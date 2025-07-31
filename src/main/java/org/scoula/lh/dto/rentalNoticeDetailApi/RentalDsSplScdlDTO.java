@@ -7,7 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.scoula.house.util.DateParser;
-import org.scoula.lh.domain.danzi.DanziApplyVO;
+import org.scoula.lh.danzi.domain.DanziApplyVO;
 
 /**
  * 임대주택 공급일정 DTO

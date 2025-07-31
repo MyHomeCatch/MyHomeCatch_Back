@@ -7,9 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.scoula.house.util.DateParser;
 import org.scoula.house.util.DateRangeParser;
-import org.scoula.lh.domain.danzi.DanziApplyVO;
-
-import java.util.Date;
+import org.scoula.lh.danzi.domain.DanziApplyVO;
 
 // 공급일정 DTO
 @Data

@@ -1,6 +1,6 @@
-package org.scoula.lh.att.mapper;
+package org.scoula.lh.danzi.mapper;
 
-import org.scoula.lh.att.domain.DanziAttVO;
+import org.scoula.lh.danzi.domain.DanziAttVO;
 
 import java.util.List;
 

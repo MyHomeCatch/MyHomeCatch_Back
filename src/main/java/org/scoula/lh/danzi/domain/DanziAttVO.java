@@ -1,4 +1,4 @@
-package org.scoula.lh.domain.danzi;
+package org.scoula.lh.danzi.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

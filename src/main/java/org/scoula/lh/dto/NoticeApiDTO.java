@@ -7,9 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.scoula.house.util.DateParser;
 import org.scoula.lh.domain.LhNoticeVO;
-import org.scoula.lh.domain.danzi.NoticeVO;
-
-import java.util.Date;
+import org.scoula.lh.danzi.domain.NoticeVO;
 
 @Data
 @AllArgsConstructor

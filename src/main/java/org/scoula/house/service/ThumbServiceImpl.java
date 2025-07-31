@@ -2,32 +2,24 @@ package org.scoula.house.service;
 
 
 import lombok.RequiredArgsConstructor;
-import net.coobird.thumbnailator.Thumbnails;
 import org.jsoup.Jsoup;
 
 import org.jsoup.nodes.Document;
-import org.jsoup.select.Elements;
 import org.jsoup.nodes.Element;
 import org.scoula.house.domain.ThumbVO;
-import org.scoula.house.dto.ThumbDTO;
 import org.scoula.house.mapper.ThumbMapper;
-import org.scoula.lh.att.domain.DanziAttVO;
-import org.scoula.lh.att.dto.DanziAttDTO;
+import org.scoula.lh.danzi.domain.DanziAttVO;
 import org.scoula.lh.domain.housing.LhHousingAttVO;
 import org.scoula.lh.domain.rental.LhRentalAttVO;
 import org.scoula.lh.dto.lhHousing.LhHousingAttDTO;
 import org.scoula.lh.dto.lhRental.LhRentalAttDTO;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
-import java.io.File;
 import java.io.IOException;
-import java.net.URL;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor

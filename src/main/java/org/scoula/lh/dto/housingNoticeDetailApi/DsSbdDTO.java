@@ -6,7 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.scoula.house.util.DateParser;
-import org.scoula.lh.domain.danzi.DanziVO;
+import org.scoula.lh.danzi.domain.DanziVO;
 
 // 단지 DTO
 @Data

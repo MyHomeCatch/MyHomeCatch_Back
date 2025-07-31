@@ -5,8 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.scoula.lh.domain.danzi.DanziAttVO;
-import org.scoula.lh.domain.rental.LhRentalAttVO;
+import org.scoula.lh.danzi.domain.DanziAttVO;
 
 /**
  * 임대주택 단지 첨부파일 DTO
