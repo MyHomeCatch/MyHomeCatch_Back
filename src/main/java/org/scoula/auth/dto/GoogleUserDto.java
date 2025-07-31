@@ -14,5 +14,6 @@ public class GoogleUserDto {
     private String token;
     private String email;
     private String name;
+    private String nickname;
     // private String picture;
 }

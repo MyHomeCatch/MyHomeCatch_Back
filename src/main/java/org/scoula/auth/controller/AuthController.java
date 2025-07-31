@@ -142,7 +142,7 @@ public class AuthController {
             @ApiResponse(code = 401, message = "유효하지 않은 토큰입니다."),
             @ApiResponse(code = 500, message = "서버에서 오류가 발생했습니다.")
     })
-    @PostMapping("/withdraw")
+    @DeleteMapping("/withdraw")
     public ResponseEntity<?> withdraw(@RequestBody UserInfoDto userInfoDto, HttpServletRequest request) {
         String token = extractToken(request);
         System.out.println("====== withdraw called ======");

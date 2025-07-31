@@ -98,20 +98,4 @@ public class MemberController {
         }
     }
 
-
-    @PostMapping("/password/reset")
-    public ResponseEntity<?> resetPassword(@RequestBody PasswordResetRequestDto dto) {
-        System.out.println("비밀번호 변경 요청 이메일: " + dto.getEmail());
-        System.out.println("비밀번호 변경 요청 newPassword: " + dto.getNewPassword());
-
-        boolean result = authService.resetPassword(dto.getEmail(), dto.getNewPassword());
-        if (result) {
-            return ResponseEntity.ok(Map.of("success", true, "message", "비밀번호가 성공적으로 변경되었습니다."));
-        } else {
-
-            return ResponseEntity.badRequest().body(Map.of("success", false, "message", "해당 이메일을 가진 사용자를 찾을 수 없습니다."));
-        }
-    }
-
-
 }
