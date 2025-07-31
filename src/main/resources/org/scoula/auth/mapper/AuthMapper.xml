@@ -31,11 +31,11 @@
         WHERE email = #{email}
     </update>
 
-    <update id="saveRefreshToken">
-        UPDATE users_refresh_token
-        SET refresh_token = #{refreshToken}
-        WHERE user_id = #{userId}
-    </update>
+    <insert id="saveRefreshToken">
+        INSERT INTO users_refresh_token (user_id, refresh_token)
+            VALUES (#{userId}, #{refreshToken})
+        ON DUPLICATE KEY UPDATE refresh_token = #{refreshToken}
+    </insert>
 
     <select id="getRefreshTokenByUserId" resultType="java.lang.String">
         SELECT refresh_token
