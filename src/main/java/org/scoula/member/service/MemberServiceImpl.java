@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
-    private final AuthMapper authMapper; // 사용자 데이터베이스 접근을 위한 매퍼
-    private final PasswordEncoder passwordEncoder; // 비밀번호 암호화를 위한 인코더 (Spring Security 사용 시)
+    private final AuthMapper authMapper;
+    private final PasswordEncoder passwordEncoder; 
 
 
     @Override

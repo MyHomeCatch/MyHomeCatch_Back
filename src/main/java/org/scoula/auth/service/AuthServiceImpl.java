@@ -167,16 +167,13 @@ public class AuthServiceImpl implements AuthService {
 
         HttpEntity<MultiValueMap<String, String>> tokenRequest = new HttpEntity<>(tokenParams, headers);
 
-        // 요청
         ResponseEntity<LinkedHashMap> tokenResponse = restTemplate.postForEntity(url, tokenRequest, LinkedHashMap.class);
         String accessToken = "Bearer "+ tokenResponse.getBody().get("access_token");;
-        // 사용자 정보 가져오기 응답
+
         ResponseEntity<LinkedHashMap> response = fetchKakaoUserData(accessToken);
 
-        // 카카오 로그인 password에 적용할 ID
-        // Ex) Kakao + ID
         Long id = (Long) response.getBody().get("id");
-        // 카카오 사용자 정보
+
         LinkedHashMap<String, Object> userInfo = (LinkedHashMap<String, Object>) response.getBody().get("kakao_account");
         String kakaoEmail = userInfo.get("email").toString();
         User user = authMapper.findByEmail(kakaoEmail);
@@ -213,7 +210,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
 
-    // kakaoAccessToken을 사용하여 카카오 서버로부터 유저 정보 받아오기
     private ResponseEntity<LinkedHashMap> fetchKakaoUserData(String kakaoAccessToken) {
 
         String url = "https://kapi.kakao.com/v2/user/me";
@@ -291,23 +287,4 @@ public class AuthServiceImpl implements AuthService {
 
     }
 
-//    @Override
-//    @Transactional
-//    public void deleteUserWithPasswordVerification(UserInfoDto userInfoDto) { // 매개변수 UserInfoDto로 변경
-//        String email = userInfoDto.getEmail(); // UserInfoDto에서 이메일 추출
-//        String currentPassword = userInfoDto.getCurrentPassword(); // UserInfoDto에서 현재 비밀번호 추출
-//
-//        User user = authMapper.findByEmail(email);
-//        if (user == null) {
-//            throw new IllegalArgumentException("삭제할 사용자를 찾을 수 없습니다: " + email);
-//        }
-//
-//        // 현재 비밀번호 검증
-//        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
-//            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
-//        }
-//
-//        // 비밀번호가 일치하면 삭제
-//        authMapper.deleteByEmail(email);
-//    }
 }

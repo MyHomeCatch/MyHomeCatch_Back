@@ -32,13 +32,7 @@ import org.scoula.auth.dto.AuthResponse;
 import org.scoula.auth.dto.GoogleUserDto;
 import org.scoula.auth.dto.LoginRequest;
 import org.scoula.auth.dto.SignupRequest;
-import org.scoula.member.dto.UserInfoDto; // UserInfoDto 임포트 추가
-import org.springframework.http.*;
-
-import org.springframework.ui.Model;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.io.IOException;
+import org.scoula.member.dto.UserInfoDto;
 
 
 @RestController
