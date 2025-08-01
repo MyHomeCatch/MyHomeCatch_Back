@@ -42,27 +42,6 @@ public class LhNoticeSchedulerServiceImp implements LhNoticeSchedulerService {
     }
 
     @Override
-//    public List<NoticeDTO> createAllAndReturnNew(List<NoticeApiDTO> allNotices) {
-//        List<NoticeDTO> newNotices = new ArrayList<>();
-//
-//        for (NoticeApiDTO apiNotice : allNotices) {
-//            if (!noticeMapper.existsByPanId(apiNotice.getPanId())) {
-//                int result = create(apiNotice);
-//                if (result > 0) {
-//                    NoticeDTO newNotice = getNotice(apiNotice.getPanId());
-//                    newNotices.add(newNotice);
-//                }
-//            } else if(!noticeMapper.getLhNotice(apiNotice.getPanId()).getPanNm().equals(apiNotice.getPanNm())) {
-//                int result = create(apiNotice);
-//                if (result > 0) {
-//                    NoticeDTO newNotice = getNotice(apiNotice.getPanId());
-//                    newNotices.add(newNotice);
-//                }
-//            }
-//        }
-//
-//        return newNotices;
-//    }
     public List<NoticeDTO> createAllAndReturnNew(List<NoticeApiDTO> allNotices) {
         List<NoticeDTO> newNotices = new ArrayList<>();
 
