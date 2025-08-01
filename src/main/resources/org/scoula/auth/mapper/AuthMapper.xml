@@ -16,7 +16,8 @@
         WHERE nickname = #{nickname};
     </select>
 
-    <insert id="insertUser" parameterType="org.scoula.user.domain.User">
+    <insert id="insertUser" parameterType="org.scoula.user.domain.User"
+                useGeneratedKeys="true" keyProperty="userId">
         INSERT INTO users (email, password, name, nickname, address, additional_point)
         VALUES (#{email}, #{password}, #{name}, #{nickname}, #{address}, #{additionalPoint})
     </insert>
@@ -42,4 +43,15 @@
         password = #{password}
         WHERE email = #{email}
     </update>
+    <insert id="saveRefreshToken">
+        INSERT INTO users_refresh_token (user_id, refresh_token)
+            VALUES (#{userId}, #{refreshToken})
+        ON DUPLICATE KEY UPDATE refresh_token = #{refreshToken}
+    </insert>
+
+    <select id="getRefreshTokenByUserId" resultType="java.lang.String">
+        SELECT refresh_token
+        FROM users_refresh_token
+        WHERE user_id = #{userId}
+    </select>
 </mapper>

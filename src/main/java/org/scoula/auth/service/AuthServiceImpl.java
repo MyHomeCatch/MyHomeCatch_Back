@@ -75,8 +75,12 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        String token = jwtUtil.generateToken(user.getEmail());
-        return new AuthResponse(token, user.getNickname());
+        String accessToken = jwtUtil.generateToken(user.getEmail());
+        String refreshToken = jwtUtil.generateRefreshToken(user.getEmail());
+
+        authMapper.saveRefreshToken(user.getUserId(), refreshToken);
+
+        return new AuthResponse(accessToken, refreshToken, user.getNickname());
     }
 
     @Override
@@ -99,7 +103,10 @@ public class AuthServiceImpl implements AuthService {
         authMapper.insertUser(user);
 
         String token = jwtUtil.generateToken(user.getEmail());
-        return new AuthResponse(token, user.getNickname());
+        String refreshToken = jwtUtil.generateRefreshToken(user.getEmail());
+        authMapper.saveRefreshToken(user.getUserId(), refreshToken);
+
+        return new AuthResponse(token, refreshToken, user.getNickname());
     }
 
     @Override
