@@ -46,6 +46,7 @@ public class DsSplScdlDTO {
     public DanziApplyVO toDanziApplyVO(Integer danziId) {
         return DanziApplyVO.builder()
                 .danziId(danziId)
+                .hsSbscAcpTrgCdNm(hsSbscAcpTrgCdNm)
                 .sbscAcpStDt(DateRangeParser.parseStartDate(acpDttm))
                 .sbscAcpClsgDt(DateRangeParser.parseEndDate(acpDttm))
                 .rmk(rmk)

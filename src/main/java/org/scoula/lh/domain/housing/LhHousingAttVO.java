@@ -15,6 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class LhHousingAttVO {
 
+    private Integer danziId;
     /**
      * 주택첨부파일 ID (Primary Key, Auto Increment)
      */

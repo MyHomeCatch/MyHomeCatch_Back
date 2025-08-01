@@ -103,4 +103,26 @@
     <select id="existsByPanId" resultType="java.lang.Boolean">
         SELECT EXISTS(SELECT 1 FROM LH_notice WHERE pan_id = #{panId})
     </select>
+
+    <insert id="createNoticeDanzi">
+        insert into noticeDanzi(notice_id, danzi_id)
+        values (#{noticeID}, #{danziId})
+    </insert>
+
+    <select id="getDanziId" resultType="Integer">
+        select danziId from noticeDanzi where noticeId = #{noticeId}
+    </select>
+
+    <select id="getPanIds" resultType="String">
+        select pan_id from LH_notice
+    </select>
+
+    <select id="getLHNoticeList" resultType="org.scoula.lh.danzi.domain.NoticeVO">
+        SELECT *
+        FROM LH_notice
+        WHERE pan_id IN
+        <foreach collection="list" item="panId" open="(" separator="," close=")">
+            #{panId}
+        </foreach>
+    </select>
 </mapper>

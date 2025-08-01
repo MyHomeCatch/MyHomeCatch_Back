@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.scoula.lh.danzi.mapper.DanziMapper">
+    <insert id="insert" parameterType="java.util.List"
+            useGeneratedKeys="true" keyProperty="danziId">
+        INSERT INTO danzi (bzdt_nm, lct_ara_adr, lct_ara_dtl_adr, min_max_rsdn_ddo_ar,
+                           sum_tot_hsh_cnt, htn_fmla_de_cd_nm, mvin_xpc_ym)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.bzdtNm}, #{item.lctAraAdr}, #{item.lctAraDtlAdr}, #{item.minMaxRsdnDdoAr}, #{item.sumTotHshCnt},
+             #{item.htnFmlaDeCoNm}, #{item.mvinXpcYm})
+        </foreach>
+    </insert>
+
+    <insert id="insertDanziNotice" parameterType="org.scoula.lh.danzi.domain.DanziNoticeVO">
+        insert into notice_danzi(notice_id, danzi_id)
+        values(#{noticeId}, #{danziId})
+    </insert>
+</mapper>

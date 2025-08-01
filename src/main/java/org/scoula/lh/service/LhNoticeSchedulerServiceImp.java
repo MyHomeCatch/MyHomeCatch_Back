@@ -8,7 +8,10 @@ import org.scoula.lh.mapper.LhNoticeMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,30 +42,72 @@ public class LhNoticeSchedulerServiceImp implements LhNoticeSchedulerService {
     }
 
     @Override
+//    public List<NoticeDTO> createAllAndReturnNew(List<NoticeApiDTO> allNotices) {
+//        List<NoticeDTO> newNotices = new ArrayList<>();
+//
+//        for (NoticeApiDTO apiNotice : allNotices) {
+//            if (!noticeMapper.existsByPanId(apiNotice.getPanId())) {
+//                int result = create(apiNotice);
+//                if (result > 0) {
+//                    NoticeDTO newNotice = getNotice(apiNotice.getPanId());
+//                    newNotices.add(newNotice);
+//                }
+//            } else if(!noticeMapper.getLhNotice(apiNotice.getPanId()).getPanNm().equals(apiNotice.getPanNm())) {
+//                int result = create(apiNotice);
+//                if (result > 0) {
+//                    NoticeDTO newNotice = getNotice(apiNotice.getPanId());
+//                    newNotices.add(newNotice);
+//                }
+//            }
+//        }
+//
+//        return newNotices;
+//    }
     public List<NoticeDTO> createAllAndReturnNew(List<NoticeApiDTO> allNotices) {
         List<NoticeDTO> newNotices = new ArrayList<>();
 
-        for (NoticeApiDTO apiNotice : allNotices) {
-            if (!noticeMapper.existsByPanId(apiNotice.getPanId())) {
-                int result = create(apiNotice);
-                if (result > 0) {
-                    NoticeDTO newNotice = getNotice(apiNotice.getPanId());
-                    newNotices.add(newNotice);
-                }
-            } else if(!noticeMapper.getLhNotice(apiNotice.getPanId()).getPanNm().equals(apiNotice.getPanNm())) {
-                int result = create(apiNotice);
-                if (result > 0) {
-                    NoticeDTO newNotice = getNotice(apiNotice.getPanId());
-                    newNotices.add(newNotice);
-                }
-            }
-        }
+        // 1. 현재 공고 테이블 panId 조회
+        List<String> curPanIdList = noticeMapper.getPanIds();
+
+        // 2. 현재 테이블에 존재하지 않는 NoticeApiDTO 수집
+        Set<String> curPanIdSet = new HashSet<>(curPanIdList);
+
+        List<NoticeApiDTO> newAddNotices = allNotices.stream()
+                .filter(dto -> !curPanIdSet.contains(dto.getPanId()))
+                .collect(Collectors.toList());
+
+        if(newAddNotices.size() == 0) return newNotices; // 추가된 데이터가 없으면 빈 리스트 반환
+
+        // 3. 데이터 insert
+        int cnt = createAll(newAddNotices);
+
+        // 4. 추가된 데이터 반환하기
+        // 4-1. 추가한 데이터 panId List
+
+        List<String> addPanIdList = newAddNotices.stream()
+                .map(NoticeApiDTO::getPanId)
+                .collect(Collectors.toList());
+
+        newNotices = noticeMapper.getLHNoticeList(addPanIdList).stream()
+                .map(vo -> NoticeDTO.of(vo))
+                .collect(Collectors.toList());
 
         return newNotices;
     }
 
+
     @Override
     public boolean existsByPanId(String panId) {
         return noticeMapper.existsByPanId(panId);
+    }
+
+    @Override
+    public void createNoticeDanzi(Integer noticeId, Integer danziId) {
+        noticeMapper.createNoticeDanzi(noticeId, danziId);
+    }
+
+    @Override
+    public int getDanziId(Integer noticeId) {
+        return noticeMapper.getDanziId(noticeId);
     }
 }

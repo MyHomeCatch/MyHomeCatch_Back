@@ -1,6 +1,6 @@
 package org.scoula.lh.service;
 
-import org.scoula.lh.domain.NoticeAttVO;
+import org.scoula.lh.danzi.domain.NoticeAttVO;
 import org.scoula.lh.dto.NoticeAttDTO;
 
 import java.util.List;

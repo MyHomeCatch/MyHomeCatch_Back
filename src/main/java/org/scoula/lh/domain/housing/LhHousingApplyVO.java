@@ -16,6 +16,7 @@ import java.util.Date;
 @Builder
 public class LhHousingApplyVO {
 
+    private Integer danziId;
     /**
      * 주택신청정보 ID (Primary Key, Auto Increment)
      */

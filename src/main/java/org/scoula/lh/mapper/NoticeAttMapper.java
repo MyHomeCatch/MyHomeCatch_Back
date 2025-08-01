@@ -1,6 +1,6 @@
 package org.scoula.lh.mapper;
 
-import org.scoula.lh.domain.NoticeAttVO;
+import org.scoula.lh.danzi.domain.NoticeAttVO;
 
 import java.util.List;
 

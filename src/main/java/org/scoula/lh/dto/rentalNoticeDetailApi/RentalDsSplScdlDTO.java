@@ -85,6 +85,7 @@ public class RentalDsSplScdlDTO {
     public DanziApplyVO toDanziApplyVO(Integer danziId) {
         return DanziApplyVO.builder()
                 .danziId(danziId)
+                .hsSbscAcpTrgCdNm(null)
                 .sbscAcpStDt(DateParser.parseDate(sbscAcpStDt))
                 .sbscAcpClsgDt(DateParser.parseDate(sbscAcpStDt))
                 .rmk(null)

@@ -6,12 +6,14 @@
 <mapper namespace="org.scoula.lh.mapper.NoticeAttMapper">
     <insert id="create" parameterType="org.scoula.lh.domain.NoticeAttVO">
         INSERT INTO LH_notice_att (
+            notice_id,
             pan_id,
             sl_pan_ahfl_ds_cd_nm,
             cmn_ahfl_nm,
             ahfl_url
         )
         VALUES (
+                   #{noticeId},
                    #{panId},
                    #{slPanAhflDsCdNm},
                    #{cmnAhflNm},
@@ -21,7 +23,7 @@
 
     <insert id="createAll" parameterType="java.util.List">
         INSERT INTO LH_notice_att (
-        pan_id,
+        notice_id,
         sl_pan_ahfl_ds_cd_nm,
         cmn_ahfl_nm,
         ahfl_url
@@ -29,7 +31,7 @@
         VALUES
         <foreach collection="list" item="item" separator=",">
             (
-            #{item.panId},
+            #{item.noticeId},
             #{item.slPanAhflDsCdNm},
             #{item.cmnAhflNm},
             #{item.ahflUrl}
@@ -37,7 +39,7 @@
         </foreach>
     </insert>
 
-    <select id="getNoticeAttByPanId" parameterType="string" resultType="org.scoula.lh.domain.NoticeAttVO">
+    <select id="getNoticeAttByPanId" parameterType="string" resultType="org.scoula.lh.danzi.domain.NoticeAttVO">
         SELECT
             lh_notice_att_id,
             pan_id,

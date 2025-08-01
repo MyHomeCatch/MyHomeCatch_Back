@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class NoticeAttVO {
 
+    private Integer noticeId; // 공고테이블 기본키
     /**
      * 첨부파일 ID (Primary Key, Auto Increment)
      */
