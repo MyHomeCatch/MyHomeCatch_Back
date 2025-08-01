@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.scoula.DetailPage.mapper.CommentMapper">
+
+    <select id="findCommentsByPanId" resultType="org.scoula.DetailPage.dto.CommentDTO">
+        SELECT pan_id AS panId,
+               comment_id AS commentId,
+               content,
+               user_id AS userId,
+               nickname,
+               is_deleted AS isDeleted
+        FROM comments
+        WHERE pan_id = #{panId}
+          AND is_deleted = false
+        ORDER BY comment_id DESC
+    </select>
+
+    <insert id="insertComment" parameterType="org.scoula.DetailPage.dto.CommentDTO">
+        INSERT INTO comments (comment_id, pan_id, content, user_id, nickname, is_deleted)
+        VALUES (#{commentId}, #{panId}, #{content}, #{userId}, #{nickname}, false)
+    </insert>
+
+    <update id="deleteComment">
+        UPDATE comments
+        SET is_deleted = true
+        WHERE comment_id = #{commentId}
+    </update>
+
+</mapper>
