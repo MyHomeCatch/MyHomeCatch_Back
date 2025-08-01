@@ -15,5 +15,6 @@ public class GoogleUserDto {
     private String refreshToken;
     private String email;
     private String name;
+    private String nickname;
     // private String picture;
 }

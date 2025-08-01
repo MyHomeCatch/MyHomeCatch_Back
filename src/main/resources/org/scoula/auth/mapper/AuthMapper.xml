@@ -22,7 +22,7 @@
         VALUES (#{email}, #{password}, #{name}, #{nickname}, #{address}, #{additionalPoint})
     </insert>
 
-    <delete id="deleteByEmail">
+    <delete id="deleteByEmail" parameterType="org.scoula.member.dto.UserInfoDto">
         DELETE FROM users WHERE email = #{email}
     </delete>
 

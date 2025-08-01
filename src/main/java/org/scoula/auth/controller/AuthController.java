@@ -8,7 +8,7 @@ import io.swagger.models.Response;
 import lombok.extern.log4j.Log4j2;
 import org.scoula.auth.dto.*;
 import org.scoula.auth.mapper.AuthMapper;
-import org.scoula.auth.service.AuthServiceImpl;
+import org.scoula.auth.service.AuthService;
 import org.scoula.common.util.JwtUtil;
 import org.scoula.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +36,7 @@ import org.scoula.auth.dto.AuthResponse;
 import org.scoula.auth.dto.GoogleUserDto;
 import org.scoula.auth.dto.LoginRequest;
 import org.scoula.auth.dto.SignupRequest;
-import org.springframework.http.*;
-
-import org.springframework.ui.Model;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.io.IOException;
+import org.scoula.member.dto.UserInfoDto;
 
 
 @RestController
@@ -51,7 +46,7 @@ import java.io.IOException;
 public class AuthController {
 
     @Autowired
-    private AuthServiceImpl authService;
+    private AuthService authService;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -208,23 +203,34 @@ public class AuthController {
     }
 
 
-    @ApiOperation(value = "회원탈퇴", notes = "회원탈퇴를 진행합니다")
+    @ApiOperation(value = "회원탈퇴", notes = "회원탈퇴를 진행합니다 (현재 비밀번호 검증 포함)")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "성공적으로 요청이 처리되었습니다.", response = AuthResponse.class),
-            @ApiResponse(code = 401, message = "잘못된 요청입니다."),
+            @ApiResponse(code = 400, message = "잘못된 요청입니다 (비밀번호 불일치 등)."),
+            @ApiResponse(code = 401, message = "유효하지 않은 토큰입니다."),
             @ApiResponse(code = 500, message = "서버에서 오류가 발생했습니다.")
     })
     @DeleteMapping("/withdraw")
-    public ResponseEntity<?> withdraw(HttpServletRequest request) {
+    public ResponseEntity<?> withdraw(@RequestBody UserInfoDto userInfoDto, HttpServletRequest request) {
         String token = extractToken(request);
+        System.out.println("====== withdraw called ======");
+
         if (token == null || !jwtUtil.isValidToken(token)) {
-            return ResponseEntity.status(401).body(Map.of("message", "유효하지 않은 토큰"));
+            return ResponseEntity.status(401).body(Map.of("message", "유효하지 않은 토큰입니다."));
         }
 
         String email = jwtUtil.extractEmail(token);
 
-        authService.deleteByEmail(email);
-        return ResponseEntity.ok(Map.of("message", "회원 탈퇴 완료"));
+        userInfoDto.setEmail(email);
+
+        try {
+            authService.deleteUserWithPasswordVerification(userInfoDto);
+            return ResponseEntity.ok(Map.of("message", "회원 탈퇴가 완료되었습니다."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("message", "회원 탈퇴 중 오류가 발생했습니다: " + e.getMessage()));
+        }
     }
 
     @ApiOperation(value = "비밀번호 변경", notes = "해당 이메일의 비밀번호를 변경합니다.")
@@ -286,5 +292,4 @@ public class AuthController {
 
         return authService.googleSignupOrLogin(code, httpServletResponse);
     }
-
 }
