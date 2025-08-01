@@ -57,7 +57,7 @@ public class LhNoticeSchedulerServiceImp implements LhNoticeSchedulerService {
 
         if(newAddNotices.size() == 0) return newNotices; // 추가된 데이터가 없으면 빈 리스트 반환
 
-        // 3. 데이터 insert
+        //   3. 데이터 insert
         int cnt = createAll(newAddNotices);
 
         // 4. 추가된 데이터 반환하기

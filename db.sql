@@ -108,13 +108,13 @@ WHERE
    ========================================================= */
 
 -- 1. LH 공고
-DROP TABLE IF EXISTS notice;
+DROP TABLE IF EXISTS lh_notice;
 CREATE TABLE lh_notice (
                            notice_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '공고 ID',
-                           pan_id VARCHAR(64) COMMENT '공고번호',
+                           pan_id VARCHAR(64) unique COMMENT '공고번호',
                            upp_ais_tp_cd VARCHAR(16) COMMENT '공고유형명',
                            ais_tp_cd_nm VARCHAR(16) COMMENT '공고세부유형명',
-                           pan_nm VARCHAR(64) COMMENT '공고명',
+                           pan_nm VARCHAR(255) COMMENT '공고명',
                            cnp_cd_nm VARCHAR(16) COMMENT '지역명',
                            pan_ss VARCHAR(16) COMMENT '공고상태',
                            all_cnt VARCHAR(16) COMMENT '전체조회건수',
@@ -129,7 +129,7 @@ CREATE TABLE lh_notice (
 DROP TABLE IF EXISTS danzi;
 CREATE TABLE danzi (
                        danzi_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '단지 ID',
-                       bzdt_nm VARCHAR(64) COMMENT '단지명',
+                       bzdt_nm VARCHAR(64) unique COMMENT '단지명',
                        lct_ara_adr VARCHAR(128) COMMENT '단지 주소',
                        lct_ara_dtl_adr VARCHAR(128) COMMENT '단지상세주소',
                        min_max_rsdn_ddo_ar VARCHAR(128) COMMENT '전용면적',
@@ -139,7 +139,7 @@ CREATE TABLE danzi (
 ) COMMENT='단지 기본 정보 테이블';
 
 -- 3. LH 공고 첨부파일
-DROP TABLE IF EXISTS notice_att;
+DROP TABLE IF EXISTS lh_notice_att;
 CREATE TABLE lh_notice_att (
                                notice_att_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '공고 첨부파일 ID',
                                notice_id INT COMMENT '공고 ID',
@@ -174,7 +174,7 @@ CREATE TABLE notice_danzi (
 DROP TABLE IF EXISTS danzi_apply;
 CREATE TABLE danzi_apply (
                              apply_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '단지 공급일정 ID',
-                             danzi_id INT COMMENT '단지 ID',
+                             danzi_id INT unique COMMENT '단지 ID',
                              hs_sbsc_acp_trg_cd_nm VARCHAR(32) COMMENT '구분',
                              sbsc_acp_st_dt DATE COMMENT '접수기간 시작일',
                              sbsc_acp_clsg_dt DATE COMMENT '접수기간 종료일',

@@ -35,11 +35,6 @@ public class DanziAttServiceImpl implements DanziAttService {
         List<DanziAttVO> returnVO = new ArrayList<>();
 
         for(DanziAttVO vo : danziAttVOList) {
-
-            if(danziService.isCorrectedNoticeByDanziId(vo.getDanziId())) {
-                continue;
-            }
-
             DanziAttVO forSaveVO= thumbService.createDanziThumbVO(vo);
             mapper.create(forSaveVO);
             returnVO.add(forSaveVO);
@@ -49,10 +44,6 @@ public class DanziAttServiceImpl implements DanziAttService {
 
     @Override
     public int create(DanziAttVO danziAttVO) {
-
-        if(danziService.isCorrectedNoticeByDanziId(danziAttVO.getDanziId())) {
-            return -1;
-        }
         DanziAttVO forSaveVO= thumbService.createDanziThumbVO(danziAttVO);
         return mapper.create(forSaveVO);
     }

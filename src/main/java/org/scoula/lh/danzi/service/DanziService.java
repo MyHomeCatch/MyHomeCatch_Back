@@ -11,4 +11,5 @@ public interface DanziService {
     List<DanziVO> createAll(List<DanziVO> voList);
     void createDanziNotice(DanziNoticeVO vo);
     boolean isCorrectedNoticeByDanziId(Integer danziId);
+    void updateMissingNoticeMapping(String panId, int danziId);
 }

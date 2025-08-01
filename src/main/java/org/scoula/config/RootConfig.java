@@ -20,7 +20,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -28,12 +27,11 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-@Log4j2
 @EnableTransactionManagement
 @EnableScheduling
+@Log4j2
 @PropertySource({"classpath:application.properties", "classpath:secrets.properties"})
 @MapperScan(basePackages = {"org.scoula.**.mapper"})
-@ComponentScan(basePackages = {
 @ComponentScan(basePackages = {
         "org.scoula",                    // 전체 스캔
         "org.scoula.config",            // 설정 관련
@@ -129,7 +127,6 @@ public class RootConfig {
 
         return mailSender;
     }
-
 }
 
 

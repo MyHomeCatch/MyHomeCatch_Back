@@ -40,13 +40,26 @@ public class DanziServiceImpl implements DanziService {
 
     @Override
     public boolean isCorrectedNoticeByDanziId(Integer danziId) {
-        int noticeId = lhNoticeMapper.getNoticeId(danziId);
-        if(noticeId == -1)
-            return false;
+        Integer noticeId = lhNoticeMapper.getNoticeId(danziId);
+        if(noticeId == null) return false;
         LhNoticeVO vo = lhNoticeMapper.getLhNotice(String.valueOf(noticeId));
-        if (vo.getPanSs().equals("정정공고중")){
-            return true;
+        if (vo == null) {
+            log.warn("공고가 존재하지 않음. noticeId: {}", noticeId);
+            return false; // 혹은 기본값 처리
+        } else {
+            if(vo.getPanSs().equals("정정공고중")) return true;
         }
         return false;
+    }
+
+    @Override
+    public void updateMissingNoticeMapping(String panId, int danziId) {
+        Integer noticeId = lhNoticeMapper.getNoticeId(danziId);
+        if (noticeId != null) {
+            lhNoticeMapper.updateNoticeIdByDanziId(danziId, noticeId);
+            log.info("Updated notice_id={} for danzi_id={}", noticeId, danziId);
+        } else {
+            log.warn("Failed to find notice_id for pan_id={}, danzi_id={}", panId, danziId);
+        }
     }
 }

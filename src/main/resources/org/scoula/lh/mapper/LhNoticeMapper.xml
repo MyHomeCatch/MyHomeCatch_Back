@@ -6,7 +6,7 @@
 <mapper namespace="org.scoula.lh.mapper.LhNoticeMapper">
 
     <insert id="create">
-        INSERT INTO LH_notice
+        INSERT INTO lh_notice
         (pan_id,
          upp_ais_tp_cd,
          ais_tp_cd_nm,
@@ -45,7 +45,7 @@
     </insert>
 
     <insert id="createAll" parameterType="java.util.List">
-        INSERT INTO LH_notice (
+        INSERT INTO lh_notice (
         pan_id,
         upp_ais_tp_cd,
         ais_tp_cd_nm,
@@ -92,16 +92,19 @@
 
     <select id="getLhNotice" resultType="org.scoula.lh.domain.LhNoticeVO">
         SELECT *
-        FROM LH_notice
+        FROM lh_notice
         WHERE pan_id = #{pandId}
+        ORDER BY notice_id DESC
+        LIMIT 1
     </select>
+
     <select id="getLhNotices" resultType="org.scoula.lh.domain.LhNoticeVO">
         SELECT *
-        FROM LH_notice
+        FROM lh_notice
     </select>
 
     <select id="existsByPanId" resultType="java.lang.Boolean">
-        SELECT EXISTS(SELECT 1 FROM LH_notice WHERE pan_id = #{panId})
+        SELECT EXISTS(SELECT 1 FROM lh_notice WHERE pan_id = #{panId})
     </select>
 
     <insert id="createNoticeDanzi">
@@ -118,15 +121,21 @@
     </select>
 
     <select id="getPanIds" resultType="String">
-        select pan_id from LH_notice
+        select pan_id from lh_notice
     </select>
 
     <select id="getLHNoticeList" resultType="org.scoula.lh.danzi.domain.NoticeVO">
         SELECT *
-        FROM LH_notice
+        FROM lh_notice
         WHERE pan_id IN
         <foreach collection="list" item="panId" open="(" separator="," close=")">
             #{panId}
         </foreach>
     </select>
+
+    <update id="updateNoticeIdByDanziId">
+        UPDATE notice_danzi
+        SET notice_id = #{noticeId}
+        WHERE danzi_id = #{danziId}
+    </update>
 </mapper>

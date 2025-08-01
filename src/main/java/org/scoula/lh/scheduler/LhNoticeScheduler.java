@@ -149,6 +149,7 @@ public class LhNoticeScheduler {
                         .collect(Collectors.toList());
                 // 단지 정보 db 저장 => 기본키 값 저장
                 danziService.createAll(danziVOList);
+
                 // 공고-단지 테이블 저장
                 for(DanziVO vo : danziVOList) {
                     DanziNoticeVO danziNoticeVO = DanziNoticeVO.builder()
@@ -297,7 +298,6 @@ public class LhNoticeScheduler {
                                 dsList.addAll(temp);
                                 break;
                             }
-                            log.info("fetchLh log, {}", dsList);
                         }
                     }
 
