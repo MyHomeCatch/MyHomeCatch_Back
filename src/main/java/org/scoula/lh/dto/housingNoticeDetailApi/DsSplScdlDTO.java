@@ -5,11 +5,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.scoula.lh.domain.housing.LhHousingApplyVO;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import org.scoula.house.util.DateParser;
+import org.scoula.house.util.DateRangeParser;
+import org.scoula.lh.danzi.domain.DanziApplyVO;
 
 // 공급일정 DTO
 @Data
@@ -18,79 +16,48 @@ import java.util.Date;
 @Builder
 public class DsSplScdlDTO {
     @JsonProperty("RMK")
-    private String rmk;
+    private String rmk;                      // 비고/신청방법 (예: 현장접수/인터넷접수)
 
     @JsonProperty("PZWR_ANC_DT")
-    private String pzwrAncDt;
+    private String pzwrAncDt;                // 당첨자 발표일
 
     @JsonProperty("CTRT_ED_DT")
-    private String ctrtEdDt;
+    private String ctrtEdDt;                 // 계약 종료일 (계약체결기간 종료일)
 
     @JsonProperty("HS_SBSC_ACP_TRG_CD_NM")
-    private String hsSbscAcpTrgCdNm;
+    private String hsSbscAcpTrgCdNm;         // 주택청약 접수대상 코드명
 
     @JsonProperty("ACP_DTTM")
-    private String acpDttm;
+    private String acpDttm;                  // 접수일시
 
     @JsonProperty("PZWR_PPR_SBM_ST_DT")
-    private String pzwrPprSbmStDt;
+    private String pzwrPprSbmStDt;           // 당첨자 서류제출 시작일
 
     @JsonProperty("SPL_SCD_GUD_FCTS")
-    private String splScdGudFcts;
+    private String splScdGudFcts;            // 공급일정 안내사항
 
     @JsonProperty("CTRT_ST_DT")
-    private String ctrtStDt;
+    private String ctrtStDt;                 // 계약 시작일 (계약체결기간 시작일)
 
     @JsonProperty("PZWR_PPR_SBM_ED_DT")
-    private String pzwrPprSbmEdDt;
+    private String pzwrPprSbmEdDt;           // 당첨자 서류제출 종료일
 
-    /**
-     * LhHousingApplyVO로 변환
-     * @param panId 공고 ID
-     * @return LhHousingApplyVO 객체
-     */
-    public LhHousingApplyVO toVO(String panId) {
-        return LhHousingApplyVO.builder()
-                .panId(panId)
-                .hsSbscAcpTrgCdNm(this.hsSbscAcpTrgCdNm)
-                .acpDttm(this.acpDttm)
-                .rmk(this.rmk)
-                .pzwrAncDt(parseDate(this.pzwrAncDt))
-                .pzwrPprSbmStDt(parseDate(this.pzwrPprSbmStDt))
-                .pzwrPprSbmEdDt(parseDate(this.pzwrPprSbmEdDt))
-                .ctrtStDt(parseDate(this.ctrtStDt))
-                .ctrtEdDt(parseDate(this.ctrtEdDt))
+
+    public DanziApplyVO toDanziApplyVO(Integer danziId) {
+        return DanziApplyVO.builder()
+                .danziId(danziId)
+                .hsSbscAcpTrgCdNm(hsSbscAcpTrgCdNm)
+                .sbscAcpStDt(DateRangeParser.parseStartDate(acpDttm))
+                .sbscAcpClsgDt(DateRangeParser.parseEndDate(acpDttm))
+                .rmk(rmk)
+                .pprSbmOpeAncDt(null)
+                .pprAcpStDt(null)
+                .pprAcpClsgDt(null)
+                .pzwrAncDt(DateParser.parseDate(pzwrAncDt))
+                .pzwrPprSbmStDt(DateParser.parseDate(pzwrPprSbmStDt))
+                .pzwrPprSbmEdDt(DateParser.parseDate(pzwrPprSbmEdDt))
+                .ctrtStDt(DateParser.parseDate(ctrtStDt))
+                .ctrtEdDt(DateParser.parseDate(ctrtEdDt))
                 .build();
-    }
-
-    private Date parseDate(String dateString) {
-        if (dateString == null || dateString.trim().isEmpty()) {
-            return null;
-        }
-
-        String cleanDateString = dateString.trim();
-
-        // 지원할 날짜 형식들
-        String[] dateFormats = {
-                "yyyyMMdd",        // 20200101
-                "yyyy.MM.dd",      // 2025.06.30
-                "yyyy-MM-dd",      // 2025-06-30 (추가로 지원)
-                "yyyy/MM/dd"       // 2025/06/30 (추가로 지원)
-        };
-
-        for (String format : dateFormats) {
-            try {
-                SimpleDateFormat formatter = new SimpleDateFormat(format);
-                formatter.setLenient(false); // 엄격한 파싱 모드
-                return formatter.parse(cleanDateString);
-            } catch (ParseException e) {
-                // 현재 형식으로 파싱 실패, 다음 형식 시도
-                continue;
-            }
-        }
-
-        // 파싱 실패시 로그 출력 후 null 반환
-        System.err.println("날짜 파싱 실패: " + dateString);
-        return null;
     }
 }

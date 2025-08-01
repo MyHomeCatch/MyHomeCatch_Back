@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.scoula.lh.danzi.domain.NoticeAttVO;
 
 /**
  * 임대주택 첨부파일 정보 DTO
@@ -35,4 +36,14 @@ public class RentalDsAhflInfoDTO {
      */
     @JsonProperty("CMN_AHFL_NM")
     private String cmnAhflNm;
+
+
+    public NoticeAttVO toNoticeAttVO(Integer noticeId) {
+        return NoticeAttVO.builder()
+                .noticeId(noticeId)
+                .slPanAhflDsCdNm(slPanAhflDsCdNm)
+                .cmnAhflNm(cmnAhflNm)
+                .ahflUrl(ahflUrl)
+                .build();
+    }
 }

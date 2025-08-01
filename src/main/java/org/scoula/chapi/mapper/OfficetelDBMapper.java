@@ -1,15 +1,13 @@
 package org.scoula.chapi.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.scoula.chapi.domain.CHOfficetelCmpetVO;
-import org.scoula.chapi.domain.CHOfficetelModelVO;
-import org.scoula.chapi.domain.CHOfficetelTotalVO;
-import org.scoula.chapi.domain.CHOfficetelVO;
+import org.scoula.chapi.domain.*;
 
 import java.util.List;
 
 @Mapper
 public interface OfficetelDBMapper {
+    // 오피스텔
     int insert(CHOfficetelVO vo);
     int insertOfficetelModel(CHOfficetelModelVO vo);
     int insertOfficetelCmpet(CHOfficetelCmpetVO vo);

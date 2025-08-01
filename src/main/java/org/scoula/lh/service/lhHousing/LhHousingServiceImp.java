@@ -2,6 +2,7 @@ package org.scoula.lh.service.lhHousing;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.scoula.lh.danzi.domain.DanziVO;
 import org.scoula.lh.dto.lhHousing.LhHousingDTO;
 import org.scoula.lh.mapper.lhHousing.LhHousingMapper;
 import org.springframework.stereotype.Service;
@@ -21,8 +22,9 @@ public class LhHousingServiceImp implements LhHousingService {
     }
 
     @Override
-    public int create(LhHousingDTO dto) {
-        return housingMapper.create(dto.toVO());
+    public int create(DanziVO dto) {
+        return 1;
+        //return housingMapper.create(dto.toVO());
     }
 
     @Override

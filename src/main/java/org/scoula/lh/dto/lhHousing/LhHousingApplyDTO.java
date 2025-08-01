@@ -29,62 +29,76 @@ public class LhHousingApplyDTO {
      * 구분 (청약 구분)
      * 예시: "사전청약당첨자", "다자녀특별(85㎡이하)", "신혼부부특별", "일반공급(우선)" 등
      */
-    private String hsSbscAcpTrgCdNm;
+    private String supplyType;
 
     /**
      * 신청일시
      * 예시: "2019.03.06 15:00 ~ 2020.03.04 18:00", "2025.07.14 10:00 ~ 2025.07.15 17:00"
      */
-    private String acpDttm;
+    private String applyDateRange;
+
+    /**
+     * 신청 시작일시 (파싱된 데이터)
+     * acpDttm에서 "~" 앞부분을 파싱한 시작 날짜/시간
+     */
+    private Date applyStartDate;
+
+    /**
+     * 신청 종료일시 (파싱된 데이터)
+     * acpDttm에서 "~" 뒷부분을 파싱한 종료 날짜/시간
+     */
+    private Date applyEndDate;
 
     /**
      * 신청방법
      * 예시: "인터넷접수"
      */
-    private String rmk;
+    private String applyMethod;
 
     /**
      * 당첨자 발표 일자
      * 예시: 2025-08-05
      */
-    private Date pzwrAncDt;
+    private Date annouceDate;
 
     /**
      * 당첨자서류제출 기간 시작일
      * 예시: 2025-08-11
      */
-    private Date pzwrPprSbmStDt;
+    private Date docSubmitStartDate;
 
     /**
      * 당첨자서류제출 기간 종료일
      * 예시: 2025-08-19
      */
-    private Date pzwrPprSbmEdDt;
+    private Date docSubmitEndDate;
 
     /**
      * 계약체결 기간 시작일
      * 예시: 2025-10-27
      */
-    private Date ctrtStDt;
+    private Date contractStartDate;
 
     /**
      * 계약체결 기간 종료일
      * 예시: 2025-10-31
      */
-    private Date ctrtEdDt;
+    private Date contractEndDate;
 
     public static LhHousingApplyDTO of(LhHousingApplyVO vo) {
         return LhHousingApplyDTO.builder()
                 .lhHousingApplyId(vo.getLhHousingApplyId())
                 .panId(vo.getPanId())
-                .hsSbscAcpTrgCdNm(vo.getHsSbscAcpTrgCdNm())
-                .acpDttm(vo.getAcpDttm())
-                .rmk(vo.getRmk())
-                .pzwrAncDt(vo.getPzwrAncDt())
-                .pzwrPprSbmStDt(vo.getPzwrPprSbmStDt())
-                .pzwrPprSbmEdDt(vo.getPzwrPprSbmEdDt())
-                .ctrtStDt(vo.getCtrtStDt())
-                .ctrtEdDt(vo.getCtrtEdDt())
+                .supplyType(vo.getHsSbscAcpTrgCdNm())
+                .applyDateRange(vo.getAcpDttm())
+                .applyStartDate(vo.getStartDttm())
+                .applyEndDate(vo.getEndDttm())
+                .applyMethod(vo.getRmk())
+                .annouceDate(vo.getPzwrAncDt())
+                .docSubmitStartDate(vo.getPzwrPprSbmStDt())
+                .docSubmitEndDate(vo.getPzwrPprSbmEdDt())
+                .contractStartDate(vo.getCtrtStDt())
+                .contractEndDate(vo.getCtrtEdDt())
                 .build();
     }
 
@@ -96,15 +110,16 @@ public class LhHousingApplyDTO {
         return LhHousingApplyVO.builder()
                 .lhHousingApplyId(this.lhHousingApplyId)
                 .panId(this.panId)
-                .hsSbscAcpTrgCdNm(this.hsSbscAcpTrgCdNm)
-                .acpDttm(this.acpDttm)
-                .rmk(this.rmk)
-                .pzwrAncDt(this.pzwrAncDt)
-                .pzwrPprSbmStDt(this.pzwrPprSbmStDt)
-                .pzwrPprSbmEdDt(this.pzwrPprSbmEdDt)
-                .ctrtStDt(this.ctrtStDt)
-                .ctrtEdDt(this.ctrtEdDt)
+                .hsSbscAcpTrgCdNm(this.supplyType)
+                .acpDttm(this.applyDateRange)
+                .startDttm(this.applyStartDate)
+                .endDttm(this.applyEndDate)
+                .rmk(this.applyMethod)
+                .pzwrAncDt(this.annouceDate)
+                .pzwrPprSbmStDt(this.docSubmitStartDate)
+                .pzwrPprSbmEdDt(this.docSubmitEndDate)
+                .ctrtStDt(this.contractStartDate)
+                .ctrtEdDt(this.contractEndDate)
                 .build();
     }
-
 }

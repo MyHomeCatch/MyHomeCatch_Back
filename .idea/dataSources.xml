@@ -13,6 +13,7 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
+
     <data-source source="LOCAL" name="scoula_db@localhost" uuid="cadc0f29-b38d-4f4c-87fc-d092b935008a">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
@@ -21,6 +22,21 @@
       <jdbc-additional-properties>
         <property name="com.intellij.clouds.kubernetes.db.host.port" />
         <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
+        <property name="com.intellij.clouds.kubernetes.db.resource.type" value="Deployment" />
+        <property name="com.intellij.clouds.kubernetes.db.container.port" />
+      </jdbc-additional-properties>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+
+    <data-source source="LOCAL" name="MyHomeCatch@myhomecatch.cpw20yo0imjn.ap-southeast-2.rds.amazonaws.com" uuid="d38c0da9-c7ad-46e9-aa36-3db9bde3197b">
+      <driver-ref>mysql.8</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://myhomecatch.cpw20yo0imjn.ap-southeast-2.rds.amazonaws.com:3306/MyHomeCatch</jdbc-url>
+      <jdbc-additional-properties>
+        <property name="com.intellij.clouds.kubernetes.db.host.port" />
+        <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
+        <property name="com.intellij.clouds.kubernetes.db.resource.type" value="Deployment" />
         <property name="com.intellij.clouds.kubernetes.db.container.port" />
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>

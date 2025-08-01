@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.scoula.lh.domain.housing.LhHousingAttVO;
+import org.scoula.lh.danzi.domain.DanziAttVO;
 
 // 단지첨부파일 DTO
 @Data
@@ -24,19 +24,21 @@ public class DsSbdAhflDTO {
 
     @JsonProperty("CMN_AHFL_NM")
     private String cmnAhflNm;
+    
 
-    /**
-     * LhHousingAttVO로 변환
-     * @param panId 공고 ID
-     * @return LhHousingAttVO 객체
-     */
-    public LhHousingAttVO toLhHousingAttVO(String panId) {
-        return LhHousingAttVO.builder()
-                .panId(panId)
-                .bzdtNm(this.bzdtNm)
-                .slPanAhflDsCdNm(this.slPanAhflDsCdNm)
-                .cmnAhflNm(this.cmnAhflNm)
-                .ahflUrl(this.ahflUrl)
+    public DanziAttVO toDanziAttVO(Integer danziId) {
+        return DanziAttVO.builder()
+                .danziId(danziId)
+                .flDsCdNm(slPanAhflDsCdNm)
+                .cmnAhflNm(cmnAhflNm)
+                .ahflUrl(ahflUrl)
                 .build();
+
     }
 }
+
+//        private Integer attId;                // att ID (PK, AUTO_INCREMENT)
+//        private Integer danziId;              // 단지 ID (FK)
+//        private String flDsCdNm;              // 파일구분명
+//        private String cmnAhflNm;             // 첨부파일명
+//        private String ahflUrl;               // 첨부파일 URL

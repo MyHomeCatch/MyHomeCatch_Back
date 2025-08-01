@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.scoula.applyHome.domain.ApplyHomeVO;
 import org.scoula.DetailPage.dto.BoardDetailDTO;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -65,9 +66,9 @@ public class ApplyHomeDTO {
 
 
     // ApplyHomeDTO to BoardDetailDTO
-    public BoardDetailDTO toBoardDetailDTO() {
-        return BoardDetailDTO.of(this);
-    }
+//    public BoardDetailDTO toBoardDetailDTO() {
+//        return BoardDetailDTO.of(this);
+//    }
 
 
     // VO to DTO

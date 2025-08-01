@@ -16,6 +16,7 @@ import java.util.Date;
 @Builder
 public class LhHousingApplyVO {
 
+    private Integer danziId;
     /**
      * 주택신청정보 ID (Primary Key, Auto Increment)
      */
@@ -37,6 +38,18 @@ public class LhHousingApplyVO {
      * 예시: "2019.03.06 15:00 ~ 2020.03.04 18:00", "2025.07.14 10:00 ~ 2025.07.15 17:00"
      */
     private String acpDttm;
+
+    /**
+     * 신청 시작일시 (파싱된 데이터)
+     * acpDttm에서 "~" 앞부분을 파싱한 시작 날짜/시간
+     */
+    private Date startDttm;
+
+    /**
+     * 신청 종료일시 (파싱된 데이터)
+     * acpDttm에서 "~" 뒷부분을 파싱한 종료 날짜/시간
+     */
+    private Date endDttm;
 
     /**
      * 신청방법

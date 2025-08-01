@@ -87,11 +87,11 @@ public class CHOfficetelDTO {
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 	@JsonProperty("SUBSCRPT_RCEPT_BGNDE")
-	private Date subscrptReceptBgnde;
+	private Date subscrptRceptBgnde;
 
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 	@JsonProperty("SUBSCRPT_RCEPT_ENDDE")
-	private Date subscrptReceptEndde;
+	private Date subscrptRceptEndde;
 
 	@JsonProperty("TOT_SUPLY_HSHLDCO")
 	private int totSuplyHshldco;
@@ -120,8 +120,8 @@ public class CHOfficetelDTO {
 				.searchHouseSecd(vo.getSearchHouseSecd())
 				.subscrptAreaCode(vo.getSubscrptAreaCode())
 				.subscrptAreaCodeNm(vo.getSubscrptAreaCodeNm())
-				.subscrptReceptBgnde(vo.getSubscrptRceptBgnde())
-				.subscrptReceptEndde(vo.getSubscrptRceptEndde())
+				.subscrptRceptBgnde(vo.getSubscrptRceptBgnde())
+				.subscrptRceptEndde(vo.getSubscrptRceptEndde())
 				.totSuplyHshldco(vo.getTotSuplyHshldco())
 				.build();
 	}
@@ -150,8 +150,8 @@ public class CHOfficetelDTO {
 				.searchHouseSecd(this.searchHouseSecd)
 				.subscrptAreaCode(this.subscrptAreaCode)
 				.subscrptAreaCodeNm(this.subscrptAreaCodeNm)
-				.subscrptRceptBgnde(this.subscrptReceptBgnde)
-				.subscrptRceptEndde(this.subscrptReceptEndde)
+				.subscrptRceptBgnde(this.subscrptRceptBgnde)
+				.subscrptRceptEndde(this.subscrptRceptEndde)
 				.totSuplyHshldco(this.totSuplyHshldco)
 				.build();
 	}
