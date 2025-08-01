@@ -78,6 +78,9 @@ public class AuthServiceImpl implements AuthService {
         }
 
         String token = jwtUtil.generateToken(user.getEmail());
+
+        log.info("✅ 로그인 성공 - 이메일: {}, 닉네임: {}", user.getEmail(), user.getNickname());
+
         return new AuthResponse(token, user.getNickname());
     }
 
@@ -182,6 +185,8 @@ public class AuthServiceImpl implements AuthService {
             String token = jwtUtil.generateToken(kakaoEmail);
             String nickname = user.getNickname();
 
+            log.info("✅ 카카오 로그인 - 이메일: {}, 닉네임: {}", kakaoEmail, nickname);
+
             KakaoLoginInfoDto kakaoLoginInfoDto = KakaoLoginInfoDto.builder()
                     .token(token)
                     .nickname(nickname)
@@ -262,10 +267,12 @@ public class AuthServiceImpl implements AuthService {
         }
 
         Map<String, Object> userInfo = userInfoResponse.getBody();
+        String googleEmail = (String) userInfo.get("email");
 
         GoogleUserDto googleUserDto = GoogleUserDto.builder()
                 .email((String) userInfo.get("email"))
                 .name((String) userInfo.get("name"))
+                .nickname((String) userInfo.get("nickname"))
                 //.picture((String) userInfo.get("picture"))
                 .build();
 
@@ -274,8 +281,11 @@ public class AuthServiceImpl implements AuthService {
         if(user != null) {
             String token = jwtUtil.generateToken(user.getEmail());
             googleUserDto.setToken(token);
+            googleUserDto.setNickname(user.getNickname());
         }
         googleUserDto.setId("1234");
+
+        log.info("✅ 구글 로그인 - 이메일: {}, 닉네임: {}", googleEmail, user.getNickname());
 
         return ResponseEntity.ok(googleUserDto);
 
