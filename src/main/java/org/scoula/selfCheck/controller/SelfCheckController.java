@@ -2,6 +2,7 @@ package org.scoula.selfCheck.controller;
 
 import org.scoula.auth.mapper.AuthMapper;
 import org.scoula.common.util.JwtUtil;
+import org.scoula.selfCheck.dto.SelfCheckContentDto;
 import org.scoula.selfCheck.dto.SelfCheckRequestDto;
 import org.scoula.selfCheck.mapper.SelfCheckMapper;
 import org.scoula.selfCheck.service.SelfCheckService;
@@ -109,5 +110,37 @@ public class SelfCheckController {
         List<String> results = selfCheckMapper.findResultsByUserId(userId);
 
         return ResponseEntity.ok(results);
+    }
+
+    @PostMapping("/content/save")
+    public ResponseEntity<?> saveContent(@RequestHeader("Authorization") String tokenHeader,
+                                         @RequestBody SelfCheckRequestDto dto) {
+        int userId = extractUserIdFromToken(tokenHeader);
+        if (userId == -1) return ResponseEntity.badRequest().body("유효하지 않은 사용자입니다.");
+
+        selfCheckService.saveSelfCheckContent(dto, userId);
+        return ResponseEntity.ok("진단 내용 저장 완료");
+    }
+
+    @DeleteMapping("/content/delete")
+    public ResponseEntity<?> deleteContent(@RequestHeader("Authorization") String tokenHeader) {
+        int userId = extractUserIdFromToken(tokenHeader);
+        if (userId == -1) return ResponseEntity.badRequest().body("유효하지 않은 사용자입니다.");
+
+        selfCheckService.deleteSelfCheckContent(userId);
+        return ResponseEntity.ok("진단 내용 삭제 완료");
+    }
+
+    @GetMapping("/content")
+    public ResponseEntity<?> getSelfCheckContent(@RequestHeader("Authorization") String tokenHeader) {
+        int userId = extractUserIdFromToken(tokenHeader);
+        if (userId == -1) return ResponseEntity.badRequest().body("사용자를 찾을 수 없습니다.");
+
+        SelfCheckContentDto content = selfCheckService.getSelfCheckContent(userId);
+        if (content == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("진단 내용이 없습니다.");
+        }
+
+        return ResponseEntity.ok(content);
     }
 }

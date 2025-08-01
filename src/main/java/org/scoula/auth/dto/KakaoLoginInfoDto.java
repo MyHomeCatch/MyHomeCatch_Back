@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 public class KakaoLoginInfoDto {
     private String id;
     private String token;
+    private String refreshToken;
     private String nickname;
     private String profile;
     private String email;

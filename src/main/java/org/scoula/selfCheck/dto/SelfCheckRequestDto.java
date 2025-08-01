@@ -20,4 +20,8 @@ public class SelfCheckRequestDto {
     private String realEstateValue; // 부동산
     private String subscriptionPeriod; // 청약 가입 기간
     private List<String> targetGroups; // 해당사항
+
+    public String getTargetGroupsStr() {
+        return String.join(", ", targetGroups);
+    }
 }

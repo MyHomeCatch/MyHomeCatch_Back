@@ -33,11 +33,13 @@ import java.util.Properties;
 @PropertySource({"classpath:application.properties", "classpath:secrets.properties"})
 @MapperScan(basePackages = {"org.scoula.**.mapper"})
 @ComponentScan(basePackages = {
+        "org.scoula",
         "org.scoula.config",              // winner-stats
         "org.scoula.statics.service",     // winner-stats
         "org.scoula.applyHome",           // develop
         "org.scoula.chapi",               // develop
-        "org.scoula.lh"                   // develop
+        "org.scoula.lh",                   // develop
+        "org.scoula.member"
 })
 public class RootConfig {
     @Value("${jdbc.driver}")
