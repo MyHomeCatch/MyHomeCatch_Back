@@ -24,10 +24,12 @@ public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitiali
     protected String[] getServletMappings() {
         return new String[] {
                 "/",
-                "/swagger-ui.html",
-                "/swagger-resources/**",
-                "/v2/api-docs",
-                "/webjars/**"};
+//                "/swagger-ui.html",
+//                "/swagger-resources/**",
+//                "/v2/api-docs",
+//                "/webjars/**"
+
+        };
     }
 
  

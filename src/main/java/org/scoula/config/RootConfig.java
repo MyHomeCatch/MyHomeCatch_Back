@@ -14,6 +14,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import org.springframework.scheduling.annotation.EnableScheduling;
 
@@ -27,16 +28,23 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
+@Log4j2
 @EnableTransactionManagement
 @EnableScheduling
-@ComponentScan(basePackages = {
-        "org.scoula.chapi",
-        "org.scoula.lh",
-        "org.scoula.house"
-})
-@Log4j2
 @PropertySource({"classpath:application.properties", "classpath:secrets.properties"})
-@MapperScan(basePackages={"org.scoula.**.mapper"})
+@MapperScan(basePackages = {"org.scoula.**.mapper"})
+@ComponentScan(basePackages = {
+@ComponentScan(basePackages = {
+        "org.scoula",                    // 전체 스캔
+        "org.scoula.config",            // 설정 관련
+        "org.scoula.statics.service",   // winner-stats
+        "org.scoula.applyHome",         // develop
+        "org.scoula.chapi",             // develop
+        "org.scoula.lh",                // develop
+        "org.scoula.member",            // 회원 기능
+        "org.scoula.house"              // 주택 정보 기능 (추가된 패키지)
+})
+
 public class RootConfig {
     @Value("${jdbc.driver}")
     String driver;
@@ -121,6 +129,7 @@ public class RootConfig {
 
         return mailSender;
     }
+
 }
 
 
