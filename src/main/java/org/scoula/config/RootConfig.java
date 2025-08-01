@@ -19,6 +19,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
@@ -26,15 +27,12 @@ import javax.sql.DataSource;
 import java.util.Properties;
 
 @Configuration
-
 @EnableTransactionManagement
 @EnableScheduling
 @ComponentScan(basePackages = {
-        "org.scoula.applyHome",
-        "org.scoula.applyHome",
         "org.scoula.chapi",
         "org.scoula.lh",
-        "org.scoula.house",
+        "org.scoula.house"
 })
 @Log4j2
 @PropertySource({"classpath:application.properties", "classpath:secrets.properties"})
@@ -90,7 +88,6 @@ public class RootConfig {
     }
 
     @Bean
-
     public DataSourceTransactionManager transactionManager() {
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
         transactionManager.setDataSource(dataSource());

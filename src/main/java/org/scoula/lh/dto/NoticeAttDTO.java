@@ -11,6 +11,7 @@ import org.scoula.lh.domain.NoticeAttVO;
 @NoArgsConstructor
 @Builder
 public class NoticeAttDTO {
+    private Integer noticeId;
     /**
      * 첨부파일 ID (Primary Key, Auto Increment)
      */
@@ -19,7 +20,7 @@ public class NoticeAttDTO {
     /**
      * 공고 ID (Foreign Key - LH_notice.pan_id 참조)
      */
-    private String panId;
+//    private String panId;
 
     /**
      * 파일구분명
@@ -47,8 +48,9 @@ public class NoticeAttDTO {
      */
     public static NoticeAttDTO of(NoticeAttVO vo) {
         return NoticeAttDTO.builder()
+                .noticeId(vo.getNoticeId())
                 .lhNoticeAttId(vo.getLhNoticeAttId())
-                .panId(vo.getPanId())
+//                .panId(vo.getPanId())
                 .fileTypeName(vo.getSlPanAhflDsCdNm())
                 .fileName(vo.getCmnAhflNm())
                 .downloadUrl(vo.getAhflUrl())

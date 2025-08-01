@@ -10,4 +10,5 @@ public interface DanziService {
     int create(DanziVO vo);
     List<DanziVO> createAll(List<DanziVO> voList);
     void createDanziNotice(DanziNoticeVO vo);
+    boolean isCorrectedNoticeByDanziId(Integer danziId);
 }

@@ -9,9 +9,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.scoula.lh.danzi.domain.*;
 import org.scoula.lh.danzi.service.DanziApplyService;
+import org.scoula.lh.danzi.service.DanziAttService;
 import org.scoula.lh.danzi.service.DanziService;
 import org.scoula.lh.domain.housing.LhHousingApplyVO;
 import org.scoula.lh.domain.housing.LhHousingAttVO;
+import org.scoula.lh.domain.rental.LhRentalAttVO;
 import org.scoula.lh.dto.*;
 import org.scoula.lh.dto.housingNoticeDetailApi.*;
 import org.scoula.lh.dto.lhHousing.LhHousingApplyDTO;
@@ -61,11 +63,12 @@ public class LhNoticeScheduler {
 
     private final DanziService danziService;
     private final DanziApplyService danziApplyService;
+    private final DanziAttService danziAttService;
 
     private final int NUMBER_OF_PAGE = 35;
 
-    @Scheduled(fixedDelay = 6000000, initialDelay = 0)
-    //@Scheduled(cron = "0 0 2 * * *")
+    @Scheduled(fixedDelay = 600000, initialDelay = 0)
+//    @Scheduled(cron = "0 0 2 * * *")
     public void schedule() {
         log.info("=== LH 공고 데이터 업데이트 스케줄러 시작 ===");
 
@@ -199,12 +202,15 @@ public class LhNoticeScheduler {
             => 단지명을 이용해 단지 id 조회 -> 데이터 저장
             2. List로 한번에 처리
              */
-//            if (noticeDetail.getDsSbdAhfl() != null) {
-//                List<DanziAttVO> housingAttVOList = noticeDetail.getDsSbdAhfl().stream()
-//                        .map(dto -> dto.toDanziAttVO())
-//                        .collect(Collectors.toList());
-//                lhHousingAttService.createAll();
-//            }
+            if (noticeDetail.getDsSbdAhfl() != null) {
+                List<DanziAttVO> housingAttVOList = new ArrayList<>();
+                for(DanziVO vo : danziVOList) {
+                housingAttVOList = noticeDetail.getDsSbdAhfl().stream()
+                        .map(dto -> dto.toDanziAttVO(vo.getDanziId()))
+                        .collect(Collectors.toList());
+                danziAttService.createAll(housingAttVOList);
+                }
+            }
 
             log.info("주택 공고 상세 정보 처리 완료: {}", notice.getPanId());
 
@@ -276,11 +282,16 @@ public class LhNoticeScheduler {
             }
 
             // 임대 첨부 정보 처리
-//            if (noticeDetail.getDsSbdAhfl() != null) {
-//                for (RentalDsSbdAhflDTO rentalDsSbdAhflDTO : noticeDetail.getDsSbdAhfl()) {
-//                    lhRentalAttService.create(rentalDsSbdAhflDTO.toLhRentalAttVO(notice.getPanId()));
-//                }
-//            }
+            if (noticeDetail.getDsSbdAhfl() != null) {
+                List<DanziAttVO> danziAttVOList = new ArrayList<>();
+                for(DanziVO vo : danziVOList) {
+                    danziAttVOList = noticeDetail.getDsSbdAhfl().stream()
+                            .map(dto -> dto.toDanziAttVO(vo.getDanziId()))
+                            .collect(Collectors.toList());
+                    // vo별 첨부파일 리스트
+                    danziAttService.createAll(danziAttVOList);
+                }
+            }
 
             log.info("임대 공고 상세 정보 처리 완료: {}", notice.getPanId());
 
@@ -321,6 +332,7 @@ public class LhNoticeScheduler {
                                 dsList.addAll(temp);
                                 break;
                             }
+                            log.info("fetchLh log, {}", dsList);
                         }
                     }
 

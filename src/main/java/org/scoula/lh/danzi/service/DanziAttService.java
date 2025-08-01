@@ -15,7 +15,6 @@ public interface DanziAttService {
 
     int create(DanziAttVO danziAttVO);
     int createAll(List<DanziAttVO> danziAttVOList);
-    List<DanziAttDTO> getDanziAttByDanziId(String DanziId);
-
+    List<DanziAttDTO> getDanziAttsByDanziId(String DanziId);
 
 }

@@ -17,6 +17,7 @@ public interface LhNoticeMapper {
     boolean existsByPanId(String panId);
     void createNoticeDanzi(@Param("noticeId") Integer noticeId,@Param("danziId") Integer danziId);
     int getDanziId(@Param("noticeId") Integer noticeId);
+    int getNoticeId(@Param("danziId") Integer danziId);
     List<String> getPanIds();
     List<NoticeVO> getLHNoticeList(@Param("list") List<String> list);
 

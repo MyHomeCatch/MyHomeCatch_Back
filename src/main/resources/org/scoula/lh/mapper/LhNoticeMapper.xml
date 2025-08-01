@@ -105,12 +105,16 @@
     </select>
 
     <insert id="createNoticeDanzi">
-        insert into noticeDanzi(notice_id, danzi_id)
+        insert into notice_danzi(notice_id, danzi_id)
         values (#{noticeID}, #{danziId})
     </insert>
 
     <select id="getDanziId" resultType="Integer">
-        select danziId from noticeDanzi where noticeId = #{noticeId}
+        select danzi_id from notice_danzi where notice_id = #{noticeId}
+    </select>
+
+    <select id="getNoticeId" resultType="integer">
+        select notice_id from notice_danzi where danzi_id = #{danziId}
     </select>
 
     <select id="getPanIds" resultType="String">

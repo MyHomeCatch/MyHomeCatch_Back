@@ -102,3 +102,90 @@ FROM lh_thumb t1
 WHERE
     t1.att_id > t2.att_id AND  -- id가 더 큰 쪽을 중복으로 간주
     t1.pan_id = t2.pan_id AND t1.district = t2.district AND t1.fl_ds_cd_nm = t2.fl_ds_cd_nm;
+
+/* =========================================================
+   LH 공고·단지 시스템 전체 테이블 생성 스크립트 (MySQL)
+   ========================================================= */
+
+-- 1. LH 공고
+DROP TABLE IF EXISTS notice;
+CREATE TABLE lh_notice (
+                           notice_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '공고 ID',
+                           pan_id VARCHAR(64) COMMENT '공고번호',
+                           upp_ais_tp_cd VARCHAR(16) COMMENT '공고유형명',
+                           ais_tp_cd_nm VARCHAR(16) COMMENT '공고세부유형명',
+                           pan_nm VARCHAR(64) COMMENT '공고명',
+                           cnp_cd_nm VARCHAR(16) COMMENT '지역명',
+                           pan_ss VARCHAR(16) COMMENT '공고상태',
+                           all_cnt VARCHAR(16) COMMENT '전체조회건수',
+                           pan_nt_st_dt DATE COMMENT '공고 발행 날짜',
+                           dtl_url VARCHAR(256) COMMENT '공고 상세 URL',
+                           spl_inf_tp_cd VARCHAR(8) COMMENT '공급정보구분코드',
+                           ccr_cnnt_sys_ds_cd VARCHAR(8),
+                           ais_tp_cd VARCHAR(8) COMMENT '공고유형코드'
+) COMMENT='LH 공고 테이블';
+
+-- 2. 단지
+DROP TABLE IF EXISTS danzi;
+CREATE TABLE danzi (
+                       danzi_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '단지 ID',
+                       bzdt_nm VARCHAR(64) COMMENT '단지명',
+                       lct_ara_adr VARCHAR(128) COMMENT '단지 주소',
+                       lct_ara_dtl_adr VARCHAR(128) COMMENT '단지상세주소',
+                       min_max_rsdn_ddo_ar VARCHAR(128) COMMENT '전용면적',
+                       sum_tot_hsh_cnt INT COMMENT '총세대수',
+                       htn_fmla_de_cd_nm VARCHAR(16) COMMENT '난방방식',
+                       mvin_xpc_ym DATE COMMENT '입주예정일'
+) COMMENT='단지 기본 정보 테이블';
+
+-- 3. LH 공고 첨부파일
+DROP TABLE IF EXISTS notice_att;
+CREATE TABLE lh_notice_att (
+                               notice_att_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '공고 첨부파일 ID',
+                               notice_id INT COMMENT '공고 ID',
+                               sl_pan_ahfl_ds_cd_nm VARCHAR(32) COMMENT '파일구분명',
+                               cmn_ahfl_nm VARCHAR(64) COMMENT '첨부파일명',
+                               ahfl_url VARCHAR(2048) COMMENT '다운로드 URL',
+                               FOREIGN KEY (notice_id) REFERENCES lh_notice(notice_id)
+) COMMENT='LH 공고 첨부파일 테이블';
+
+-- 4. 단지 첨부파일
+DROP TABLE IF EXISTS danzi_att;
+CREATE TABLE danzi_att (
+                           danzi_att_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '단지 첨부파일 ID',
+                           danzi_id INT COMMENT '단지 ID',
+                           fl_ds_cd_nm VARCHAR(64) COMMENT '파일구분명',
+                           cmn_ahfl_nm VARCHAR(64) COMMENT '첨부파일명',
+                           ahfl_url VARCHAR(2048) COMMENT '첨부파일 URL',
+                           FOREIGN KEY (danzi_id) REFERENCES danzi(danzi_id)
+) COMMENT='단지 첨부파일 테이블';
+
+-- 5. 공고-단지 매핑
+DROP TABLE IF EXISTS notice_danzi;
+CREATE TABLE notice_danzi (
+                              id INT AUTO_INCREMENT PRIMARY KEY COMMENT '고유 ID',
+                              notice_id INT COMMENT '공고 ID',
+                              danzi_id INT COMMENT '단지 ID',
+                              FOREIGN KEY (notice_id) REFERENCES lh_notice(notice_id),
+                              FOREIGN KEY (danzi_id) REFERENCES danzi(danzi_id)
+) COMMENT='공고-단지 매핑 테이블';
+
+-- 6. 단지 공급/청약 일정
+DROP TABLE IF EXISTS danzi_apply;
+CREATE TABLE danzi_apply (
+                             apply_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '단지 공급일정 ID',
+                             danzi_id INT COMMENT '단지 ID',
+                             hs_sbsc_acp_trg_cd_nm VARCHAR(32) COMMENT '구분',
+                             sbsc_acp_st_dt DATE COMMENT '접수기간 시작일',
+                             sbsc_acp_clsg_dt DATE COMMENT '접수기간 종료일',
+                             rmk VARCHAR(32) COMMENT '신청방법(현장접수/인터넷접수)',
+                             ppr_sbm_ope_anc_dt DATE COMMENT '서류제출대상자발표일',
+                             ppr_acp_st_dt DATE COMMENT '서류접수기간 시작일',
+                             prp_acp_clsg_dt DATE COMMENT '서류접수기간 종료일',
+                             pzwr_anc_dt DATE COMMENT '당첨자 발표일',
+                             pzwr_ppr_sbm_st_dt DATE COMMENT '당첨자 서류제출 시작일',
+                             pzwr_ppr_sbm_ed_dt DATE COMMENT '당첨자 서류제출 종료일',
+                             ctrt_st_dt DATE COMMENT '계약체결 시작일',
+                             ctrt_ed_dt DATE COMMENT '계약체결 종료일',
+                             FOREIGN KEY (danzi_id) REFERENCES danzi(danzi_id)
+) COMMENT='단지별 청약 및 계약 일정 테이블';
