@@ -1,4 +1,4 @@
-package org.scoula.dto;
+package org.scoula.DetailPage.dto;
 
 import java.util.Date;
 import java.util.List;
@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import io.swagger.annotations.Api;
 import org.scoula.applyHome.dto.ApplyHomeDTO;
 
 @Data

@@ -6,9 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.scoula.applyHome.domain.ApplyHomeVO;
-import org.scoula.dto.BoardDetailDTO;
-
-import java.util.List;
+import org.scoula.DetailPage.dto.BoardDetailDTO;
 
 @Data
 @NoArgsConstructor
