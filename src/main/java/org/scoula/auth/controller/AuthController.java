@@ -263,10 +263,10 @@ public class AuthController {
             @ApiResponse(code = 500, message = "서버에서 오류가 발생했습니다.")
     })
     @PostMapping("/kakao")
-    public ResponseEntity<?> kakaoLogin(@RequestBody KakaoLoginDto kakaoLoginDto) {
+    public ResponseEntity<?> kakaoLogin(@RequestBody KakaoLoginDto kakaoLoginDto, HttpServletResponse httpServletResponse) {
         String code = kakaoLoginDto.getCode();
 
-        KakaoLoginInfoDto kakaoLoginInfoDto = authService.kakaoLogin(code);
+        KakaoLoginInfoDto kakaoLoginInfoDto = authService.kakaoLogin(code, httpServletResponse);
 
         return ResponseEntity.ok(kakaoLoginInfoDto);
     }
@@ -278,13 +278,13 @@ public class AuthController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping("/login/google")
-    public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> payload, HttpServletResponse httpServletResponse) {
         String code = payload.get("code");
         if (code == null || code.isBlank()) {
             return ResponseEntity.badRequest().body(Map.of("message", "code 값이 누락되었습니다."));
         }
 
-        return authService.googleSignupOrLogin(code);
+        return authService.googleSignupOrLogin(code, httpServletResponse);
     }
 
 }

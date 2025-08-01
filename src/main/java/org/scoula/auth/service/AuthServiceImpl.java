@@ -18,6 +18,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -127,7 +129,7 @@ public class AuthServiceImpl implements AuthService {
         return true;
     }
 
-    public KakaoLoginInfoDto kakaoLogin(String code) {
+    public KakaoLoginInfoDto kakaoLogin(String code, HttpServletResponse httpServletResponse) {
         String url = "https://kauth.kakao.com/oauth/token";
 
         // 1. 헤더 설정
@@ -162,10 +164,22 @@ public class AuthServiceImpl implements AuthService {
 
         if (user != null) {
             String token = jwtUtil.generateToken(kakaoEmail);
+            String refreshToken = jwtUtil.generateRefreshToken(kakaoEmail);
             String nickname = user.getNickname();
+
+            authMapper.saveRefreshToken(user.getUserId(), refreshToken);
+
+            Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+            refreshCookie.setHttpOnly(true);
+            refreshCookie.setSecure(true);
+            refreshCookie.setPath("/");
+            refreshCookie.setMaxAge(60 * 60 * 24 * 14); // 14일
+            httpServletResponse.addCookie(refreshCookie);
+
 
             KakaoLoginInfoDto kakaoLoginInfoDto = KakaoLoginInfoDto.builder()
                     .token(token)
+                    .refreshToken(refreshToken)
                     .nickname(nickname)
                     .build();
 
@@ -208,7 +222,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity<?> googleSignupOrLogin(String code) {
+    public ResponseEntity<?> googleSignupOrLogin(String code, HttpServletResponse httpServletResponse) {
 
         MultiValueMap<String, String> tokenRequestParams = new LinkedMultiValueMap<>();
         tokenRequestParams.add("code", code);
@@ -255,7 +269,19 @@ public class AuthServiceImpl implements AuthService {
 
         if(user != null) {
             String token = jwtUtil.generateToken(user.getEmail());
+            String refreshToken = jwtUtil.generateRefreshToken(user.getEmail());
+
+            authMapper.saveRefreshToken(user.getUserId(), refreshToken);
+
+            Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+            refreshCookie.setHttpOnly(true);
+            refreshCookie.setSecure(true);
+            refreshCookie.setPath("/");
+            refreshCookie.setMaxAge(60 * 60 * 24 * 14);
+            httpServletResponse.addCookie(refreshCookie);
+
             googleUserDto.setToken(token);
+            googleUserDto.setRefreshToken(refreshToken);
         }
         googleUserDto.setId("1234");
 
