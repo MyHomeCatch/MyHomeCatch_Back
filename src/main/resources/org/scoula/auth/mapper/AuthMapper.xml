@@ -16,7 +16,8 @@
         WHERE nickname = #{nickname};
     </select>
 
-    <insert id="insertUser" parameterType="org.scoula.user.domain.User">
+    <insert id="insertUser" parameterType="org.scoula.user.domain.User"
+                useGeneratedKeys="true" keyProperty="userId">
         INSERT INTO users (email, password, name, nickname, address, additional_point)
         VALUES (#{email}, #{password}, #{name}, #{nickname}, #{address}, #{additionalPoint})
     </insert>
