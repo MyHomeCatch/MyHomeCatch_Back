@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiResponses;
 import org.scoula.auth.dto.AuthResponse;
 import org.scoula.email.dto.EmailDTO;
 import org.scoula.email.dto.EmailRequestDto;
+import org.scoula.email.service.MailService;
 import org.scoula.email.service.MailServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,11 +22,11 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/api/email")
 @Api(tags = "이메일 인증 API")
 public class EmailController {
-    private final MailServiceImpl mailServiceImpl;
+    private final MailService mailService;
     private int number; // 이메일 인증 숫자를 저장하는 변수
 
-    public EmailController(MailServiceImpl mailServiceImpl) {
-        this.mailServiceImpl = mailServiceImpl;
+    public EmailController(MailService mailService) {
+        this.mailService = mailService;
     }
 
     // 인증 이메일 전송
@@ -41,7 +42,7 @@ public class EmailController {
         String email = emailRequestDto.getEmail();
 
         try {
-            number = mailServiceImpl.sendMail(email);
+            number = mailService.sendMail(email);
             session.setMaxInactiveInterval(60 * 3); // 세션 저장 시간 3분 설정
             session.setAttribute("email", email);
             session.setAttribute("authCode", number); // 이메일 인증 코드 세션에 저장
@@ -75,67 +76,17 @@ public class EmailController {
     public ResponseEntity<EmailDTO> mailCheck(
             @RequestBody EmailRequestDto requestDto,
             HttpSession session) {
+        EmailDTO result = mailService.mailCheck(requestDto, session);
 
-        try {
-            String email = (String) session.getAttribute("email");
-            Object objCode = session.getAttribute("authCode");
-
-            if (email == null || objCode == null) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                        EmailDTO.builder()
-                                .email(requestDto.getEmail())
-                                .isSuccess(false)
-                                .message("세션 정보가 존재하지 않습니다. (만료되었거나 전송되지 않음)")
-                                .build()
-                );
-            }
-            int code = (int) objCode;
-
-            boolean isEmailMatch = requestDto.getEmail().equals(email);
-            boolean isCodeMatch = requestDto.getCode() == code? true: false;
-
-            if (!isEmailMatch) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
-                        EmailDTO.builder()
-                                .email(requestDto.getEmail())
-                                .isSuccess(false)
-                                .message("요청된 이메일이 일치하지 않습니다.")
-                                .build()
-                );
-            }
-
-            if (!isCodeMatch) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-                        EmailDTO.builder()
-                                .email(requestDto.getEmail())
-                                .isSuccess(false)
-                                .message("인증번호가 일치하지 않습니다.")
-                                .build()
-                );
-            }
-
-            session.removeAttribute("email");
-            session.removeAttribute("authCode");
-
-            // 인증 성공
-            return ResponseEntity.ok(
-                    EmailDTO.builder()
-                            .email(requestDto.getEmail())
-                            .isSuccess(true)
-                            .message("이메일 인증이 완료되었습니다.")
-                            .build()
-            );
-
+        if (!result.isSuccess()) {
+            String msg = result.getMessage();
+            if (msg.contains("세션")) return ResponseEntity.badRequest().body(result);
+            if (msg.contains("이메일")) return ResponseEntity.badRequest().body(result);
+            if (msg.contains("인증번호")) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(result);
+            return ResponseEntity.internalServerError().body(result);
         }
-        catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                    EmailDTO.builder()
-                            .email(requestDto.getEmail())
-                            .isSuccess(false)
-                            .message("에러 발생")
-                            .build());
-        }
+
+        return ResponseEntity.ok(result);
     }
 
 
