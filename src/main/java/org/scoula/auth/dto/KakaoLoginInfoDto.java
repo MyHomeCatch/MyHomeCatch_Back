@@ -17,4 +17,5 @@ public class KakaoLoginInfoDto {
     private String profile;
     private String email;
     private String birthday;
+    private String password;
 }

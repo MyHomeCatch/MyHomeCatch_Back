@@ -215,7 +215,8 @@ public class AuthServiceImpl implements AuthService {
 
 
             KakaoLoginInfoDto kakaoLoginInfoDto = KakaoLoginInfoDto.builder()
-                    .id(id.toString())
+//                    .id(id.toString())
+                    .id("1234")
                     .token(null)
 //                    .nickname(userInfo.get("name").toString())
                     .profile(profileUrl)
