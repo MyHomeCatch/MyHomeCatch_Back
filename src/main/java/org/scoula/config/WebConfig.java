@@ -1,6 +1,7 @@
 package org.scoula.config;
 
 import org.springframework.web.filter.CharacterEncodingFilter;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.support.AbstractAnnotationConfigDispatcherServletInitializer;
 
 import javax.servlet.Filter;
@@ -17,6 +18,11 @@ public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitiali
     @Override
     protected Class<?>[] getRootConfigClasses() {
         return new Class<?>[]{RootConfig.class};
+    }
+
+    @Override
+    protected Class<?>[] getServletConfigClasses() {
+        return new Class[] {ServletConfig.class, SwaggerConfig.class};
     }
 
     // URI mapping pattern of DispatcherServlet(FrontController) / : 모든 요청에 대해 매핑
@@ -39,12 +45,6 @@ public class WebConfig extends AbstractAnnotationConfigDispatcherServletInitiali
         characterEncodingFilter.setEncoding("UTF-8");
         characterEncodingFilter.setForceEncoding(true);
         return new Filter[] {characterEncodingFilter};
-    }
-
-
-    @Override
-    protected Class<?>[] getServletConfigClasses(){
-        return new Class<?>[]{ServletConfig.class, SwaggerConfig.class};
     }
 
 

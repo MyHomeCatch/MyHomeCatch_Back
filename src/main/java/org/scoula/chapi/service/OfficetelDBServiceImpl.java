@@ -9,6 +9,7 @@ import org.scoula.chapi.domain.CHOfficetelVO;
 import org.scoula.chapi.dto.*;
 import org.scoula.chapi.mapper.OfficetelDBMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +21,7 @@ import java.util.List;
 @PropertySource("classpath:application.properties")
 @Log4j2
 @Service
+@Primary
 @RequiredArgsConstructor
 public class OfficetelDBServiceImpl implements OfficetelDBService {
     final OfficetelDBMapper mapper;

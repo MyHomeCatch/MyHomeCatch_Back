@@ -10,6 +10,14 @@ repositories {
     mavenCentral()
 }
 
+sourceSets {
+    main{
+        resources {
+            srcDirs= ['src/main/resources']
+        }
+    }
+}
+
 ext {
     junitVersion = '5.10.2'
     springVersion = '5.3.37'
@@ -97,10 +105,6 @@ dependencies {
     // 유효성 검사
     implementation 'org.hibernate.validator:hibernate-validator:6.2.5.Final'
 
-    // swagger
-    implementation 'io.springfox:springfox-swagger2:2.9.2'
-    implementation 'io.springfox:springfox-swagger-ui:2.9.2'
-
     // 테스트
     testImplementation "org.springframework:spring-test:${springVersion}"
     testCompileOnly"org.projectlombok:lombok:${lombokVersion}"
@@ -111,8 +115,6 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 
-    implementation 'org.apache.httpcomponents:httpcore:4.4.15'
-    implementation 'org.apache.httpcomponents:httpclient:4.5.13'
 
     // Swagger
     implementation 'io.springfox:springfox-swagger2:2.9.2'
@@ -121,8 +123,15 @@ dependencies {
 
     // Spring context-support
     implementation 'org.springframework:spring-context-support:5.3.33'
+
     // Mail
+    implementation 'org.springframework:spring-core:5.3.34' // 또는 사용 중인 버전에 맞게
+    implementation 'org.springframework:spring-context:5.3.34'
+    implementation 'org.springframework:spring-context-support:5.3.34'
     implementation 'javax.mail:mail:1.4.7'
+    implementation 'org.springframework:spring-context-support'
+
+
 }
 
 test {
