@@ -10,6 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpSession;
@@ -117,6 +118,28 @@ public class MailServiceImpl implements MailService {
                             .isSuccess(false)
                             .message("에러 발생")
                             .build();
+        }
+    }
+
+    @Override
+    public void sendCustomAlertMail(String toEmail, String danziTitle, String type) {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        try {
+            message.setFrom(new InternetAddress(senderEmail));
+            message.setRecipients(MimeMessage.RecipientType.TO, InternetAddress.parse(toEmail));
+            message.setSubject("[청약 알림] " + danziTitle + " - " + type);
+
+            String body = "<h3>[" + danziTitle + "]</h3>"
+                    + "<p>오늘은 '" + type + "' 입니다.</p>"
+                    + "<p>청약 일정을 꼭 확인하세요.</p>";
+
+            message.setText(body, "UTF-8", "html");
+            javaMailSender.send(message);
+
+            System.out.println("[이메일 알림] 수신자: " + toEmail + ", 제목: " + danziTitle + ", 종류: " + type);
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
         }
     }
 }
