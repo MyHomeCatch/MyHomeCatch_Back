@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.scoula.bookmark.mapper.BookmarkMapper">
+
+    <select id="findAlertsForToday" resultType="org.scoula.bookmark.dto.BookmarkEmailInfo">
+        SELECT u.email,
+               d.bzdt_nm AS title,
+               CASE
+                   WHEN da.sbsc_acp_st_dt = #{today} THEN '접수 시작일'
+                   WHEN da.sbsc_acp_clsg_dt = #{today} THEN '접수 마감일'
+                   END AS type
+        FROM bookmarks b
+                 JOIN users u ON b.user_id = u.user_id
+                 JOIN danzi_apply da ON b.apply_id = da.apply_id
+                 JOIN danzi d ON da.danzi_id = d.danzi_id
+        WHERE da.sbsc_acp_st_dt = #{today}
+           OR da.sbsc_acp_clsg_dt = #{today};
+    </select>
+</mapper>

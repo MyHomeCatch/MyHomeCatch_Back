@@ -1,4 +1,4 @@
-package org.scoula.email.controller;
+package org.scoula.email.scheduled;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -8,7 +8,6 @@ import org.scoula.auth.dto.AuthResponse;
 import org.scoula.email.dto.EmailDTO;
 import org.scoula.email.dto.EmailRequestDto;
 import org.scoula.email.service.MailService;
-import org.scoula.email.service.MailServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
