@@ -39,7 +39,6 @@ public class ApplyHomeScheduler {
         this.APPLYHOME_API_SERVICE_KEY = key;
     }
 
-
     // 새벽 2시마다 실행 (초 분 시 일 월 요일)
     @Scheduled(cron = "0 0 2 * * *")
     public void schedule() throws Exception {

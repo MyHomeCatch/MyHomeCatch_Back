@@ -1,0 +1,1 @@
+import{_ as n,c as o,o as a,d as s}from "./index-CxPmLex7.js";const c={},t={class:"loading-overlay"};function r(d, e){return a(),o("div",t,e[0]||(e[0]=[s("div",{class:"spinner"},null,-1),s("p",{class:"loading-text"},"Loading...",-1)]))}const l=n(c,[["render",r],["__scopeId","data-v-ce03818c"]]);export{l as L};
