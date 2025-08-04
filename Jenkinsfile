@@ -4,7 +4,8 @@ pipeline {
     tools {
         jdk 'JDK-17'
     }
-      // --- 환경 변수 설정 ---
+    
+    // --- 환경 변수 설정 ---
     // 파이프라인 전체에서 사용할 변수들을 정의합니다.
     environment {
         EC2_SERVER_IP      = '43.200.8.39'
@@ -21,7 +22,7 @@ pipeline {
                 echo 'Git Checkout Success!'
             }
         }
-      stage('Test') {
+          stage('Test') {
         steps {
           sh './gradlew test'
           echo 'test success'
@@ -34,6 +35,7 @@ pipeline {
                 echo 'build success'
             }
         }
+        
         // 빌드된 .war 파일을 Tomcat 서버에 배포
         stage('Deploy to Tomcat') {
             steps {
@@ -49,5 +51,16 @@ pipeline {
                     }
                 }
             }
+        }
+    }
+
+    // --- 빌드 후 조치 ---
+    // 파이프라인 실행이 성공하든 실패하든 항상 실행됩니다.
+    post {
+        always {
+            // Jenkins 서버의 디스크 공간을 절약하기 위해 작업 공간(Workspace)을 정리합니다.
+            cleanWs()
+            echo "🧹 Workspace cleaned up."
+        }
     }
 }
