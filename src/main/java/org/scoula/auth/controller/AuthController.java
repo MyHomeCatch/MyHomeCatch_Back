@@ -4,13 +4,17 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import io.swagger.models.Response;
 import lombok.extern.log4j.Log4j2;
 import org.scoula.auth.dto.*;
-import org.scoula.auth.service.AuthServiceImpl;
+import org.scoula.auth.mapper.AuthMapper;
+import org.scoula.auth.service.AuthService;
 import org.scoula.common.util.JwtUtil;
+import org.scoula.user.domain.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,6 +25,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -32,12 +37,7 @@ import org.scoula.auth.dto.AuthResponse;
 import org.scoula.auth.dto.GoogleUserDto;
 import org.scoula.auth.dto.LoginRequest;
 import org.scoula.auth.dto.SignupRequest;
-import org.springframework.http.*;
-
-import org.springframework.ui.Model;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.io.IOException;
+import org.scoula.member.dto.UserInfoDto;
 
 
 @RestController
@@ -47,7 +47,7 @@ import java.io.IOException;
 public class AuthController {
 
     @Autowired
-    private AuthServiceImpl authService;
+    private AuthService authService;
 
     private final RestTemplate restTemplate = new RestTemplate();
 
@@ -65,6 +65,8 @@ public class AuthController {
 
     private final String TOKEN_URI = "https://oauth2.googleapis.com/token";
     private final String USERINFO_URI = "https://www.googleapis.com/oauth2/v2/userinfo";
+    @Autowired
+    private AuthMapper authMapper;
 
 
     @ApiOperation(value = "이메일 중복 체크", notes = "이메일 중복 여부를 체크합니다")
@@ -98,7 +100,7 @@ public class AuthController {
             @ApiResponse(code = 500, message = "서버에서 오류가 발생했습니다.")
     })
     @PostMapping("/login")
-    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, BindingResult result) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, BindingResult result, HttpServletResponse response) {
         if (result.hasErrors()) {
             String message = result.getFieldErrors().stream()
                     .map(FieldError::getDefaultMessage)
@@ -107,8 +109,76 @@ public class AuthController {
             return ResponseEntity.badRequest().body(Map.of("message", message));
         }
 
-        return ResponseEntity.ok(authService.login(request));
+        AuthResponse authResponse = authService.login(request);
+
+        // HttpOnly 쿠키에 저장
+        Cookie refreshCookie = new Cookie("refresh_token", authResponse.getRefreshToken());
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setSecure(true);
+        refreshCookie.setPath("/");
+        refreshCookie.setMaxAge(60 * 60 * 24 * 14);
+        response.addCookie(refreshCookie);
+
+        return ResponseEntity.ok(Map.of(
+                "token", authResponse.getAccessToken(),
+                "nickname", authResponse.getNickname()
+        ));
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+        String token = extractToken(request);
+        if (token == null || !jwtUtil.isValidToken(token)) {
+            return ResponseEntity.status(401).body("유효하지 않은 토큰");
+        }
+
+        String email = jwtUtil.extractEmail(token);
+        User user = authMapper.findByEmail(email);
+
+        authMapper.saveRefreshToken(user.getUserId(), null);
+
+        Cookie cookie = new Cookie("refresh_token", null);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok("로그아웃 성공");
+    }
+
+
+    @PostMapping("/refresh")
+    public ResponseEntity<?> refresh(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("쿠키가 없습니다.");
+        }
+
+        String refreshToken = null;
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals("refresh_token")) {
+                refreshToken = cookie.getValue();
+                break;
+            }
+        }
+
+        if (refreshToken == null || !jwtUtil.isValidToken(refreshToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("유효하지 않은 리프래시 토큰입니다.");
+        }
+
+        String email = jwtUtil.extractEmail(refreshToken);
+        User user = authMapper.findByEmail(email);
+
+        String storedRefreshToken = authMapper.getRefreshTokenByUserId(user.getUserId());
+        if (!refreshToken.equals(storedRefreshToken)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("토큰이 일치하지 않습니다.");
+        }
+
+        String newAccessToken = jwtUtil.generateToken(email);
+        return ResponseEntity.ok(Map.of("token", newAccessToken));
+
+    }
+
 
     @ApiOperation(value = "일반 회원가입", notes = "입력한 정보로 회원가입을 진행합니다")
     @ApiResponses(value = {
@@ -134,23 +204,34 @@ public class AuthController {
     }
 
 
-    @ApiOperation(value = "회원탈퇴", notes = "회원탈퇴를 진행합니다")
+    @ApiOperation(value = "회원탈퇴", notes = "회원탈퇴를 진행합니다 (현재 비밀번호 검증 포함)")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "성공적으로 요청이 처리되었습니다.", response = AuthResponse.class),
-            @ApiResponse(code = 401, message = "잘못된 요청입니다."),
+            @ApiResponse(code = 400, message = "잘못된 요청입니다 (비밀번호 불일치 등)."),
+            @ApiResponse(code = 401, message = "유효하지 않은 토큰입니다."),
             @ApiResponse(code = 500, message = "서버에서 오류가 발생했습니다.")
     })
     @DeleteMapping("/withdraw")
-    public ResponseEntity<?> withdraw(HttpServletRequest request) {
+    public ResponseEntity<?> withdraw(@RequestBody UserInfoDto userInfoDto, HttpServletRequest request) {
         String token = extractToken(request);
+        System.out.println("====== withdraw called ======");
+
         if (token == null || !jwtUtil.isValidToken(token)) {
-            return ResponseEntity.status(401).body(Map.of("message", "유효하지 않은 토큰"));
+            return ResponseEntity.status(401).body(Map.of("message", "유효하지 않은 토큰입니다."));
         }
 
         String email = jwtUtil.extractEmail(token);
 
-        authService.deleteByEmail(email);
-        return ResponseEntity.ok(Map.of("message", "회원 탈퇴 완료"));
+        userInfoDto.setEmail(email);
+
+        try {
+            authService.deleteUserWithPasswordVerification(userInfoDto);
+            return ResponseEntity.ok(Map.of("message", "회원 탈퇴가 완료되었습니다."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(400).body(Map.of("message", e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("message", "회원 탈퇴 중 오류가 발생했습니다: " + e.getMessage()));
+        }
     }
 
     @ApiOperation(value = "비밀번호 변경", notes = "해당 이메일의 비밀번호를 변경합니다.")
@@ -189,10 +270,10 @@ public class AuthController {
             @ApiResponse(code = 500, message = "서버에서 오류가 발생했습니다.")
     })
     @PostMapping("/kakao")
-    public ResponseEntity<?> kakaoLogin(@RequestBody KakaoLoginDto kakaoLoginDto) {
+    public ResponseEntity<?> kakaoLogin(@RequestBody KakaoLoginDto kakaoLoginDto, HttpServletResponse httpServletResponse) {
         String code = kakaoLoginDto.getCode();
 
-        KakaoLoginInfoDto kakaoLoginInfoDto = authService.kakaoLogin(code);
+        KakaoLoginInfoDto kakaoLoginInfoDto = authService.kakaoLogin(code, httpServletResponse);
 
         return ResponseEntity.ok(kakaoLoginInfoDto);
     }
@@ -204,13 +285,12 @@ public class AuthController {
             @ApiResponse(code = 500, message = "서버 오류")
     })
     @PostMapping("/login/google")
-    public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<?> googleLogin(@RequestBody Map<String, String> payload, HttpServletResponse httpServletResponse) {
         String code = payload.get("code");
         if (code == null || code.isBlank()) {
             return ResponseEntity.badRequest().body(Map.of("message", "code 값이 누락되었습니다."));
         }
 
-        return authService.googleSignupOrLogin(code);
+        return authService.googleSignupOrLogin(code, httpServletResponse);
     }
-
 }

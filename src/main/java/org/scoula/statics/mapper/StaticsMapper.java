@@ -1,7 +1,11 @@
 package org.scoula.statics.mapper;
 
 import org.apache.ibatis.annotations.Param;
-import org.scoula.statics.domain.*;
+
+import org.scoula.statics.domain.ApplicantRegionVO;
+import org.scoula.statics.domain.CompetitionRateVO;
+import org.scoula.statics.domain.HousingInfoVO;
+import org.scoula.statics.domain.WinnerRegionVO;
 import org.scoula.statics.dto.ScoreWinnerDTO;
 import org.scoula.statics.dto.ApartmentScoreDTO;
 

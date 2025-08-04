@@ -7,5 +7,4 @@ CREATE TABLE users (
                       address VARCHAR(50) COMMENT '주소',
                       additional_point INT DEFAULT NULL COMMENT '가점'
 );
-
 SELECT * FROM users;
