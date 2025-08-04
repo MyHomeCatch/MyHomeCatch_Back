@@ -165,6 +165,7 @@ public class LhNoticeScheduler {
             /*
             - 공급 일정 정보 처리
             1. 하나의 단지에 유형 별로 일정이 다름
+            2. 같은 공고 안의 다른 단지가 모두 접수일정이 같다면 필터링 필요없음
              */
             if (noticeDetail.getDsSplScdl() != null) {
                 for(DanziVO vo : danziVOList) {
@@ -181,11 +182,13 @@ public class LhNoticeScheduler {
             1. 데이터에 단지명 포함 O
             => 단지명을 이용해 단지 id 조회 -> 데이터 저장
             2. List로 한번에 처리
+            3. DanziVO의 단지정보와 첨부파일 DsSbdAhfl의 단지정보가 일치하는것을 필터링
              */
             if (noticeDetail.getDsSbdAhfl() != null) {
                 List<DanziAttVO> housingAttVOList = new ArrayList<>();
                 for(DanziVO vo : danziVOList) {
                 housingAttVOList = noticeDetail.getDsSbdAhfl().stream()
+                        .filter(dto -> dto.getBzdtNm().equals(vo.getBzdtNm()))
                         .map(dto -> dto.toDanziAttVO(vo.getDanziId()))
                         .collect(Collectors.toList());
                 danziAttService.createAll(housingAttVOList);
@@ -235,11 +238,12 @@ public class LhNoticeScheduler {
 
              /*
             - 임대 신청 정보 처리
-            1.
+            1. DanziVO 단지명과 일정정보DsSplScdl의 단지명이 일치하는것을 필터링
              */
             if (noticeDetail.getDsSplScdl() != null) {
                 for(DanziVO vo : danziVOList) {
                     List<DanziApplyVO> danziApplyVOList = noticeDetail.getDsSplScdl().stream()
+                            .filter(dto -> dto.getSbdLgoNm().equals(vo.getBzdtNm()))
                             .map(dto -> dto.toDanziApplyVO(vo.getDanziId()))
                             .collect(Collectors.toList());
                     // service 코드 추가
@@ -248,10 +252,12 @@ public class LhNoticeScheduler {
             }
 
             // 임대 첨부 정보 처리
+            // DanziVO 단지정보가 첨부파일의 단지정보와 일치하는지 필터링
             if (noticeDetail.getDsSbdAhfl() != null) {
                 List<DanziAttVO> danziAttVOList = new ArrayList<>();
                 for(DanziVO vo : danziVOList) {
                     danziAttVOList = noticeDetail.getDsSbdAhfl().stream()
+                            .filter(dto -> dto.getLccNtNm().equals(vo.getBzdtNm()))
                             .map(dto -> dto.toDanziAttVO(vo.getDanziId()))
                             .collect(Collectors.toList());
                     // vo별 첨부파일 리스트
