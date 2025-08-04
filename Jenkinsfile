@@ -9,7 +9,7 @@ pipeline {
     // 파이프라인 전체에서 사용할 변수들을 정의합니다.
     environment {
         // Tomcat의 웹 애플리케이션 배포 디렉터리 경로
-        TOMCAT_DEPLOY_DIR  = '/home/ec2-user/tomcat/webapps'
+        TOMCAT_DEPLOY_DIR  = '/home/ec2-user/tomcat/app'
     }
 
     stages {
