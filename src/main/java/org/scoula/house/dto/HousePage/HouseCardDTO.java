@@ -15,7 +15,7 @@ import java.util.Date;
 @Builder
 public class HouseCardDTO {
 
-    private String houseId;
+    private String danziId;
     private String houseName;           // bzdt_nm
     private String address;             // lct_ara_adr
     private Integer totalHouseCount;    // sum_tot_hsh_cnt
@@ -35,7 +35,7 @@ public class HouseCardDTO {
         }
 
         return HouseCardDTO.builder()
-                .houseId(vo.getHouseId())
+                .danziId(vo.getDanziId())
                 .houseName(vo.getBzdtNm())
                 .address(vo.getLctAraAdr())
                 .totalHouseCount(vo.getSumTotHshCnt())

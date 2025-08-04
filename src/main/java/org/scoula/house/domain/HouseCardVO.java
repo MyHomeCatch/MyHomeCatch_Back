@@ -10,7 +10,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class HouseCardVO {
-    private String houseId;
+    private String danziId;
     private String bzdtNm;
     private String lctAraAdr;
     private Integer sumTotHshCnt;
