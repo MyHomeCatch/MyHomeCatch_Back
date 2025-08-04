@@ -1,4 +1,4 @@
-package org.scoula.email.scheduled;
+package org.scoula.email.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
