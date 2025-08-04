@@ -311,7 +311,7 @@ public class AuthServiceImpl implements AuthService {
         }
         googleUserDto.setId("1234");
 
-        log.info("✅ 구글 로그인 - 이메일: {}, 닉네임: {}", googleEmail, user.getNickname());
+//        log.info("✅ 구글 로그인 - 이메일: {}, 닉네임: {}", googleEmail, user.getNickname());
 
         return ResponseEntity.ok(googleUserDto);
 
