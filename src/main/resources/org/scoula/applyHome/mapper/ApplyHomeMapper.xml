@@ -116,7 +116,7 @@
         VALUES (#{pblancNo}, #{cmpetRate}, #{houseManageNo}, #{houseTy}, #{modelNo}, #{reqCnt}, #{resideSecd},
                 #{resideSenm}, #{subscrptRankCode}, #{suplyHshldco}, #{lwetScore}, #{topScore}, #{avrgScore})
         ON DUPLICATE KEY UPDATE CMPET_RATE = VALUES(CMPET_RATE),
-                                REQ_CNT    = VALUES(REQ_CNT),
+                                REQ_CNT    = VALUES(REQ_CNT), -- 접수건수
                                 LWET_SCORE = VALUES(LWET_SCORE),
                                 TOP_SCORE  = VALUES(TOP_SCORE),
                                 AVRG_SCORE = VALUES(AVRG_SCORE)

@@ -1,9 +1,11 @@
 package org.scoula.exception;
 
 import lombok.extern.log4j.Log4j2;
+import org.scoula.common.response.CommonResponse;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -14,10 +16,17 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestControllerAdvice(basePackages = "org.scoula.auth")
+@RestControllerAdvice(basePackages = {"org.scoula.auth", "org.scoula.member"})
 @Log4j2
 @Order(1)
 public class RestCommonExceptionAdvice {
+    // 400 Bad Request: 이메일로 유저를 찾지 못한 경우
+    @ExceptionHandler(UserNotFoundException.class)
+    protected ResponseEntity<Map<String, Object>>  handleUserNotFound(UserNotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(CommonResponse.response(e.getMessage()));
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleException(Exception e) {

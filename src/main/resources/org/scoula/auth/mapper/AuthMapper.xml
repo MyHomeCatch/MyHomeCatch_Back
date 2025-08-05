@@ -16,12 +16,13 @@
         WHERE nickname = #{nickname};
     </select>
 
-    <insert id="insertUser" parameterType="org.scoula.user.domain.User">
+    <insert id="insertUser" parameterType="org.scoula.user.domain.User"
+                useGeneratedKeys="true" keyProperty="userId">
         INSERT INTO users (email, password, name, nickname, address, additional_point)
         VALUES (#{email}, #{password}, #{name}, #{nickname}, #{address}, #{additionalPoint})
     </insert>
 
-    <delete id="deleteByEmail">
+    <delete id="deleteByEmail" parameterType="org.scoula.member.dto.UserInfoDto">
         DELETE FROM users WHERE email = #{email}
     </delete>
 
@@ -30,4 +31,27 @@
         SET password = #{password}
         WHERE email = #{email}
     </update>
+
+    <update id="update" parameterType="org.scoula.user.domain.User">
+        UPDATE users
+        SET
+        nickname = #{nickname},
+        address = #{address},
+        <!-- password 필드는 변경되었을 때만 업데이트하도록 동적 SQL 고려 가능 -->
+        <!-- 현재 MemberServiceImpl에서 이미 passwordEncoder.encode()를 거친 후 User 객체에 설정하므로, -->
+        <!-- 여기서 바로 업데이트해도 무방합니다. -->
+        password = #{password}
+        WHERE email = #{email}
+    </update>
+    <insert id="saveRefreshToken">
+        INSERT INTO users_refresh_token (user_id, refresh_token)
+            VALUES (#{userId}, #{refreshToken})
+        ON DUPLICATE KEY UPDATE refresh_token = #{refreshToken}
+    </insert>
+
+    <select id="getRefreshTokenByUserId" resultType="java.lang.String">
+        SELECT refresh_token
+        FROM users_refresh_token
+        WHERE user_id = #{userId}
+    </select>
 </mapper>

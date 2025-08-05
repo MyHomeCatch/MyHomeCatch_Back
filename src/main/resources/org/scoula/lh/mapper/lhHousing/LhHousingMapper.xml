@@ -6,8 +6,8 @@
 <mapper namespace="org.scoula.lh.mapper.lhHousing.LhHousingMapper">
     <insert id="create" parameterType="org.scoula.lh.domain.housing.LhHousingVO">
         INSERT INTO LH_housing (
-            pan_id,
-            bzdt_nm,
+--             pan_id,
+            dzdt_nm,
             lct_ara_adr,
             lct_ara_dtl_adr,
             min_max_rsdn_ddo_ar,
@@ -29,8 +29,8 @@
 
     <insert id="createAll" parameterType="java.util.List">
         INSERT INTO LH_housing (
-        pan_id,
-        bzdt_nm,
+--         pan_id,
+        dzdt_nm,
         lct_ara_adr,
         lct_ara_dtl_adr,
         min_max_rsdn_ddo_ar,

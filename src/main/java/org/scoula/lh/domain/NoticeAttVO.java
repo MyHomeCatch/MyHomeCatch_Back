@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class NoticeAttVO {
 
+    private Integer noticeId; // 공고테이블 기본키
     /**
      * 첨부파일 ID (Primary Key, Auto Increment)
      */
@@ -19,7 +20,7 @@ public class NoticeAttVO {
     /**
      * 공고 ID (Foreign Key - LH_notice.pan_id 참조)
      */
-    private String panId;
+//    private String panId;
 
     /**
      * 파일구분명

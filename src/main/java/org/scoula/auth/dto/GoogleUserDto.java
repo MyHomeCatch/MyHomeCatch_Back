@@ -12,7 +12,9 @@ import lombok.NoArgsConstructor;
 public class GoogleUserDto {
     private String id;
     private String token;
+    private String refreshToken;
     private String email;
     private String name;
+    private String nickname;
     // private String picture;
 }

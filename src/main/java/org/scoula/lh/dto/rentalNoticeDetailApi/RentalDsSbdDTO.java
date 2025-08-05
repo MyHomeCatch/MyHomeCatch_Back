@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.scoula.house.util.DateParser;
+import org.scoula.lh.danzi.domain.DanziVO;
 import org.scoula.lh.domain.rental.LhRentalVO;
 
 /**
@@ -81,6 +83,18 @@ public class RentalDsSbdDTO {
                 .hshCnt(hshCnt)
                 .htnFmlaDesc(htnFmlaDesc)
                 .mvinXpcYm(mvinXpcYm)
+                .build();
+    }
+
+    public DanziVO toDanziVO() {
+        return DanziVO.builder()
+                .bzdtNm(lccNtNm)
+                .lctAraAdr(lgdnAdr)
+                .lctAraDtlAdr(lgdnDtlAdr)
+                .minMaxRsdnDdoAr(ddoAr)
+                .sumTotHshCnt(Integer.parseInt(hshCnt))
+                .htnFmlaDeCoNm(htnFmlaDesc)
+                .mvinXpcYm(DateParser.parseDate(mvinXpcYm))
                 .build();
     }
 }

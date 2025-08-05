@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.scoula.dto.BoardDetailDTO;
+import org.scoula.DetailPage.dto.BoardDetailDTO;
+
 
 @Data
 @NoArgsConstructor

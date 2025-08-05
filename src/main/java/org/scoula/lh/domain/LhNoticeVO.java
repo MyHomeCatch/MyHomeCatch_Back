@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,4 +23,5 @@ public class LhNoticeVO {
     private String splInfTpCd;
     private String ccrCnntSysDsCd;
     private String aisTpCd;
+    private Date panNtStDt;
 }
