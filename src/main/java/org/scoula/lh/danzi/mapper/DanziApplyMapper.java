@@ -8,4 +8,5 @@ import java.util.List;
 public interface DanziApplyMapper {
 
     void insert(@Param("list") List<DanziApplyVO> list);
+    List<DanziApplyVO> findByDanziId(int danziId);
 }

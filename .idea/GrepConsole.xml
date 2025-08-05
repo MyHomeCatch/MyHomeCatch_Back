@@ -70,5 +70,16 @@
         </option>
       </PinnedGrepConsolesState>
     </option>
+    <option name="tailHistory">
+      <TailHistory>
+        <option name="items">
+          <set>
+            <TailItem>
+              <option name="path" value="$APPLICATION_CONFIG_DIR$/scratches/generated-requests.http" />
+            </TailItem>
+          </set>
+        </option>
+      </TailHistory>
+    </option>
   </component>
 </project>
