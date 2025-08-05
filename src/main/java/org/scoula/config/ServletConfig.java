@@ -47,6 +47,12 @@ public class ServletConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/v2/api-docs")
                 .addResourceLocations("classpath:/META-INF/resources/");
+
+
+        // favicon.ico 처리 추가
+        registry
+                .addResourceHandler("/favicon.ico")
+                .addResourceLocations("classpath:/WEB-INF/resources/");
     }
 
         // jsp view resolver 설정 - 뷰 이름을 JSP나 템플릿으로 매핑
