@@ -7,6 +7,7 @@ import org.scoula.auth.dto.LoginRequest;
 import org.scoula.auth.dto.SignupRequest;
 import org.scoula.auth.mapper.AuthMapper;
 import org.scoula.common.util.JwtUtil;
+import org.scoula.member.dto.UserInfoDto;
 import org.scoula.user.domain.User;
 import org.scoula.auth.dto.GoogleUserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +15,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletResponse;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -75,8 +79,14 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        String token = jwtUtil.generateToken(user.getEmail());
-        return new AuthResponse(token, user.getNickname());
+        String accessToken = jwtUtil.generateToken(user.getEmail());
+        String refreshToken = jwtUtil.generateRefreshToken(user.getEmail());
+
+        authMapper.saveRefreshToken(user.getUserId(), refreshToken);
+
+        log.info("✅ 로그인 성공 - 이메일: {}, 닉네임: {}", user.getEmail(), user.getNickname());
+
+        return new AuthResponse(accessToken, refreshToken, user.getNickname());
     }
 
     @Override
@@ -99,13 +109,39 @@ public class AuthServiceImpl implements AuthService {
         authMapper.insertUser(user);
 
         String token = jwtUtil.generateToken(user.getEmail());
-        return new AuthResponse(token, user.getNickname());
+        String refreshToken = jwtUtil.generateRefreshToken(user.getEmail());
+        authMapper.saveRefreshToken(user.getUserId(), refreshToken);
+
+        return new AuthResponse(token, refreshToken, user.getNickname());
     }
 
     @Override
+    @Transactional
     public void deleteByEmail(String email) {
+        User user = authMapper.findByEmail(email);
+        if (user == null) {
+            throw new IllegalArgumentException("삭제할 사용자를 찾을 수 없습니다: " + email);
+        }
         authMapper.deleteByEmail(email);
     }
+
+    @Override
+    @Transactional
+    public void deleteUserWithPasswordVerification(UserInfoDto userInfoDto) {
+        String email = userInfoDto.getEmail();
+        String currentPassword = userInfoDto.getCurrentPassword();
+
+        User user = authMapper.findByEmail(email);
+        if (user == null) {
+            throw new IllegalArgumentException("삭제할 사용자를 찾을 수 없습니다: " + email);
+        }
+
+        if (!passwordEncoder.matches(currentPassword, user.getPassword())) {
+            throw new IllegalArgumentException("현재 비밀번호가 일치하지 않습니다.");
+        }
+        authMapper.deleteByEmail(email);
+    }
+
 
     @Override
     public boolean resetPassword(String email, String newPassword) {
@@ -120,7 +156,7 @@ public class AuthServiceImpl implements AuthService {
         return true;
     }
 
-    public KakaoLoginInfoDto kakaoLogin(String code) {
+    public KakaoLoginInfoDto kakaoLogin(String code, HttpServletResponse httpServletResponse) {
         String url = "https://kauth.kakao.com/oauth/token";
 
         // 1. 헤더 설정
@@ -139,26 +175,35 @@ public class AuthServiceImpl implements AuthService {
 
         HttpEntity<MultiValueMap<String, String>> tokenRequest = new HttpEntity<>(tokenParams, headers);
 
-        // 요청
         ResponseEntity<LinkedHashMap> tokenResponse = restTemplate.postForEntity(url, tokenRequest, LinkedHashMap.class);
         String accessToken = "Bearer "+ tokenResponse.getBody().get("access_token");;
-        // 사용자 정보 가져오기 응답
+
         ResponseEntity<LinkedHashMap> response = fetchKakaoUserData(accessToken);
 
-        // 카카오 로그인 password에 적용할 ID
-        // Ex) Kakao + ID
         Long id = (Long) response.getBody().get("id");
-        // 카카오 사용자 정보
+
         LinkedHashMap<String, Object> userInfo = (LinkedHashMap<String, Object>) response.getBody().get("kakao_account");
         String kakaoEmail = userInfo.get("email").toString();
         User user = authMapper.findByEmail(kakaoEmail);
 
         if (user != null) {
             String token = jwtUtil.generateToken(kakaoEmail);
+            String refreshToken = jwtUtil.generateRefreshToken(kakaoEmail);
             String nickname = user.getNickname();
+
+            authMapper.saveRefreshToken(user.getUserId(), refreshToken);
+
+            Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+            refreshCookie.setHttpOnly(true);
+            refreshCookie.setSecure(true);
+            refreshCookie.setPath("/");
+            refreshCookie.setMaxAge(60 * 60 * 24 * 14); // 14일
+            httpServletResponse.addCookie(refreshCookie);
+
 
             KakaoLoginInfoDto kakaoLoginInfoDto = KakaoLoginInfoDto.builder()
                     .token(token)
+                    .refreshToken(refreshToken)
                     .nickname(nickname)
                     .build();
 
@@ -183,7 +228,6 @@ public class AuthServiceImpl implements AuthService {
     }
 
 
-    // kakaoAccessToken을 사용하여 카카오 서버로부터 유저 정보 받아오기
     private ResponseEntity<LinkedHashMap> fetchKakaoUserData(String kakaoAccessToken) {
 
         String url = "https://kapi.kakao.com/v2/user/me";
@@ -201,7 +245,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public ResponseEntity<?> googleSignupOrLogin(String code) {
+    public ResponseEntity<?> googleSignupOrLogin(String code, HttpServletResponse httpServletResponse) {
 
         MultiValueMap<String, String> tokenRequestParams = new LinkedMultiValueMap<>();
         tokenRequestParams.add("code", code);
@@ -237,10 +281,12 @@ public class AuthServiceImpl implements AuthService {
         }
 
         Map<String, Object> userInfo = userInfoResponse.getBody();
+        String googleEmail = (String) userInfo.get("email");
 
         GoogleUserDto googleUserDto = GoogleUserDto.builder()
                 .email((String) userInfo.get("email"))
                 .name((String) userInfo.get("name"))
+                .nickname((String) userInfo.get("nickname"))
                 //.picture((String) userInfo.get("picture"))
                 .build();
 
@@ -248,11 +294,27 @@ public class AuthServiceImpl implements AuthService {
 
         if(user != null) {
             String token = jwtUtil.generateToken(user.getEmail());
+            String refreshToken = jwtUtil.generateRefreshToken(user.getEmail());
+
+            authMapper.saveRefreshToken(user.getUserId(), refreshToken);
+
+            Cookie refreshCookie = new Cookie("refresh_token", refreshToken);
+            refreshCookie.setHttpOnly(true);
+            refreshCookie.setSecure(true);
+            refreshCookie.setPath("/");
+            refreshCookie.setMaxAge(60 * 60 * 24 * 14);
+            httpServletResponse.addCookie(refreshCookie);
+
             googleUserDto.setToken(token);
+            googleUserDto.setRefreshToken(refreshToken);
+            googleUserDto.setNickname(user.getNickname());
         }
         googleUserDto.setId("1234");
+
+//        log.info("✅ 구글 로그인 - 이메일: {}, 닉네임: {}", googleEmail, user.getNickname());
 
         return ResponseEntity.ok(googleUserDto);
 
     }
+
 }

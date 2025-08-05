@@ -33,7 +33,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                 .allowCredentials(true);
     }
 
-    @Bean // 이 메서드가 반환하는 객체를 Spring 빈으로 등록합니다.
+    @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
