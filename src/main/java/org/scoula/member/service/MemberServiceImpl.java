@@ -33,6 +33,7 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return UserInfoDto.builder()
+                .id(user.getUserId())
                 .name(user.getName())
                 .nickname(user.getNickname())
                 .email(user.getEmail())
