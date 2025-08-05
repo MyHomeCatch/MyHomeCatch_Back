@@ -4,7 +4,7 @@ name: Backend CI/CD
 # 이 워크플로가 실행될 조건: main 브랜치에 push가 발생했을 때
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "develop" ]
     # 백엔드 관련 파일이 변경되었을 때만 실행하려면 아래 경로를 지정합니다.
     paths:
        - 'src/**'
@@ -49,7 +49,7 @@ defaults:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "build/libs/*.war"
-          target: "/home/${{ secrets.EC2_USERNAME }}/backend/build/libs"
+          target: "/home/${{ secrets.EC2_USERNAME }}/myhomecatch/backend/build/libs"
           rename: "ROOT.war"
 
       # 6. EC2에서 배포 스크립트 실행
@@ -62,10 +62,10 @@ defaults:
           script: |
           
           # docker-compose.yml 파일이 있는 디렉터리로 이동
-            cd /home/${{ secrets.EC2_USERNAME }}
+            cd /home/${{ secrets.EC2_USERNAME }}/myhomecatch
             
             # 수정된 docker-compose.yml 설정과 새로운 .war 파일을 적용하여 컨테이너를 다시 시작
-						docker-compose down --remove-orphans
+	    docker-compose down --remove-orphans
             docker-compose up -d --build
             
             # 불필요한 Docker 이미지 정리 
