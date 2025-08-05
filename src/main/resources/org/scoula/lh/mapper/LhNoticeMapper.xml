@@ -6,7 +6,7 @@
 <mapper namespace="org.scoula.lh.mapper.LhNoticeMapper">
 
     <insert id="create">
-        INSERT INTO LH_notice
+        INSERT INTO lh_notice
         (pan_id,
          upp_ais_tp_cd,
          ais_tp_cd_nm,
@@ -17,7 +17,8 @@
          dtl_url,
          spl_inf_tp_cd,
          ccr_cnnt_sys_ds_cd,
-         ais_tp_cd)
+         ais_tp_cd,
+         pan_nt_st_dt)
         VALUES (#{panId},
                 #{uppAisTpCd},
                 #{aisTpCdNm},
@@ -28,7 +29,8 @@
                 #{dtlUrl},
                 #{splInfTpCd},
                 #{ccrCnntSysDsCd},
-                #{aisTpCd})
+                #{aisTpCd},
+                #{panNtStDt})
         ON DUPLICATE KEY UPDATE upp_ais_tp_cd      = VALUES(upp_ais_tp_cd),
                                 ais_tp_cd_nm       = VALUES(ais_tp_cd_nm),
                                 pan_nm             = VALUES(pan_nm),
@@ -38,11 +40,12 @@
                                 dtl_url            = VALUES(dtl_url),
                                 spl_inf_tp_cd      = VALUES(spl_inf_tp_cd),
                                 ccr_cnnt_sys_ds_cd = VALUES(ccr_cnnt_sys_ds_cd),
-                                ais_tp_cd          = VALUES(ais_tp_cd);
+                                ais_tp_cd          = VALUES(ais_tp_cd),
+                                pan_nt_st_dt       = VALUES(pan_nt_st_dt);
     </insert>
 
     <insert id="createAll" parameterType="java.util.List">
-        INSERT INTO LH_notice (
+        INSERT INTO lh_notice (
         pan_id,
         upp_ais_tp_cd,
         ais_tp_cd_nm,
@@ -53,7 +56,8 @@
         dtl_url,
         spl_inf_tp_cd,
         ccr_cnnt_sys_ds_cd,
-        ais_tp_cd
+        ais_tp_cd,
+        pan_nt_st_dt
         )
         VALUES
         <foreach collection="list" item="item" separator=",">
@@ -68,7 +72,8 @@
             #{item.dtlUrl},
             #{item.splInfTpCd},
             #{item.ccrCnntSysDsCd},
-            #{item.aisTpCd}
+            #{item.aisTpCd},
+            #{item.panNtStDt}
             )
         </foreach>
         ON DUPLICATE KEY UPDATE
@@ -81,17 +86,56 @@
         dtl_url = VALUES(dtl_url),
         spl_inf_tp_cd = VALUES(spl_inf_tp_cd),
         ccr_cnnt_sys_ds_cd = VALUES(ccr_cnnt_sys_ds_cd),
-        ais_tp_cd = VALUES(ais_tp_cd);
+        ais_tp_cd = VALUES(ais_tp_cd),
+        pan_nt_st_dt = VALUES(pan_nt_st_dt);
     </insert>
 
     <select id="getLhNotice" resultType="org.scoula.lh.domain.LhNoticeVO">
-        SELECT * FROM LH_notice WHERE pan_id = #{pandId}
+        SELECT *
+        FROM lh_notice
+        WHERE pan_id = #{pandId}
+        ORDER BY notice_id DESC
+        LIMIT 1
     </select>
+
     <select id="getLhNotices" resultType="org.scoula.lh.domain.LhNoticeVO">
-        SELECT * FROM LH_notice
+        SELECT *
+        FROM lh_notice
     </select>
 
     <select id="existsByPanId" resultType="java.lang.Boolean">
-        SELECT EXISTS(SELECT 1 FROM LH_notice WHERE pan_id = #{panId})
+        SELECT EXISTS(SELECT 1 FROM lh_notice WHERE pan_id = #{panId})
     </select>
+
+    <insert id="createNoticeDanzi">
+        insert into notice_danzi(notice_id, danzi_id)
+        values (#{noticeID}, #{danziId})
+    </insert>
+
+    <select id="getDanziId" resultType="Integer">
+        select danzi_id from notice_danzi where notice_id = #{noticeId}
+    </select>
+
+    <select id="getNoticeId" resultType="integer">
+        select notice_id from notice_danzi where danzi_id = #{danziId}
+    </select>
+
+    <select id="getPanIds" resultType="String">
+        select pan_id from lh_notice
+    </select>
+
+    <select id="getLHNoticeList" resultType="org.scoula.lh.danzi.domain.NoticeVO">
+        SELECT *
+        FROM lh_notice
+        WHERE pan_id IN
+        <foreach collection="list" item="panId" open="(" separator="," close=")">
+            #{panId}
+        </foreach>
+    </select>
+
+    <update id="updateNoticeIdByDanziId">
+        UPDATE notice_danzi
+        SET notice_id = #{noticeId}
+        WHERE danzi_id = #{danziId}
+    </update>
 </mapper>

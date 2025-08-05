@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.scoula.lh.domain.rental.LhRentalAttVO;
+import org.scoula.lh.danzi.domain.DanziAttVO;
 
 /**
  * 임대주택 단지 첨부파일 DTO
@@ -44,18 +44,13 @@ public class RentalDsSbdAhflDTO {
     @JsonProperty("CMN_AHFL_NM")
     private String cmnAhflNm;
 
-    /**
-     * API DTO를 VO로 변환
-     * @param panId 공고ID (외부에서 주입)
-     * @return LHRentalAttVO
-     */
-    public LhRentalAttVO toLhRentalAttVO(String panId) {
-        return LhRentalAttVO.builder()
-                .panId(panId)
-                .locNtNm(this.lccNtNm)
-                .lsSplInfUplFlDsCdNm(this.lsSplInfUplFlDsCdNm)
-                .cmnAhflNm(this.cmnAhflNm)
-                .ahflUrl(this.ahflUrl)
+    public DanziAttVO toDanziAttVO(Integer danziId) {
+        return DanziAttVO.builder()
+                .danziId(danziId)
+                .flDsCdNm(lsSplInfUplFlDsCdNm)
+                .cmnAhflNm(cmnAhflNm)
+                .ahflUrl(ahflUrl)
                 .build();
+
     }
 }

@@ -13,10 +13,10 @@ import org.scoula.lh.domain.rental.LhRentalAttVO;
 public class LhRentalAttDTO {
     private Integer lhRentalAttId;    // 임대주택첨부파일ID
     private String panId;             // 공고ID
-    private String locNtNm;           // 단지명
-    private String lsSplInfUplFlDsCdNm; // 파일구분명
-    private String cmnAhflNm;         // 첨부파일명
-    private String ahflUrl;           // url
+    private String houseName;           // 단지명
+    private String fileTypeName; // 파일구분명
+    private String fileName;         // 첨부파일명
+    private String downloadUrl;           // url
 
     /**
      * DTO를 VO로 변환
@@ -26,10 +26,10 @@ public class LhRentalAttDTO {
         return LhRentalAttVO.builder()
                 .lhRentalAttId(this.lhRentalAttId)
                 .panId(this.panId)
-                .locNtNm(this.locNtNm)
-                .lsSplInfUplFlDsCdNm(this.lsSplInfUplFlDsCdNm)
-                .cmnAhflNm(this.cmnAhflNm)
-                .ahflUrl(this.ahflUrl)
+                .locNtNm(this.houseName)
+                .lsSplInfUplFlDsCdNm(this.fileTypeName)
+                .cmnAhflNm(this.fileName)
+                .ahflUrl(this.downloadUrl)
                 .build();
     }
 
@@ -42,10 +42,10 @@ public class LhRentalAttDTO {
         return LhRentalAttDTO.builder()
                 .lhRentalAttId(vo.getLhRentalAttId())
                 .panId(vo.getPanId())
-                .locNtNm(vo.getLocNtNm())
-                .lsSplInfUplFlDsCdNm(vo.getLsSplInfUplFlDsCdNm())
-                .cmnAhflNm(vo.getCmnAhflNm())
-                .ahflUrl(vo.getAhflUrl())
+                .houseName(vo.getLocNtNm())
+                .fileTypeName(vo.getLsSplInfUplFlDsCdNm())
+                .fileName(vo.getCmnAhflNm())
+                .downloadUrl(vo.getAhflUrl())
                 .build();
     }
 }

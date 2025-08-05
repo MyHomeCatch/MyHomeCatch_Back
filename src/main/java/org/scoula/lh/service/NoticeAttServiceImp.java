@@ -1,7 +1,7 @@
 package org.scoula.lh.service;
 
 import lombok.RequiredArgsConstructor;
-import org.scoula.lh.domain.NoticeAttVO;
+import org.scoula.lh.danzi.domain.NoticeAttVO;
 import org.scoula.lh.dto.NoticeAttDTO;
 import org.scoula.lh.mapper.NoticeAttMapper;
 import org.springframework.stereotype.Service;
@@ -27,6 +27,7 @@ public class NoticeAttServiceImp implements NoticeAttService {
 
     @Override
     public List<NoticeAttDTO> getNoticeAttByPanId(String panId) {
-        return noticeAttMapper.getNoticeAttByPanId(panId).stream().map(NoticeAttDTO::of).toList();
+        return null;
+//        return noticeAttMapper.getNoticeAttByPanId(panId).stream().map(NoticeAttDTO::of).toList();
     }
 }

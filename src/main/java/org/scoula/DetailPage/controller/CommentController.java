@@ -1,0 +1,38 @@
+package org.scoula.DetailPage.controller;
+
+
+import lombok.RequiredArgsConstructor;
+import org.scoula.DetailPage.Service.CommentService;
+import org.scoula.DetailPage.dto.CommentDTO;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/detail/comments")
+public class CommentController {
+    private final CommentService commentService;
+
+    // 댓글 목록 조회
+    @GetMapping("/{panId}")
+    public ResponseEntity<List<CommentDTO>> getComments(@PathVariable String panId) {
+        List<CommentDTO> comments = commentService.getCommentsByPanId(panId);
+        return ResponseEntity.ok(comments);
+    }
+
+    // 댓글 등록
+    @PostMapping
+    public ResponseEntity<Void> addComment(@RequestBody CommentDTO comment) {
+        commentService.addComment(comment);
+        return ResponseEntity.ok().build();
+    }
+
+    // 댓글 삭제
+    @DeleteMapping("/{commentId}")
+    public ResponseEntity<Void> deleteComment(@PathVariable String commentId) {
+        commentService.deleteComment(commentId);
+        return ResponseEntity.ok().build();
+    }
+}

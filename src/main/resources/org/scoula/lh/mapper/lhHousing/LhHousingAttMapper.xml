@@ -26,6 +26,10 @@
         WHERE bzdt_nm = #{bzdtNm}
     </select>
 
+    <select id="getAll" resultType="org.scoula.lh.domain.housing.LhHousingAttVO">
+        SELECT * FROM LH_housing_att;
+    </select>
+
     <insert id="create" parameterType="org.scoula.lh.domain.housing.LhHousingAttVO">
         INSERT INTO LH_housing_att (
             pan_id,

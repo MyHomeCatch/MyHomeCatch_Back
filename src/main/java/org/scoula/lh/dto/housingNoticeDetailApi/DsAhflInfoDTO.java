@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.scoula.lh.domain.NoticeAttVO;
+import org.scoula.lh.danzi.domain.NoticeAttVO;
 
 // 공고별 첨부파일정보 DTO
 @Data
@@ -22,12 +22,13 @@ public class DsAhflInfoDTO {
     @JsonProperty("CMN_AHFL_NM")
     private String cmnAhflNm;
 
-    public NoticeAttVO toVo(String panId) {
+
+    public NoticeAttVO toNoticeAttVO(Integer noticeId) {
         return NoticeAttVO.builder()
-                .panId(panId)
+                .noticeId(noticeId)
                 .slPanAhflDsCdNm(slPanAhflDsCdNm)
-                .ahflUrl(ahflUrl)
                 .cmnAhflNm(cmnAhflNm)
+                .ahflUrl(ahflUrl)
                 .build();
     }
 }
