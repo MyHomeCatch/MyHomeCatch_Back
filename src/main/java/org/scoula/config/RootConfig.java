@@ -29,6 +29,11 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 @EnableScheduling
+@ComponentScan(basePackages = {
+        "org.scoula.auth.service",
+        "org.scoula.applyHome.scheduler",
+        "org.scoula.chapi.scheduler"
+})
 @Log4j2
 @PropertySource({"classpath:application.properties", "classpath:secrets.properties"})
 @MapperScan(basePackages = {"org.scoula.**.mapper"})

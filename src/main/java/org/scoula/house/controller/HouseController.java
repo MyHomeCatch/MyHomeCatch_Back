@@ -6,6 +6,7 @@ import org.scoula.house.dto.HousePage.HouseDTO;
 import org.scoula.house.dto.HousePage.HousePageResponseDTO;
 import org.scoula.house.dto.HousePage.HouseSearchRequestDTO;
 import org.scoula.house.service.HouseService;
+import org.scoula.lh.danzi.dto.DanziResponseDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +24,7 @@ public class HouseController {
     }
 
     @GetMapping("/{houseId}")
-    public ResponseEntity<HouseDTO> getHouse(@PathVariable String houseId) {
+    public ResponseEntity<DanziResponseDTO> getHouse(@PathVariable Integer houseId) {
         return ResponseEntity.ok(houseService.getHouse(houseId));
     }
 }

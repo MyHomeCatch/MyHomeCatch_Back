@@ -9,6 +9,7 @@ import org.scoula.applyHome.dto.ApplyHomeAnalysisDTO;
 import org.scoula.applyHome.dto.ApplyHomeDTO;
 import org.scoula.applyHome.dto.ApplyHomeSpecialDTO;
 import org.scoula.applyHome.mapper.ApplyHomeMapper;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @Log4j2
 @Service
+@Primary
 @RequiredArgsConstructor
 public class ApplyHomeServiceImpl implements ApplyHomeService {
 

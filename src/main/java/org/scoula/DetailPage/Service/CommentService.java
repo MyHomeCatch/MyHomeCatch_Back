@@ -14,15 +14,15 @@ public class CommentService {
 
     private final CommentMapper commentMapper;
 
-    public List<CommentDTO> getCommentsByPanId(String panId) {
-        return commentMapper.findCommentsByPanId(panId);
+    public List<CommentDTO> getCommentsByDanziId(Integer danziId) {
+        return commentMapper.getCommentsByDanziId(danziId);
     }
 
     public void addComment(CommentDTO comment) {
         commentMapper.insertComment(comment);
     }
 
-    public void deleteComment(String commentId) {
+    public void deleteComment(int commentId) {
         commentMapper.deleteComment(commentId);
     }
 }

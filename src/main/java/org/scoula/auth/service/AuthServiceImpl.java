@@ -12,6 +12,7 @@ import org.scoula.user.domain.User;
 import org.scoula.auth.dto.GoogleUserDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ import java.util.Map;
 
 @Slf4j
 @Service
+@Primary
 public class AuthServiceImpl implements AuthService {
 
     @Autowired

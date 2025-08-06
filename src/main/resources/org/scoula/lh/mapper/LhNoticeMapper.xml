@@ -31,17 +31,17 @@
                 #{ccrCnntSysDsCd},
                 #{aisTpCd},
                 #{panNtStDt})
-        ON DUPLICATE KEY UPDATE upp_ais_tp_cd      = VALUES(upp_ais_tp_cd),
-                                ais_tp_cd_nm       = VALUES(ais_tp_cd_nm),
-                                pan_nm             = VALUES(pan_nm),
-                                cnp_cd_nm          = VALUES(cnp_cd_nm),
-                                pan_ss             = VALUES(pan_ss),
-                                all_cnt            = VALUES(all_cnt),
-                                dtl_url            = VALUES(dtl_url),
-                                spl_inf_tp_cd      = VALUES(spl_inf_tp_cd),
-                                ccr_cnnt_sys_ds_cd = VALUES(ccr_cnnt_sys_ds_cd),
-                                ais_tp_cd          = VALUES(ais_tp_cd),
-                                pan_nt_st_dt       = VALUES(pan_nt_st_dt);
+            ON DUPLICATE KEY UPDATE upp_ais_tp_cd      = VALUES(upp_ais_tp_cd),
+            ais_tp_cd_nm       = VALUES(ais_tp_cd_nm),
+                                 pan_nm             = VALUES(pan_nm),
+                                 cnp_cd_nm          = VALUES(cnp_cd_nm),
+                                 pan_ss             = VALUES(pan_ss),
+                                 all_cnt            = VALUES(all_cnt),
+                                 dtl_url            = VALUES(dtl_url),
+                                 spl_inf_tp_cd      = VALUES(spl_inf_tp_cd),
+                                 ccr_cnnt_sys_ds_cd = VALUES(ccr_cnnt_sys_ds_cd),
+                                 ais_tp_cd          = VALUES(ais_tp_cd),
+                                 pan_nt_st_dt       = VALUES(pan_nt_st_dt);
     </insert>
 
     <insert id="createAll" parameterType="java.util.List">
@@ -95,7 +95,7 @@
         FROM lh_notice
         WHERE pan_id = #{pandId}
         ORDER BY notice_id DESC
-        LIMIT 1
+            LIMIT 1
     </select>
 
     <select id="getLhNotices" resultType="org.scoula.lh.domain.LhNoticeVO">
@@ -138,4 +138,16 @@
         SET notice_id = #{noticeId}
         WHERE danzi_id = #{danziId}
     </update>
+
+    <!-- 새로운 기능 추가 -->
+    <select id="getAllLhNoticesNew" resultType="org.scoula.lh.domain.LhNoticeVO">
+        SELECT *
+        FROM MyHomeCatch.lh_notice
+    </select>
+
+    <select id="getLhNoticeByPanIdNew" resultType="org.scoula.lh.domain.LhNoticeVO">
+        SELECT *
+        FROM MyHomeCatch.lh_notice
+        WHERE pan_id = #{panId}
+    </select>
 </mapper>

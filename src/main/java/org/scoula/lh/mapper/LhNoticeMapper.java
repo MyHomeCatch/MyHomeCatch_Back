@@ -21,4 +21,8 @@ public interface LhNoticeMapper {
     List<String> getPanIds();
     List<NoticeVO> getLHNoticeList(@Param("list") List<String> list);
     void updateNoticeIdByDanziId(@Param("danziId") int danziId, @Param("noticeId") int noticeId);
+
+    // 새로운 기능 추가
+    List<LhNoticeVO> getAllLhNoticesNew();
+    LhNoticeVO getLhNoticeByPanIdNew(String panId);
 }
