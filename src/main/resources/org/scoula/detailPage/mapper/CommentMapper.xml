@@ -19,8 +19,15 @@
     </select>
 
     <insert id="insertComment" parameterType="org.scoula.DetailPage.dto.CommentDTO">
-        INSERT INTO comments ( danzi_id, content, user_id, nickname, is_deleted)
-        VALUES (#{danziId}, #{content}, #{userId}, #{nickname}, false)
+        INSERT INTO comments (danzi_id, content, user_id, nickname, is_deleted)
+        SELECT
+            #{danziId},
+            #{content},
+            #{userId},
+            u.nickname,
+            false
+        FROM users u
+        WHERE u.user_id = #{userId}
     </insert>
 
     <update id="deleteComment">
