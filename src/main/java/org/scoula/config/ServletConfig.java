@@ -19,7 +19,8 @@ import org.springframework.web.servlet.view.JstlView;
     "org.scoula.exception",          // 예외 처리 관련 패키지
     "org.scoula.controller",         // 웹 컨트롤러
     "org.scoula.statics.controller", // 정적 페이지용 컨트롤러
-    "org.scoula.house"               // LH 공고 관련 컨트롤러/서비스 등
+    "org.scoula.house",               // LH 공고 관련 컨트롤러/서비스 등
+    "org.scoula.lh.controller"
 })
 @PropertySource("classpath:application.properties")
 @EnableScheduling
