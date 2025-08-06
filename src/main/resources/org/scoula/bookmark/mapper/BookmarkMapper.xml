@@ -19,4 +19,21 @@
         WHERE da.sbsc_acp_st_dt = #{today}
            OR da.sbsc_acp_clsg_dt = #{today};
     </select>
+
+
+    <insert id="createBookmark">
+        INSERT INTO bookmarks (user_id, danzi_id)
+        VALUES (#{userId}, #{danziId})
+    </insert>
+
+    <select id="readBookmark" resultType="org.scoula.bookmark.domain.BookmarkVo">
+        SELECT *
+        FROM bookmarks
+        WHERE user_id = #{userId}
+    </select>
+
+    <delete id="deleteBookmark">
+        DELETE FROM bookmarks WHERE user_id = #{userId} AND danzi_id = #{danziId}
+    </delete>
+
 </mapper>
