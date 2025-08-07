@@ -9,4 +9,5 @@ public interface DanziApplyMapper {
 
     void insert(@Param("list") List<DanziApplyVO> list);
     List<DanziApplyVO> findByDanziId(int danziId);
+    void updateByDanziId(@Param("list") List<String> list);
 }

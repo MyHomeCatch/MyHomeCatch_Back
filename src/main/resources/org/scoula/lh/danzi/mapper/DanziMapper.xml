@@ -77,7 +77,7 @@
 
     <insert id="insert" parameterType="java.util.List"
             useGeneratedKeys="true" keyProperty="danziId">
-        INSERT INTO danzi (bzdt_nm, lct_ara_adr, lct_ara_dtl_adr, min_max_rsdn_ddo_ar,
+        INSERT IGNORE INTO danzi (bzdt_nm, lct_ara_adr, lct_ara_dtl_adr, min_max_rsdn_ddo_ar,
                            sum_tot_hsh_cnt, htn_fmla_de_cd_nm, mvin_xpc_ym)
         VALUES
         <foreach collection="list" item="item" separator=",">

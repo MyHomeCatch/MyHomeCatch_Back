@@ -114,6 +114,8 @@ WHERE t1.att_id > t2.att_id
 
 -- 1. LH 공고
 DROP TABLE IF EXISTS lh_notice;
+set foreign_key_checks = 1;
+truncate table lh_notice;
 CREATE TABLE lh_notice
 (
     notice_id          INT AUTO_INCREMENT PRIMARY KEY COMMENT '공고 ID',

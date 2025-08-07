@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.scoula.lh.danzi.domain.DanziVO;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Data
@@ -31,7 +34,21 @@ public class DanziDTO {
                 .minMaxRsdnDdoAr(vo.getMinMaxRsdnDdoAr())
                 .sumTotHshCnt(vo.getSumTotHshCnt())
                 .htnFmlaDeCoNm(vo.getHtnFmlaDeCoNm())
-                .mvinXpcYm(vo.getMvinXpcYm())
+                .mvinXpcYm(DateParser.parseFullDate(vo.getMvinXpcYm()))
                 .build();
+    }
+
+    public class DateParser {
+        private static final DateTimeFormatter FULL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+        public static Date parseFullDate(String yyyymmdd) {
+            if (yyyymmdd == null || yyyymmdd.isEmpty()) return null;
+            try {
+                LocalDate date = LocalDate.parse(yyyymmdd.substring(0, 10), FULL_DATE_FORMAT); // "2028-07-01"
+                return java.sql.Date.valueOf(date);
+            } catch (Exception e) {
+                return null;
+            }
+        }
     }
 }

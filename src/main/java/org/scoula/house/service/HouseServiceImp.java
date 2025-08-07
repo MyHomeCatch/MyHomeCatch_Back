@@ -90,7 +90,7 @@ public class HouseServiceImp implements HouseService {
                 .minMaxRsdnDdoAr(danziVO.getMinMaxRsdnDdoAr())
                 .sumTotHshCnt(danziVO.getSumTotHshCnt())
                 .htnFmlaDeCoNm(danziVO.getHtnFmlaDeCoNm())
-                .mvinXpcYm(danziVO.getMvinXpcYm())
+                .mvinXpcYm(DanziDTO.DateParser.parseFullDate(danziVO.getMvinXpcYm()))
                 .build();
 
         List<DanziApplyVO> danziApplyVOList = danziApplyMapper.findByDanziId(danziId);
