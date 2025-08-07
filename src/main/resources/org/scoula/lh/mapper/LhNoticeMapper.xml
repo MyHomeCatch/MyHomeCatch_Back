@@ -109,7 +109,7 @@
 
     <insert id="createNoticeDanzi">
         insert into notice_danzi(notice_id, danzi_id)
-        values (#{noticeID}, #{danziId})
+        values (#{noticeId}, #{danziId})
     </insert>
 
     <select id="getDanziId" resultType="Integer">

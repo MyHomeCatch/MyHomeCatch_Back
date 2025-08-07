@@ -14,7 +14,7 @@ public interface LhNoticeMapper {
     List<LhNoticeVO> getLhNotices();
     int create(LhNoticeVO lhNoticeVO);
     int createAll(List<LhNoticeVO> lhNoticeVOList);
-    boolean existsByPanId(String panId);
+    boolean existsByPanId(@Param("panId") String panId);
     void createNoticeDanzi(@Param("noticeId") Integer noticeId,@Param("danziId") Integer danziId);
     int getDanziId(@Param("noticeId") Integer noticeId);
     int getNoticeId(@Param("danziId") Integer danziId);
@@ -24,5 +24,5 @@ public interface LhNoticeMapper {
 
     // 새로운 기능 추가
     List<LhNoticeVO> getAllLhNoticesNew();
-    LhNoticeVO getLhNoticeByPanIdNew(String panId);
+    LhNoticeVO getLhNoticeByPanIdNew(@Param("panId") String panId);
 }
