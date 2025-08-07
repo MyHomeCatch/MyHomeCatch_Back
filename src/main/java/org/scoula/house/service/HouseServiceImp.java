@@ -20,9 +20,11 @@ import org.scoula.lh.danzi.mapper.DanziApplyMapper;
 import org.scoula.lh.danzi.mapper.DanziAttMapper;
 import org.scoula.lh.danzi.mapper.DanziMapper;
 import org.scoula.lh.mapper.LhNoticeMapper;
+import org.scoula.selfCheck.mapper.SelfCheckMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,6 +41,7 @@ public class HouseServiceImp implements HouseService {
     private final DanziAttMapper danziAttMapper;
     private final DanziApplyMapper danziApplyMapper;
     private final ApplyHomeAPTMapper applyHomeAPTMapper;
+    private final SelfCheckMapper selfCheckMapper;
 
     @Override
     public HousePageResponseDTO getHouses(HouseSearchRequestDTO requestDto) {
@@ -59,6 +62,7 @@ public class HouseServiceImp implements HouseService {
                 .pageInfo(pageInfo)
                 .build();
     }
+
 
     @Override
     public DanziResponseDTO getHouse(Integer danziId) {
@@ -108,13 +112,41 @@ public class HouseServiceImp implements HouseService {
 
         List<NoticeInfoDTO> noticeInfoDTOList = danziMapper.findNoticesByDanziId(danziId);
 
+        String selfCheckMatchResult = null;
         return DanziResponseDTO.builder()
                 .danzi(danziDTO)
                 .applies(danziApplyDTOList)
                 .attachments(danziAttDTOList)
                 .notices(noticeInfoDTOList)
+                .selfCheckMatchResult(selfCheckMatchResult)
                 .build();
-        }
+    }
+
+
+    @Override
+    public DanziResponseDTO getHouseWithUserData(DanziRequestDTO requestDto, Integer houseId) {
+        DanziResponseDTO responseDTO = getHouse(houseId);
+        String selfCheckMatchResult = null;
+        List<String> userSelfCheckResult = requestDto.getSelfCheckResult();
+
+            HouseCardDTO houseCardDTO = getHouseCard(houseId); // 단지 정보에서 공고 유형을 가져옴
+            String noticeType = houseCardDTO.getNoticeType();
+
+            if (userSelfCheckResult != null && noticeType != null) {
+                Optional<String> matched = userSelfCheckResult.stream()
+                        .filter(s -> s.contains(noticeType))
+                        .findFirst();
+
+                if (matched.isPresent()) {
+                    selfCheckMatchResult = matched.get();
+                    responseDTO.setSelfCheckMatchResult(selfCheckMatchResult);
+                    log.info("selfCheckMatchResult: {}", selfCheckMatchResult);
+                    log.info("noticeType: {}", noticeType);
+                }
+            }
+
+        return responseDTO;
+    }
 
     @Override
     public HouseCardDTO getHouseCard(Integer houseId) {
@@ -124,10 +156,4 @@ public class HouseServiceImp implements HouseService {
     }
 }
 
-    // 정정공고 boolean 용(Att update용)
-//    public boolean isCorrectedNotice(String panId) {
-//        if (panId == null) return false;
-//        String panSs = noticeMapper.getPanSsByPanId(panId);
-//        return "정정공고".equals(panSs);
-//    }
 
