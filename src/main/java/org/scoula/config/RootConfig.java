@@ -29,6 +29,11 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 @EnableScheduling
+@ComponentScan(basePackages = {
+        "org.scoula.auth.service",
+        "org.scoula.applyHome.scheduler",
+        "org.scoula.chapi.scheduler"
+})
 @Log4j2
 @PropertySource({"classpath:application.properties", "classpath:secrets.properties"})
 @MapperScan(basePackages = {"org.scoula.**.mapper"})
@@ -41,7 +46,7 @@ import java.util.Properties;
         "org.scoula.lh",                // develop
         "org.scoula.member",            // 회원 기능
         "org.scoula.house",              // 주택 정보 기능 (추가된 패키지)
-        "org.scoula.ChatBot"
+        "org.scoula.calendar",          // 캘린더 관련 패키지
 })
 
 public class RootConfig {

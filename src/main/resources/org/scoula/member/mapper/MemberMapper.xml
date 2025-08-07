@@ -7,7 +7,8 @@
 
     <update id="updateAdditionalPoint">
         UPDATE users
-        SET additional_point = #{additionalPoint}
+        SET additional_point = #{additionalPoint},
+            additional_point_updated_at = NOW()
         WHERE email = #{email}
     </update>
 

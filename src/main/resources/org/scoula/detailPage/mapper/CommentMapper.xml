@@ -6,21 +6,29 @@
 <mapper namespace="org.scoula.DetailPage.mapper.CommentMapper">
 
     <select id="getCommentsByDanziId" resultType="org.scoula.DetailPage.dto.CommentDTO">
-        SELECT danzi_id AS danziId,
-               comment_id AS commentId,
-               content,
-               user_id AS userId,
-               nickname,
-               is_deleted AS isDeleted
-        FROM comments
-        WHERE danzi_id = #{danziId}
-          AND is_deleted = false
-        ORDER BY comment_id DESC
+        SELECT c.danzi_id AS danziId,
+               c.comment_id AS commentId,
+               c.content,
+               c.user_id AS userId,
+               u.nickname,
+               c.is_deleted AS isDeleted
+        FROM comments c
+                 JOIN users u ON c.user_id = u.user_id
+        WHERE c.danzi_id = #{danziId}
+          AND c.is_deleted = false
+        ORDER BY c.comment_id DESC
     </select>
 
     <insert id="insertComment" parameterType="org.scoula.DetailPage.dto.CommentDTO">
-        INSERT INTO comments ( danzi_id, content, user_id, nickname, is_deleted)
-        VALUES (#{danziId}, #{content}, #{userId}, #{nickname}, false)
+        INSERT INTO comments (danzi_id, content, user_id, nickname, is_deleted)
+        SELECT
+            #{danziId},
+            #{content},
+            #{userId},
+            u.nickname,
+            false
+        FROM users u
+        WHERE u.user_id = #{userId}
     </insert>
 
     <update id="deleteComment">
