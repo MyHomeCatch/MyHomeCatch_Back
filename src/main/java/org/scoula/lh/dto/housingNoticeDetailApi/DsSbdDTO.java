@@ -58,7 +58,7 @@ public class DsSbdDTO {
                 .minMaxRsdnDdoAr(minMaxRsdnDdoAr)
                 .sumTotHshCnt(Integer.parseInt(sumTotHshCnt))
                 .htnFmlaDeCoNm(htnFmlaDsCdNm)
-                .mvinXpcYm(DateParser.parseDate(mvinXpcYm))
+                .mvinXpcYm(mvinXpcYm)
                 .build();
     }
 }

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.scoula.house.util.DateParser;
 import org.scoula.lh.danzi.domain.DanziVO;
+import org.scoula.lh.danzi.dto.DanziDTO;
 import org.scoula.lh.domain.rental.LhRentalVO;
 
 /**
@@ -94,7 +95,7 @@ public class RentalDsSbdDTO {
                 .minMaxRsdnDdoAr(ddoAr)
                 .sumTotHshCnt(Integer.parseInt(hshCnt))
                 .htnFmlaDeCoNm(htnFmlaDesc)
-                .mvinXpcYm(DateParser.parseDate(mvinXpcYm))
+                .mvinXpcYm(mvinXpcYm)
                 .build();
     }
 }
