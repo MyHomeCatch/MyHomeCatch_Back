@@ -18,7 +18,6 @@ public interface AuthMapper {
 
     void updatePasswordByEmail(@Param("email") String email, @Param("password") String password);
 
-
     int update(User user);
 
     void saveRefreshToken(@Param("userId")int userId, @Param("refreshToken")String refreshToken);

@@ -67,7 +67,7 @@ public class LhNoticeScheduler {
 
     private final int NUMBER_OF_PAGE = 35;
 
-    // @Scheduled(fixedDelay = 600000, initialDelay = 0)
+//     @Scheduled(fixedDelay = 6000000, initialDelay = 0)
     @Scheduled(cron = "0 0 2 * * *")
     public void schedule() {
         log.info("=== LH 공고 데이터 업데이트 스케줄러 시작 ===");
@@ -128,9 +128,9 @@ public class LhNoticeScheduler {
             }
 
             /*
-            - 첨부파일 정보 처리
-            1. 하나의 공고 -> 여러개의 첨부파일 O
-            => 리스트를 이용하여 한번에 insert
+            - 공고별 첨부파일 정보 처리
+            1. 각 공고별로 첨부되는 카탈로그, 제출문서, 공고문 등
+            2. 단지 별로 첨부되는 값이 아님 -> 공고 첨부파일 테이블 lh_notice_att에 저장
              */
             if (noticeDetail.getDsAhflInfo() != null) {
                 List<NoticeAttVO> dsAhflInfoDTOList = noticeDetail.getDsAhflInfo().stream()
@@ -178,7 +178,7 @@ public class LhNoticeScheduler {
             }
 
             /*
-            - 주택 첨부 정보 처리
+            - 단지별 첨부파일 처리
             1. 데이터에 단지명 포함 O
             => 단지명을 이용해 단지 id 조회 -> 데이터 저장
             2. List로 한번에 처리
@@ -211,6 +211,19 @@ public class LhNoticeScheduler {
             if (noticeDetail == null) {
                 log.warn("임대 공고 상세 정보를 가져올 수 없음: {}", notice.getPanId());
                 return;
+            }
+
+            /*
+            - 공고별 첨부파일 정보 처리
+            1. 각 공고별로 첨부되는 카탈로그, 제출문서, 공고문 등
+            2. 단지 별로 첨부되는 값이 아님 -> 공고 첨부파일 테이블 lh_notice_att에 저장
+            => 리스트를 이용하여 한번에 insert
+             */
+            if (noticeDetail.getDsAhflInfo() != null) {
+                List<NoticeAttVO> dsAhflInfoDTOList = noticeDetail.getDsAhflInfo().stream()
+                        .map(dto -> dto.toNoticeAttVO(notice.getNoticeId()))
+                        .collect(Collectors.toList());
+                noticeAttService.createAll(dsAhflInfoDTOList);
             }
 
             /*
@@ -251,8 +264,12 @@ public class LhNoticeScheduler {
                 }
             }
 
-            // 임대 첨부 정보 처리
-            // DanziVO 단지정보가 첨부파일의 단지정보와 일치하는지 필터링
+            /* 임대 단지별 첨부파일 처리
+            1. 데이터에 단지명 포함 O
+            => 단지명을 이용해 단지 id 조회 -> 데이터 저장
+            2. List로 한번에 처리
+            3. DanziVO의 단지정보와 첨부파일 DsSbdAhfl의 단지정보가 일치하는것을 필터링
+            */
             if (noticeDetail.getDsSbdAhfl() != null) {
                 List<DanziAttVO> danziAttVOList = new ArrayList<>();
                 for(DanziVO vo : danziVOList) {

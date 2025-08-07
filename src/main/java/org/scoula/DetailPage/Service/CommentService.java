@@ -18,8 +18,8 @@ public class CommentService {
         return commentMapper.getCommentsByDanziId(danziId);
     }
 
-    public void addComment(CommentDTO comment) {
-        commentMapper.insertComment(comment);
+    public int addComment(CommentDTO comment) {
+        return commentMapper.insertComment(comment);
     }
 
     public void deleteComment(int commentId) {

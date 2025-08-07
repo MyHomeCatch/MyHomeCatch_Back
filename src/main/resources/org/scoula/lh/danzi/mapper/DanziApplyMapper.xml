@@ -20,4 +20,8 @@
              #{item.ctrtStDt}, #{item.ctrtEdDt})
         </foreach>
     </insert>
+
+    <update id="updateByDanziId" parameterType="java.util.List">
+
+    </update>
 </mapper>
