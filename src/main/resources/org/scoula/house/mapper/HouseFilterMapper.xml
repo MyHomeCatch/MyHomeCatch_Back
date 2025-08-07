@@ -34,21 +34,44 @@
         AND n.pan_nt_st_dt >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
         ]]>
 
-        <!-- 지역 필터 -->
-        <if test="cnpCdNm != null and cnpCdNm != ''">
-            AND n.cnp_cd_nm = #{cnpCdNm}
-        </if>
+        <!-- 지역 필터 (다중 선택 지원) -->
+        <choose>
+            <when test="cnpCdNmList != null and cnpCdNmList.size() > 0">
+                AND n.cnp_cd_nm IN
+                <foreach collection="cnpCdNmList" item="cnp" open="(" separator="," close=")">
+                    #{cnp}
+                </foreach>
+            </when>
+            <when test="cnpCdNm != null and cnpCdNm != ''">
+                AND n.cnp_cd_nm = #{cnpCdNm}
+            </when>
+        </choose>
 
-        <!-- 공고유형 필터 -->
-        <if test="aisTpCdNm != null and aisTpCdNm != ''">
-            AND n.ais_tp_cd_nm = #{aisTpCdNm}
-        </if>
+        <!-- 공고유형 필터 (다중 선택 지원) -->
+        <choose>
+            <when test="aisTpCdNmList != null and aisTpCdNmList.size() > 0">
+                AND n.ais_tp_cd_nm IN
+                <foreach collection="aisTpCdNmList" item="ais" open="(" separator="," close=")">
+                    #{ais}
+                </foreach>
+            </when>
+            <when test="aisTpCdNm != null and aisTpCdNm != ''">
+                AND n.ais_tp_cd_nm = #{aisTpCdNm}
+            </when>
+        </choose>
 
-        <!-- 공고상태 필터 -->
-        <if test="panSs != null and panSs != ''">
-            AND n.pan_ss = #{panSs}
-        </if>
-
+        <!-- 공고상태 필터 (다중 선택 지원) -->
+        <choose>
+            <when test="panSsList != null and panSsList.size() > 0">
+                AND n.pan_ss IN
+                <foreach collection="panSsList" item="pan" open="(" separator="," close=")">
+                    #{pan}
+                </foreach>
+            </when>
+            <when test="panSs != null and panSs != ''">
+                AND n.pan_ss = #{panSs}
+            </when>
+        </choose>
 
         <![CDATA[
         ORDER BY n.pan_nt_st_dt DESC
@@ -71,21 +94,44 @@
         AND n.pan_nt_st_dt >= DATE_SUB(NOW(), INTERVAL 6 MONTH)
         ]]>
 
-        <!-- 지역 필터 -->
-        <if test="cnpCdNm != null and cnpCdNm != ''">
-            AND n.cnp_cd_nm = #{cnpCdNm}
-        </if>
+        <!-- 지역 필터 (다중 선택 지원) -->
+        <choose>
+            <when test="cnpCdNmList != null and cnpCdNmList.size() > 0">
+                AND n.cnp_cd_nm IN
+                <foreach collection="cnpCdNmList" item="cnp" open="(" separator="," close=")">
+                    #{cnp}
+                </foreach>
+            </when>
+            <when test="cnpCdNm != null and cnpCdNm != ''">
+                AND n.cnp_cd_nm = #{cnpCdNm}
+            </when>
+        </choose>
 
-        <!-- 공고유형 필터 -->
-        <if test="aisTpCdNm != null and aisTpCdNm != ''">
-            AND n.ais_tp_cd_nm = #{aisTpCdNm}
-        </if>
+        <!-- 공고유형 필터 (다중 선택 지원) -->
+        <choose>
+            <when test="aisTpCdNmList != null and aisTpCdNmList.size() > 0">
+                AND n.ais_tp_cd_nm IN
+                <foreach collection="aisTpCdNmList" item="ais" open="(" separator="," close=")">
+                    #{ais}
+                </foreach>
+            </when>
+            <when test="aisTpCdNm != null and aisTpCdNm != ''">
+                AND n.ais_tp_cd_nm = #{aisTpCdNm}
+            </when>
+        </choose>
 
-        <!-- 공고상태 필터 -->
-        <if test="panSs != null and panSs != ''">
-            AND n.pan_ss = #{panSs}
-        </if>
-
+        <!-- 공고상태 필터 (다중 선택 지원) -->
+        <choose>
+            <when test="panSsList != null and panSsList.size() > 0">
+                AND n.pan_ss IN
+                <foreach collection="panSsList" item="pan" open="(" separator="," close=")">
+                    #{pan}
+                </foreach>
+            </when>
+            <when test="panSs != null and panSs != ''">
+                AND n.pan_ss = #{panSs}
+            </when>
+        </choose>
 
     </select>
 </mapper>

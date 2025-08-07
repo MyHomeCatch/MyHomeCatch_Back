@@ -1,0 +1,102 @@
+name: Fullstack CI/CD Deploy to EC2
+
+on:
+  push:
+    branches: ['main']  # 배포 브랜치
+
+jobs:
+  build-and-deploy:
+    runs-on: amazonlinux-2023
+
+    steps:
+      # 1. 코드 체크아웃
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. JDK 17 설치 (백엔드용)
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      # 3. Node.js 설치 (프론트엔드용)
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      # 4. 프론트엔드 빌드 (frontend/dist 생성)
+      - name: Build frontend
+        working-directory: ./frontend
+        run: |
+          npm ci
+          npm run build
+
+      # 5. 백엔드 빌드 (backend/build/libs/ROOT.war 생성)
+      - name: Build backend
+        working-directory: ./backend
+        run: |
+          chmod +x ./gradlew
+          ./gradlew clean build -x test
+          
+		  # 6. 배포 패키지 생성 (압축)
+      - name: Create deployment package
+        run: |
+          # 배포에 필요한 파일들을 모을 deploy 디렉터리 생성
+          mkdir -p deploy/nginx/conf.d
+          mkdir -p deploy/frontend/dist
+          mkdir -p deploy/backend/build/libs
+
+          # 필요한 파일들을 deploy 디렉터리로 복사
+          cp docker-compose.yml deploy/
+          cp nginx/conf.d/default.conf deploy/nginx/conf.d/
+          cp -R frontend/dist/. deploy/frontend/dist/
+          mv backend/build/libs/*.war deploy/backend/build/libs/ROOT.war
+          
+          # deploy 디렉터리 전체를 압축
+          tar -zcvf deploy.tar.gz -C deploy .
+
+
+      # 7. EC2에 파일 전송
+      - name: Copy deployment to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+			    source: "deploy.tar.gz"
+          target: "/home/${{ secrets.EC2_USERNAME }}"
+          rm: true
+
+      # 8. EC2에서 Docker Compose로 배포
+      - name: Deploy on EC2 via SSH
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/${{ secrets.EC2_USERNAME }}
+            
+            # 배포 루트 디렉터리 설정
+            APP_DIR="/home/${{ secrets.EC2_USERNAME }}/myhomecatch"
+
+            # 기존 디렉터리 삭제
+            echo "Removing old deployment directory..."
+            rm -rf $APP_DIR
+            mkdir -p $APP_DIR
+            # mkdir -p frontend/dist backend/build/libs nginx/conf.d
+
+            # 압축 파일 이동 및 해제
+            echo "Extracting deployment package..."
+            mv /home/${{ secrets.EC2_USERNAME }}/deploy.tar.gz $APP_DIR/
+            cd $APP_DIR
+            tar -zxvf deploy.tar.gz
+
+            # 컨테이너 재시작
+            docker-compose down --remove-orphans
+            docker-compose up -d --build
+
+            # 불필요 이미지 정리
+            docker image prune -f

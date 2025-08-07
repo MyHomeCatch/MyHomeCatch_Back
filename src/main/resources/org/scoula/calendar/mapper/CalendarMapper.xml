@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.scoula.calendar.mapper.CalendarMapper">
+    <select id="getCalendar" resultMap="calendarResultMap">
+        SELECT
+            da.danzi_id,
+            d.bzdt_nm,
+            d.lct_ara_adr,
+            d.lct_ara_dtl_adr,
+            da.hs_sbsc_acp_trg_cd_nm,  -- 구분
+            da.sbsc_acp_st_dt,
+            da.sbsc_acp_clsg_dt,
+            n.notice_id,
+            n.ais_tp_cd,
+            n.ais_tp_cd_nm,
+            n.cnp_cd_nm
+        FROM danzi_apply da
+                 JOIN danzi d ON da.danzi_id = d.danzi_id
+                 LEFT JOIN notice_danzi nd ON da.danzi_id = nd.danzi_id
+                 LEFT JOIN lh_notice n ON nd.notice_id = n.notice_id
+        WHERE da.sbsc_acp_st_dt >= STR_TO_DATE(CONCAT(#{date}, '.01'), '%Y.%m.%d')
+        AND da.sbsc_acp_st_dt &lt; DATE_ADD(STR_TO_DATE(CONCAT(#{date}, '.01'), '%Y.%m.%d'), INTERVAL 1 MONTH)
+        ORDER BY da.sbsc_acp_st_dt;
+    </select>
+
+    <resultMap id="calendarResultMap" type="org.scoula.calendar.domain.CalendarVO">
+<!--        <id property="danzi_id" column="danzi_id" />-->
+        <result property="danzi_id" column="danzi_id" />
+        <result property="bzdt_nm" column="bzdt_nm" />
+        <result property="lct_ara_adr" column="lct_ara_adr" />
+        <result property="lct_ara_dtl_adr" column="lct_ara_dtl_adr" />
+        <result property="hs_sbsc_acp_trg_cd_nm" column="hs_sbsc_acp_trg_cd_nm" />
+        <result property="sbsc_acp_st_dt" column="sbsc_acp_st_dt" />
+        <result property="sbsc_acp_clsg_dt" column="sbsc_acp_clsg_dt" />
+        <result property="notice_id" column="notice_id" />
+        <result property="ais_tp_cd" column="ais_tp_cd" />
+        <result property="ais_tp_cd_nm" column="ais_tp_cd_nm" />
+        <result property="cnp_cd_nm" column="cnp_cd_nm" />
+    </resultMap>
+</mapper>

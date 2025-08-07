@@ -12,6 +12,13 @@ import org.scoula.house.mapper.HouseFilterMapper;
 import org.scoula.house.mapper.LhHousingHouseMapper;
 import org.scoula.house.mapper.LhRentalHouseMapper;
 import org.scoula.house.util.RegionMapper;
+import org.scoula.lh.danzi.domain.DanziApplyVO;
+import org.scoula.lh.danzi.domain.DanziAttVO;
+import org.scoula.lh.danzi.domain.DanziVO;
+import org.scoula.lh.danzi.dto.*;
+import org.scoula.lh.danzi.mapper.DanziApplyMapper;
+import org.scoula.lh.danzi.mapper.DanziAttMapper;
+import org.scoula.lh.danzi.mapper.DanziMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,13 +33,16 @@ public class HouseServiceImp implements HouseService {
     private final LhHousingHouseMapper lhHousingHouseMapper;
     private final ApplyHomeOfficetelDetailMapper applyHomeOfficetelDetailMapper;
     private final HouseFilterMapper houseFilterMapper;
+    private final DanziMapper danziMapper;
+    private final DanziAttMapper danziAttMapper;
+    private final DanziApplyMapper danziApplyMapper;
     private final ApplyHomeAPTMapper applyHomeAPTMapper;
-//    private final NoticeMapper noticeMapper;
 
     @Override
     public HousePageResponseDTO getHouses(HouseSearchRequestDTO requestDto) {
-        // DTO에 값이 있으면 자동으로 필터링됨
-        requestDto.setCnpCdNm(RegionMapper.mapToFullRegion(requestDto.getCnpCdNm()));
+        // 필터 전처리와 지역 매핑을 한번에 처리
+        requestDto.processFilters();
+
         List<HouseCardVO> voList = houseFilterMapper.getHousingList(requestDto);
         int totalCount = houseFilterMapper.getHousingCount(requestDto);
 
@@ -49,28 +59,60 @@ public class HouseServiceImp implements HouseService {
     }
 
     @Override
-    public HouseDTO getHouse(String houseId) {
-        String[] tokens = houseId.split("-");
-        String table = tokens[0];
-        String id = tokens[1];
+    public DanziResponseDTO getHouse(Integer danziId) {
+        // prefix 사용해 청약홈 얻어오던 코드
+//        String[] tokens = houseId.split("-");
+//        String table = tokens[0];
+//        String id = tokens[1];
+//
+//        if(table.equals("lhrental")) {
+//            return HouseDTO.ofLhRentalHouseVO(lhRentalHouseMapper.get(Integer.parseInt(id)));
+//        }
+//
+//        if(table.equals("lhhousing")) {
+//            return HouseDTO.ofLhHousingHouseVO(lhHousingHouseMapper.get(Integer.parseInt(id)));
+//        }
+//
+//        if(table.equals("ahOfficetel")) {
+//            return HouseDTO.ofApplyHomeOfficetelHouseVO(applyHomeOfficetelDetailMapper.get(id));
+//        }
+//
+//        if(table.equals("ahApt")) {
+//            return HouseDTO.ofApplyHomeAPTPublicVO(applyHomeAPTMapper.getByHouseNo(id));
+//        }
 
-        if(table.equals("lhrental")) {
-            return HouseDTO.ofLhRentalHouseVO(lhRentalHouseMapper.get(Integer.parseInt(id)));
+        DanziVO danziVO = danziMapper.findById(danziId);
+
+        DanziDTO danziDTO = DanziDTO.builder()
+                .danziId(danziVO.getDanziId())
+                .bzdtNm(danziVO.getBzdtNm())
+                .lctAraAdr(danziVO.getLctAraAdr())
+                .lctAraDtlAdr(danziVO.getLctAraDtlAdr())
+                .minMaxRsdnDdoAr(danziVO.getMinMaxRsdnDdoAr())
+                .sumTotHshCnt(danziVO.getSumTotHshCnt())
+                .htnFmlaDeCoNm(danziVO.getHtnFmlaDeCoNm())
+                .mvinXpcYm(danziVO.getMvinXpcYm())
+                .build();
+
+        List<DanziApplyVO> danziApplyVOList = danziApplyMapper.findByDanziId(danziId);
+        List<DanziApplyDTO> danziApplyDTOList = danziApplyVOList.stream()
+                .map(DanziApplyDTO::from)
+                .collect(Collectors.toList());
+
+        List<DanziAttVO> danziAttVOList = danziAttMapper.getBydanziId(danziId);
+        List<DanziAttDTO> danziAttDTOList = danziAttVOList.stream()
+                .map(DanziAttDTO::toDanziAttDTO)
+                .collect(Collectors.toList());
+
+        List<NoticeInfoDTO> noticeInfoDTOList = danziMapper.findNoticesByDanziId(danziId);
+
+        return DanziResponseDTO.builder()
+                .danzi(danziDTO)
+                .applies(danziApplyDTOList)
+                .attachments(danziAttDTOList)
+                .notices(noticeInfoDTOList)
+                .build();
         }
-
-        if(table.equals("lhhousing")) {
-            return HouseDTO.ofLhHousingHouseVO(lhHousingHouseMapper.get(Integer.parseInt(id)));
-        }
-
-        if(table.equals("ahOfficetel")) {
-            return HouseDTO.ofApplyHomeOfficetelHouseVO(applyHomeOfficetelDetailMapper.get(id));
-        }
-
-        if(table.equals("ahApt")) {
-            return HouseDTO.ofApplyHomeAPTPublicVO(applyHomeAPTMapper.getByHouseNo(id));
-        }
-
-        return null;
     }
 
     // 정정공고 boolean 용(Att update용)
@@ -79,4 +121,4 @@ public class HouseServiceImp implements HouseService {
 //        String panSs = noticeMapper.getPanSsByPanId(panId);
 //        return "정정공고".equals(panSs);
 //    }
-}
+
