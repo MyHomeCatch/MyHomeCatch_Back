@@ -2,6 +2,7 @@ package org.scoula.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import lombok.extern.log4j.Log4j2;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.annotation.MapperScan;
@@ -9,20 +10,65 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import org.springframework.scheduling.annotation.EnableScheduling;
+
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import java.util.Properties;
 
 @Configuration
-@PropertySource("classpath:application.properties")
-// @MapperScan(basePackages={})
+@EnableTransactionManagement
+@EnableScheduling
+@ComponentScan(basePackages = {
+        "org.scoula.auth.service",
+        "org.scoula.applyHome.scheduler",
+        "org.scoula.chapi.scheduler"
+})
+@Log4j2
+@PropertySource({"classpath:application.properties", "classpath:secrets.properties"})
+@MapperScan(basePackages = {"org.scoula.**.mapper"})
+@ComponentScan(basePackages = {
+        "org.scoula",                    // 전체 스캔
+        "org.scoula.config",            // 설정 관련
+        "org.scoula.statics.service",   // winner-stats
+        "org.scoula.applyHome",         // develop
+        "org.scoula.chapi",             // develop
+        "org.scoula.lh",                // develop
+        "org.scoula.member",            // 회원 기능
+        "org.scoula.house",              // 주택 정보 기능 (추가된 패키지)
+        "org.scoula.calendar",          // 캘린더 관련 패키지
+})
+
 public class RootConfig {
-    @Value("${jdbc.driver}") String driver;
-    @Value("${jdbc.url}") String url;
-    @Value("${jdbc.username}") String username;
-    @Value("${jdbc.password}") String password;
+    @Value("${jdbc.driver}")
+    String driver;
+    @Value("${jdbc.url}")
+    String url;
+    @Value("${jdbc.username}")
+    String username;
+    @Value("${jdbc.password}")
+    String password;
+
+
+    @Value("${spring.mail.host}")
+    private String host;
+
+    @Value("${spring.mail.username}")
+    private String emailUsername;
+
+    @Value("${spring.mail.password}")
+    private String emailPassword;
+
 
     @Bean
     public DataSource dataSource() {
@@ -40,8 +86,6 @@ public class RootConfig {
     @Autowired
     ApplicationContext applicationContext;
 
-
-
     // MyBatis용 SqlSessionFactory를 생성하는 빈 등록 메서드
     @Bean
     public SqlSessionFactory sqlSessionFactory() throws Exception {
@@ -58,9 +102,37 @@ public class RootConfig {
     @Bean
     public DataSourceTransactionManager transactionManager() {
         DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
+        transactionManager.setDataSource(dataSource());
         return transactionManager;
     }
 
+    @Bean
+    public RestTemplate restTemplate() {
+        return new RestTemplate();
+    }
+
+
+
+    @Bean
+    public JavaMailSender javaMailSender() {
+
+
+        JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+        mailSender.setHost(host);
+        mailSender.setPort(587);
+
+        mailSender.setUsername(emailUsername);
+        mailSender.setPassword(emailPassword);
+
+        Properties props = mailSender.getJavaMailProperties();
+        props.put("mail.transport.protocol", "smtp");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+        props.put("mail.debug", "true");
+
+        return mailSender;
+    }
 }
 
 

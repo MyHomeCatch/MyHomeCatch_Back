@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.scoula.house.mapper.ThumbMapper">
+
+    <insert id="create" parameterType="org.scoula.house.domain.ThumbVO">
+        insert ignore into lh_thumb (pan_id, district, fl_ds_cd_nm, img_path)
+        values ( #{panId}, #{district}, #{flDsCdNm}, #{imgPath})
+    </insert>
+    
+    <select id="getImgGroupByPanId" resultType="String">
+        SELECT img_path AS images
+        FROM lh_thumb
+        WHERE pan_id = #{panId}
+    </select>
+</mapper>

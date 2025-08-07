@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.scoula.lh.mapper.NoticeAttMapper">
+    <insert id="create" parameterType="org.scoula.lh.domain.NoticeAttVO">
+        INSERT INTO lh_notice_att (
+            notice_id,
+            sl_pan_ahfl_ds_cd_nm,
+            cmn_ahfl_nm,
+            ahfl_url
+        )
+        VALUES (
+                   #{noticeId},
+                   #{slPanAhflDsCdNm},
+                   #{cmnAhflNm},
+                   #{ahflUrl}
+               )
+    </insert>
+
+    <insert id="createAll" parameterType="java.util.List">
+        INSERT INTO lh_notice_att (
+        notice_id,
+        sl_pan_ahfl_ds_cd_nm,
+        cmn_ahfl_nm,
+        ahfl_url
+        )
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.noticeId},
+            #{item.slPanAhflDsCdNm},
+            #{item.cmnAhflNm},
+            #{item.ahflUrl}
+            )
+        </foreach>
+    </insert>
+
+    <select id="getNoticeAttByNoticeId" parameterType="integer" resultType="org.scoula.lh.danzi.domain.NoticeAttVO">
+        SELECT
+            notice_att_id,
+            notice_id,
+            sl_pan_ahfl_ds_cd_nm,
+            cmn_ahfl_nm,
+            ahfl_url
+        FROM lh_notice_att
+        WHERE notice_id = #{noticeId}
+        ORDER BY notice_att_id
+    </select>
+</mapper>

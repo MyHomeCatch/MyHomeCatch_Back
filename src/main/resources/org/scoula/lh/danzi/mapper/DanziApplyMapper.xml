@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.scoula.lh.danzi.mapper.DanziApplyMapper">
+    <select id="findByDanziId" resultType="org.scoula.lh.danzi.domain.DanziApplyVO">
+        SELECT *
+        FROM danzi_apply
+        WHERE danzi_id = #{danziId}
+    </select>
+
+    <insert id="insert" parameterType="java.util.List">
+        INSERT INTO danzi_apply (danzi_id, hs_sbsc_acp_trg_cd_nm, sbsc_acp_st_dt, sbsc_acp_clsg_dt,
+        rmk, ppr_sbm_ope_anc_dt, ppr_acp_st_dt, prp_acp_clsg_dt, pzwr_anc_dt, pzwr_ppr_sbm_st_dt, pzwr_ppr_sbm_ed_dt,
+        ctrt_st_dt, ctrt_ed_dt)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.danziId}, #{item.hsSbscAcpTrgCdNm}, #{item.sbscAcpStDt}, #{item.sbscAcpClsgDt}, #{item.rmk}, #{item.pprSbmOpeAncDt},
+             #{item.pprAcpStDt}, #{item.pprAcpClsgDt}, #{item.pzwrAncDt}, #{item.pzwrPprSbmStDt}, #{item.pzwrPprSbmEdDt},
+             #{item.ctrtStDt}, #{item.ctrtEdDt})
+        </foreach>
+    </insert>
+</mapper>

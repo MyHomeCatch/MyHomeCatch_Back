@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE configuration
-        PUBLIC "-//mybatis.org//DTD Config ${WEB_XML_VERSION}//EN"
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+
+    <!-- 공통 설정 -->
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+
+    <!-- 타입 별칭 설정 -->
+    <typeAliases>
+        <package name="org.scoula.statics.domain"/>
+        <package name="org.scoula.statics.dto"/>
+    </typeAliases>
+
+    <!-- 매퍼 경로 설정 -->
+    <mappers>
+        <mapper resource="org/scoula/statics/mapper/StaticsMapper.xml"/>
+    </mappers>
 
 </configuration>

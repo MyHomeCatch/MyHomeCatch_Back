@@ -15,6 +15,15 @@ build/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+src/main/resources/.env
+src/main/resources/application.properties
+
+# 파일
+application.properties
+
+# 잘못올라간 커밋 관리용
+MyHomeCatch_Back.git.bfg-report/
+MyHomeCatch_Back.git/
 
 ### Eclipse ###
 .apt_generated
@@ -64,18 +73,6 @@ out/
 .idea/**/dictionaries
 .idea/**/shelf
 
-### Eclipse ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
-
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/
@@ -108,18 +105,6 @@ bin/
 .idea/**/gradle.xml
 .idea/**/libraries
 
-# Gradle and Maven with auto-import
-# When using Gradle or Maven with auto-import, you should exclude module files,
-# since they will be recreated, and may cause churn.  Uncomment if using
-# auto-import.
-# .idea/artifacts
-# .idea/compiler.xml
-# .idea/jarRepositories.xml
-# .idea/modules.xml
-# .idea/*.iml
-# .idea/modules
-# *.iml
-# *.ipr
 
 # CMake
 cmake-build-*/
@@ -463,13 +448,6 @@ xcuserdata/
 # gitignore template for Vue.js projects
 #
 # Recommended template: Node.gitignore
-
-# TODO: where does this rule come from?
-docs/_book
-
-# TODO: where does this rule come from?
-test/
-
 ### Vuejs ###
 # Recommended template: Node.gitignore
 
@@ -502,3 +480,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# secrets.properties (구글 로그인: 구글 클라이언트 정보)
+src/main/resources/secrets.properties
+src/main/resources/application.properties

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.scoula.applyHome.mapper.ApplyHomeMapper">
+
+    <insert id="create" parameterType="org.scoula.applyHome.domain.ApplyHomeVO">
+        INSERT INTO APPLYHOME_APT (
+        PBLANC_NO,            <!-- 공고번호 (PK part) -->
+        BSNS_MBY_NM,          <!-- 시행사업자명 -->
+        CNSTRCT_ENTRPS_NM,    <!-- 건설회사명 -->
+        CNTRCT_CNCLS_BGNDE,   <!-- 계약체결시작일 -->
+        CNTRCT_CNCLS_ENDDE,   <!-- 계약체결종료일 -->
+        GNRL_RNK1_CRSPAREA_ENDDE,  <!-- 일반공급1순위 (해당지역) 접수종료일 -->
+        GNRL_RNK1_CRSPAREA_RCPTDE, <!-- 일반공급1순위 (해당지역) 접수시작일 -->
+        GNRL_RNK1_ETC_AREA_ENDDE,  <!-- 일반공급1순위 (기타지역) 접수종료일 -->
+        GNRL_RNK1_ETC_AREA_RCPTDE, <!-- 일반공급1순위 (기타지역) 접수시작일 -->
+        GNRL_RNK1_ETC_GG_ENDDE,    <!-- 일반공급1순위 (경기도 기타) 접수종료일 -->
+        GNRL_RNK1_ETC_GG_RCPTDE,   <!-- 일반공급1순위 (경기도 기타) 접수시작일 -->
+        GNRL_RNK2_CRSPAREA_ENDDE,  <!-- 일반공급2순위 (해당지역) 접수종료일 -->
+        GNRL_RNK2_CRSPAREA_RCPTDE, <!-- 일반공급2순위 (해당지역) 접수시작일 -->
+        GNRL_RNK2_ETC_AREA_ENDDE,  <!-- 일반공급2순위 (기타지역) 접수종료일 -->
+        GNRL_RNK2_ETC_AREA_RCPTDE, <!-- 일반공급2순위 (기타지역) 접수시작일 -->
+        GNRL_RNK2_ETC_GG_ENDDE,    <!-- 일반공급2순위 (경기도 기타) 접수종료일 -->
+        GNRL_RNK2_ETC_GG_RCPTDE,   <!-- 일반공급2순위 (경기도 기타) 접수시작일 -->
+        HMPG_ADRES,            <!-- 홈페이지 주소 -->
+        HOUSE_DTL_SECD,        <!-- 주택구분코드 -->
+        HOUSE_DTL_SECD_NM,     <!-- 주택구분코드명 -->
+        HOUSE_MANAGE_NO,       <!-- 주택관리번호 (PK part) -->
+        HOUSE_NM,              <!-- 아파트명 -->
+        HOUSE_SECD,            <!-- 주택유형코드 -->
+        HOUSE_SECD_NM,         <!-- 주택유형코드명 -->
+        HSSPLY_ADRES,          <!-- 공급위치 -->
+        HSSPLY_ZIP,            <!-- 우편번호 -->
+        IMPRMN_BSNS_AT,        <!-- 임대사업자여부 -->
+        LRSCL_BLDLND_AT,       <!-- 토지임대부여부 -->
+        MDAT_TRGET_AREA_SECD,  <!-- 보증금대출대상지역코드 -->
+        MDHS_TELNO,            <!-- 문의전화 -->
+        MVN_PREARNGE_YM,       <!-- 이주예정월 -->
+        NPLN_PRVOPR_PUBLIC_HOUSE_AT, <!-- 분양공공리모델링 여부 -->
+        NSPR_C_NM,             <!-- 분양공급기관명 -->
+        PBLANC_URL,            <!-- 공고URL -->
+        PRZWNER_PRESNATN_DE,   <!-- 당첨자발표일 -->
+        PUBLIC_HOUSE_EARTH_AT, <!-- 지구지정여부 -->
+        PUBLIC_HOUSE_SPCLW_APPLC_AT, <!-- 특별공급여부 -->
+        RCEPT_BGNDE,           <!-- 접수시작일 -->
+        RCEPT_ENDDE,           <!-- 접수종료일 -->
+        RCRIT_PBLANC_DE,       <!-- 최초공고일 -->
+        RENT_SECD,             <!-- 임대구분코드 -->
+        RENT_SECD_NM,          <!-- 임대구분코드명 -->
+        SPECLT_RDN_EARTH_AT,   <!-- 분양권전매제한여부 -->
+        SPSPLY_RCEPT_BGNDE,    <!-- 특별공급 접수시작일 -->
+        SPSPLY_RCEPT_ENDDE,    <!-- 특별공급 접수종료일 -->
+        SUBSCRPT_AREA_CODE,    <!-- 청약지역코드 -->
+        SUBSCRPT_AREA_CODE_NM, <!-- 청약지역코드명 -->
+        TOT_SUPLY_HSHLDCO      <!-- 총공급세대수 -->
+        )
+        VALUES (
+        #{PBLANC_NO}, #{BSNS_MBY_NM}, #{CNSTRCT_ENTRPS_NM}, #{CNTRCT_CNCLS_BGNDE}, #{CNTRCT_CNCLS_ENDDE},
+        #{GNRL_RNK1_CRSPAREA_ENDDE}, #{GNRL_RNK1_CRSPAREA_RCPTDE}, #{GNRL_RNK1_ETC_AREA_ENDDE},
+        #{GNRL_RNK1_ETC_AREA_RCPTDE}, #{GNRL_RNK1_ETC_GG_ENDDE}, #{GNRL_RNK1_ETC_GG_RCPTDE},
+        #{GNRL_RNK2_CRSPAREA_ENDDE}, #{GNRL_RNK2_CRSPAREA_RCPTDE}, #{GNRL_RNK2_ETC_AREA_ENDDE},
+        #{GNRL_RNK2_ETC_AREA_RCPTDE}, #{GNRL_RNK2_ETC_GG_ENDDE}, #{GNRL_RNK2_ETC_GG_RCPTDE},
+        #{HMPG_ADRES}, #{HOUSE_DTL_SECD}, #{HOUSE_DTL_SECD_NM}, #{HOUSE_MANAGE_NO}, #{HOUSE_NM},
+        #{HOUSE_SECD}, #{HOUSE_SECD_NM}, #{HSSPLY_ADRES}, #{HSSPLY_ZIP}, #{IMPRMN_BSNS_AT},
+        #{LRSCL_BLDLND_AT}, #{MDAT_TRGET_AREA_SECD}, #{MDHS_TELNO}, #{MVN_PREARNGE_YM},
+        #{NPLN_PRVOPR_PUBLIC_HOUSE_AT}, #{NSPR_C_NM}, #{PBLANC_URL}, #{PRZWNER_PRESNATN_DE},
+        #{PUBLIC_HOUSE_EARTH_AT}, #{PUBLIC_HOUSE_SPCLW_APPLC_AT}, #{RCEPT_BGNDE}, #{RCEPT_ENDDE},
+        #{RCRIT_PBLANC_DE}, #{RENT_SECD}, #{RENT_SECD_NM}, #{SPECLT_RDN_EARTH_AT},
+        #{SPSPLY_RCEPT_BGNDE}, #{SPSPLY_RCEPT_ENDDE}, #{SUBSCRPT_AREA_CODE},
+        #{SUBSCRPT_AREA_CODE_NM}, #{TOT_SUPLY_HSHLDCO}
+        )
+        <!-- When a unique or primary key conflict occurs, update these fields -->
+        ON DUPLICATE KEY UPDATE BSNS_MBY_NM                 = VALUES(BSNS_MBY_NM),
+                                CNSTRCT_ENTRPS_NM           = VALUES(CNSTRCT_ENTRPS_NM),
+                                CNTRCT_CNCLS_BGNDE          = VALUES(CNTRCT_CNCLS_BGNDE),
+                                CNTRCT_CNCLS_ENDDE          = VALUES(CNTRCT_CNCLS_ENDDE),
+                                GNRL_RNK1_CRSPAREA_ENDDE    = VALUES(GNRL_RNK1_CRSPAREA_ENDDE),
+                                GNRL_RNK1_CRSPAREA_RCPTDE   = VALUES(GNRL_RNK1_CRSPAREA_RCPTDE),
+                                GNRL_RNK1_ETC_AREA_ENDDE    = VALUES(GNRL_RNK1_ETC_AREA_ENDDE),
+                                GNRL_RNK1_ETC_AREA_RCPTDE   = VALUES(GNRL_RNK1_ETC_AREA_RCPTDE),
+                                GNRL_RNK1_ETC_GG_ENDDE      = VALUES(GNRL_RNK1_ETC_GG_ENDDE),
+                                GNRL_RNK1_ETC_GG_RCPTDE     = VALUES(GNRL_RNK1_ETC_GG_RCPTDE),
+                                GNRL_RNK2_CRSPAREA_ENDDE    = VALUES(GNRL_RNK2_CRSPAREA_ENDDE),
+                                GNRL_RNK2_CRSPAREA_RCPTDE   = VALUES(GNRL_RNK2_CRSPAREA_RCPTDE),
+                                GNRL_RNK2_ETC_AREA_ENDDE    = VALUES(GNRL_RNK2_ETC_AREA_ENDDE),
+                                GNRL_RNK2_ETC_AREA_RCPTDE   = VALUES(GNRL_RNK2_ETC_AREA_RCPTDE),
+                                GNRL_RNK2_ETC_GG_ENDDE      = VALUES(GNRL_RNK2_ETC_GG_ENDDE),
+                                GNRL_RNK2_ETC_GG_RCPTDE     = VALUES(GNRL_RNK2_ETC_GG_RCPTDE),
+                                LRSCL_BLDLND_AT             = VALUES(LRSCL_BLDLND_AT),
+                                MDAT_TRGET_AREA_SECD        = VALUES(MDAT_TRGET_AREA_SECD),
+                                MDHS_TELNO                  = VALUES(MDHS_TELNO),
+                                MVN_PREARNGE_YM             = VALUES(MVN_PREARNGE_YM),
+                                NPLN_PRVOPR_PUBLIC_HOUSE_AT = VALUES(NPLN_PRVOPR_PUBLIC_HOUSE_AT),
+                                NSPR_C_NM                   = VALUES(NSPR_C_NM),
+                                PBLANC_URL                  = VALUES(PBLANC_URL),
+                                PRZWNER_PRESNATN_DE         = VALUES(PRZWNER_PRESNATN_DE),
+                                PUBLIC_HOUSE_EARTH_AT       = VALUES(PUBLIC_HOUSE_EARTH_AT),
+                                PUBLIC_HOUSE_SPCLW_APPLC_AT = VALUES(PUBLIC_HOUSE_SPCLW_APPLC_AT),
+                                RCEPT_BGNDE                 = VALUES(RCEPT_BGNDE),
+                                RCEPT_ENDDE                 = VALUES(RCEPT_ENDDE),
+                                RCRIT_PBLANC_DE             = VALUES(RCRIT_PBLANC_DE),
+                                RENT_SECD                   = VALUES(RENT_SECD),
+                                RENT_SECD_NM                = VALUES(RENT_SECD_NM),
+                                SPECLT_RDN_EARTH_AT         = VALUES(SPECLT_RDN_EARTH_AT),
+                                SPSPLY_RCEPT_BGNDE          = VALUES(SPSPLY_RCEPT_BGNDE),
+                                SPSPLY_RCEPT_ENDDE          = VALUES(SPSPLY_RCEPT_ENDDE),
+                                TOT_SUPLY_HSHLDCO           = VALUES(TOT_SUPLY_HSHLDCO)
+    </insert>
+
+    <insert id="createAnalysis" parameterType="org.scoula.applyHome.domain.ApplyHomeAnalysisVO">
+        INSERT INTO MyHomeCatch.APPLYHOME_APT_competition (PBLANC_NO, CMPET_RATE, HOUSE_MANAGE_NO, HOUSE_TY, MODEL_NO,
+                                                           REQ_CNT, RESIDE_SECD, RESIDE_SENM, SUBSCRPT_RANK_CODE,
+                                                           SUPLY_HSHLDCO, LWET_SCORE, TOP_SCORE, AVRG_SCORE)
+        VALUES (#{pblancNo}, #{cmpetRate}, #{houseManageNo}, #{houseTy}, #{modelNo}, #{reqCnt}, #{resideSecd},
+                #{resideSenm}, #{subscrptRankCode}, #{suplyHshldco}, #{lwetScore}, #{topScore}, #{avrgScore})
+        ON DUPLICATE KEY UPDATE CMPET_RATE = VALUES(CMPET_RATE),
+                                REQ_CNT    = VALUES(REQ_CNT), -- 접수건수
+                                LWET_SCORE = VALUES(LWET_SCORE),
+                                TOP_SCORE  = VALUES(TOP_SCORE),
+                                AVRG_SCORE = VALUES(AVRG_SCORE)
+    </insert>
+
+    <insert id="createSpecial" parameterType="org.scoula.applyHome.domain.ApplyHomeSpecialVO">
+        <!--
+          INSERT IGNORE will skip rows that would violate a UNIQUE/PRIMARY KEY
+        -->
+        INSERT IGNORE INTO MyHomeCatch.APPLYHOME_APT_special (PBLANC_NO, HOUSE_MANAGE_NO, HOUSE_TY, MODEL_NO,
+        ETC_HSHLDCO, INSTT_RECOMEND_HSHLDCO, LFE_FRST_HSHLDCO,
+        LTTOT_TOP_AMOUNT, MNYCH_HSHLDCO, NWBB_HSHLDCO, NWWDS_HSHLDCO, OLD_PARNTS_SUPORT_HSHLDCO, SPSPLY_HSHLDCO,
+        SUPLY_AR, SUPLY_HSHLDCO,
+        TRANSR_INSTT_ENFSN_HSHLDCO, YGMN_HSHLDCO)
+        VALUES (
+        #{pblancNo}, -- 공고번호
+        #{houseManageNo}, -- 주택관리번호
+        #{houseTy}, -- 주택형
+        #{modelNo}, -- 모델번호
+        #{etcHshldco}, -- 기타공급세대수
+        #{insttRecomendHshldco}, -- 기관추천공급세대수
+        #{lfeFrstHshldco}, -- 생애최초공급세대수
+        #{lttotTopAmount}, -- 분양금액(최고)
+        #{mnychHshldco}, -- 다자녀공급세대수
+        #{nwbbHshldco}, -- 신혼부부공급세대수
+        #{nwwdsHshldco}, -- 노부모부양공급세대수
+        #{oldParntsSuportHshldco}, -- 노부모부양공급세대수(구)
+        #{spsplyHshldco}, -- 특별공급총세대수
+        #{suplyAr}, -- 공급면적
+        #{suplyHshldco}, -- 공급세대수
+        #{transrInsttEnfsnHshldco}, -- 이관기관공급세대수
+        #{ygmnHshldco} -- 영구임대공급세대수
+        )
+    </insert>
+</mapper>
+

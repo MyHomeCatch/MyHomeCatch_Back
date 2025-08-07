@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.scoula.lh.danzi.mapper.DanziMapper">
+
+    <resultMap id="noticeInfoAttachmentsMap" type="org.scoula.lh.danzi.dto.NoticeInfoDTO">
+        <id property="noticeId" column="notice_id"/>
+        <result property="panId" column="pan_id"/>
+        <result property="uppAisTpCd" column="upp_ais_tp_cd"/>
+        <result property="aisTpCdNm" column="ais_tp_cd_nm"/>
+        <result property="panNm" column="pan_nm"/>
+        <result property="cnpCdNm" column="cnp_cd_nm"/>
+        <result property="panSs" column="pan_ss"/>
+        <result property="allCnt" column="all_cnt"/>
+        <result property="panNtStDt" column="pan_nt_st_dt"/>
+        <result property="dtlUrl" column="dtl_url"/>
+        <result property="splInfTpCd" column="spl_inf_tp_cd"/>
+        <result property="ccrCnntSysDsCd" column="ccr_cnnt_sys_ds_cd"/>
+        <result property="aisTpCd" column="ais_tp_cd"/>
+
+        <collection property="noticeAttachments" ofType="org.scoula.lh.danzi.dto.NoticeAttDTO">
+            <result property="noticeAttId" column="notice_att_id"/>
+            <result property="noticeId" column="notice_id"/>
+            <result property="slPanAhflDsCdNm" column="sl_pan_ahfl_ds_cd_nm"/>
+            <result property="cmnAhflNm" column="cmn_ahfl_nm"/>
+            <result property="ahflUrl" column="ahfl_url"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="findById" resultType="org.scoula.lh.danzi.domain.DanziVO">
+        SELECT *
+        FROM danzi
+        WHERE danzi_id = #{danziId}
+    </select>
+
+    <select id="findNoticesByDanziId" resultMap="noticeInfoAttachmentsMap">
+        WITH latest_notice AS (
+            SELECT
+                danzi_id,
+                MAX(notice_id) AS notice_id
+            FROM
+                notice_danzi
+            WHERE danzi_id = #{danziId}
+            GROUP BY
+                danzi_id
+        )
+        SELECT
+            n.notice_id,
+            n.pan_id,
+            n.upp_ais_tp_cd,
+            n.ais_tp_cd_nm,
+            n.pan_nm,
+            n.cnp_cd_nm,
+            n.pan_ss,
+            n.all_cnt,
+            n.pan_nt_st_dt,
+            n.dtl_url,
+            n.spl_inf_tp_cd,
+            n.ccr_cnnt_sys_ds_cd,
+            n.ais_tp_cd,
+            -- lh_notice_att 테이블의 컬럼들
+            na.notice_att_id,
+            na.sl_pan_ahfl_ds_cd_nm,
+            na.cmn_ahfl_nm,
+            na.ahfl_url
+        FROM
+            latest_notice ln
+                JOIN lh_notice n ON ln.notice_id = n.notice_id
+                JOIN (
+                    select notice_att_id, notice_id, cmn_ahfl_nm, sl_pan_ahfl_ds_cd_nm, ahfl_url,
+                        row_number() over (partition by notice_id, cmn_ahfl_nm order by lh_notice_att.notice_id) as rn
+                        from lh_notice_att
+                    ) na ON n.notice_id = na.notice_id and na.rn = 1
+    </select>
+
+    <insert id="insert" parameterType="java.util.List"
+            useGeneratedKeys="true" keyProperty="danziId">
+        INSERT INTO danzi (bzdt_nm, lct_ara_adr, lct_ara_dtl_adr, min_max_rsdn_ddo_ar,
+                           sum_tot_hsh_cnt, htn_fmla_de_cd_nm, mvin_xpc_ym)
+        VALUES
+        <foreach collection="list" item="item" separator=",">
+            (#{item.bzdtNm}, #{item.lctAraAdr}, #{item.lctAraDtlAdr}, #{item.minMaxRsdnDdoAr}, #{item.sumTotHshCnt},
+             #{item.htnFmlaDeCoNm}, #{item.mvinXpcYm})
+        </foreach>
+    </insert>
+
+    <insert id="insertDanziNotice" parameterType="org.scoula.lh.danzi.domain.DanziNoticeVO">
+        insert into notice_danzi(notice_id, danzi_id)
+        values(#{noticeId}, #{danziId})
+    </insert>
+</mapper>

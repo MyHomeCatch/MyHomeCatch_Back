@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.scoula.house.mapper.ApplyHomeAPTMapper">
+    
+    <select id="getAll" resultType="org.scoula.house.domain.ApplyHomeAptPublicVO">
+        select * from APPLYHOME_APT_public where STR_TO_DATE(cntrct_cncls_endde, '%Y-%m-%d') >= '2025-01-01';
+    </select>
+
+    <select id="getByHouseNo" parameterType="String" resultType="org.scoula.house.domain.ApplyHomeAptPublicVO">
+        select *
+        from APPLYHOME_APT_public
+        where STR_TO_DATE(cntrct_cncls_endde, '%Y-%m-%d') >= '2025-01-01'
+        and PBLANC_NO = #{houseNo};
+    </select>
+</mapper>
