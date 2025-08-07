@@ -14,9 +14,9 @@
                    END AS type
         FROM bookmarks b
                  JOIN users u ON b.user_id = u.user_id
-                 JOIN danzi_apply da ON b.apply_id = da.apply_id
-                 JOIN danzi d ON da.danzi_id = d.danzi_id
+                 JOIN danzi d ON b.danzi_id = d.danzi_id
+                 JOIN danzi_apply da ON d.danzi_id = da.danzi_id
         WHERE da.sbsc_acp_st_dt = #{today}
-           OR da.sbsc_acp_clsg_dt = #{today};
+           OR da.sbsc_acp_clsg_dt = #{today}
     </select>
 </mapper>

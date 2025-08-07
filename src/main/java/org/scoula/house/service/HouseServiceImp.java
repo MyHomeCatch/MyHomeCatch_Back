@@ -42,8 +42,9 @@ public class HouseServiceImp implements HouseService {
 
     @Override
     public HousePageResponseDTO getHouses(HouseSearchRequestDTO requestDto) {
-        // DTO에 값이 있으면 자동으로 필터링됨
-        requestDto.setCnpCdNm(RegionMapper.mapToFullRegion(requestDto.getCnpCdNm()));
+        // 필터 전처리와 지역 매핑을 한번에 처리
+        requestDto.processFilters();
+
         List<HouseCardVO> voList = houseFilterMapper.getHousingList(requestDto);
         int totalCount = houseFilterMapper.getHousingCount(requestDto);
 
