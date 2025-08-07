@@ -108,13 +108,7 @@ public class BookmarkController {
             @ApiResponse(code = 500, message = "서버에서 오류가 발생했습니다.")
     })
     @GetMapping("/{houseId}")
-    public ResponseEntity<?> getBookmarksByHouseId(@PathVariable Integer houseId, HttpServletRequest request) {
-        String token = extractToken(request);
-
-        if (token == null || !jwtUtil.isValidToken(token)) {
-            return ResponseEntity.status(401).body("유효하지 않은 토큰입니다.");
-        }
-
+    public ResponseEntity<?> getBookmarksByHouseId(@PathVariable Integer houseId) {
         return ResponseEntity.ok().body(bookmarkService.getBookmarksByHouseId(houseId));
     }
 
@@ -125,8 +119,5 @@ public class BookmarkController {
         }
         return null;
     }
-
-
-
 
 }

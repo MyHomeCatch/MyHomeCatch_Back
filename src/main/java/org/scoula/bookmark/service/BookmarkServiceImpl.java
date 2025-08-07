@@ -62,6 +62,9 @@ public class BookmarkServiceImpl implements BookmarkService {
 
     @Override
     public int getBookmarksByHouseId(Integer houseId) {
-        return bookmarkMapper.countByHouseId(houseId);
+
+        int cnt = bookmarkMapper.countByHouseId(houseId);
+        log.debug(houseId + " " + cnt);
+        return cnt;
     }
 }
