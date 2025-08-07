@@ -2,6 +2,8 @@ package org.scoula.member.dto;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @Builder
@@ -16,5 +18,6 @@ public class UserInfoDto {
     private int additionalPoint;
     private String currentPassword;
     private String newPassword;
+    private String additionalPointUpdatedAt;
 
 }

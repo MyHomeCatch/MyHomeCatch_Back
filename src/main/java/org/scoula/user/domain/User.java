@@ -2,6 +2,8 @@ package org.scoula.user.domain;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -16,4 +18,5 @@ public class User {
     private String password;
     private String address;
     private int additionalPoint;
+    private String additionalPointUpdatedAt;
 }
