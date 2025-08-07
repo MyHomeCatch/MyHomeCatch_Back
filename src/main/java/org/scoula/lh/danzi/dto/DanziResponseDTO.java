@@ -19,6 +19,6 @@ public class DanziResponseDTO {
     private List<DanziAttDTO> attachments;
     // NoticeVO + NoticeAttVO 정보 (1:N 관계)
     private List<NoticeInfoDTO> notices;
-//    private List<String>
+    private String selfCheckMatchResult;
 
 }
