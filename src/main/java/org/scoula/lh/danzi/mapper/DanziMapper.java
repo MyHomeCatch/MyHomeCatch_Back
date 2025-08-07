@@ -12,4 +12,7 @@ public interface DanziMapper {
     void insertDanziNotice(DanziNoticeVO vo);
     DanziVO findById(int danziId);
     List<NoticeInfoDTO> findNoticesByDanziId(int danziId);
+    int insertOne(DanziVO vo); // foreach가 danzi_id 매핑을 못해주는 문제 해결용
+    List<Integer> findIdsInDanziApply();
+    int getNoticeIdsByDanziId(int danziId);
 }

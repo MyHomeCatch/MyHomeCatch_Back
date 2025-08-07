@@ -16,6 +16,9 @@ public class DanziApplyServiceImpl implements DanziApplyService{
     private final DanziApplyMapper applyMapper;
     @Override
     public void createAll(List<DanziApplyVO> list) {
+        if (list == null || list.isEmpty()) {
+            return;
+        }
         applyMapper.insert(list);
     }
 }

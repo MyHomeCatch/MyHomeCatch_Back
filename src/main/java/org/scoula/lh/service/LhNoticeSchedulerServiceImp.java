@@ -37,7 +37,7 @@ public class LhNoticeSchedulerServiceImp implements LhNoticeSchedulerService {
     }
 
     public int createAll(List<NoticeApiDTO> noticeApiDTO) {
-        int row = noticeMapper.createAll(noticeApiDTO.stream().map(NoticeApiDTO::toLHNoticeVO).toList());
+        int row = noticeMapper.createAll(noticeApiDTO.stream().map(NoticeApiDTO::toNoticeVO).toList());
         return row;
     }
 

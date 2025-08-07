@@ -72,6 +72,8 @@
                     select notice_att_id, notice_id, cmn_ahfl_nm, sl_pan_ahfl_ds_cd_nm, ahfl_url,
                         row_number() over (partition by notice_id, cmn_ahfl_nm order by lh_notice_att.notice_id) as rn
                         from lh_notice_att
+                        WHERE
+                        sl_pan_ahfl_ds_cd_nm LIKE '%공고문(PDF)%'
                     ) na ON n.notice_id = na.notice_id and na.rn = 1
     </select>
 
@@ -90,4 +92,23 @@
         insert into notice_danzi(notice_id, danzi_id)
         values(#{noticeId}, #{danziId})
     </insert>
+
+    <insert id="insertOne" parameterType="org.scoula.lh.danzi.domain.DanziVO"
+            useGeneratedKeys="true" keyProperty="danziId">
+        INSERT IGNORE INTO danzi (
+            bzdt_nm, lct_ara_adr, lct_ara_dtl_adr, min_max_rsdn_ddo_ar,
+            sum_tot_hsh_cnt, htn_fmla_de_cd_nm, mvin_xpc_ym
+        ) VALUES (
+                     #{bzdtNm}, #{lctAraAdr}, #{lctAraDtlAdr}, #{minMaxRsdnDdoAr}, #{sumTotHshCnt},
+                     #{htnFmlaDeCoNm}, #{mvinXpcYm}
+                 )
+    </insert>
+
+    <select id="findIdsInDanziApply" resultType="integer">
+        select danzi_id from danzi_apply;
+    </select>
+
+    <select id="getNoticeIdsByDanziId" parameterType="integer" resultType="int">
+        select notice_id from notice_danzi where danzi_id = #{danziId}
+    </select>
 </mapper>

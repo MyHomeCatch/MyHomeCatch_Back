@@ -187,7 +187,7 @@ DROP TABLE IF EXISTS danzi_apply;
 CREATE TABLE danzi_apply
 (
     apply_id              INT AUTO_INCREMENT PRIMARY KEY COMMENT '단지 공급일정 ID',
-    danzi_id              INT unique COMMENT '단지 ID',
+    danzi_id              INT COMMENT '단지 ID',
     hs_sbsc_acp_trg_cd_nm VARCHAR(32) COMMENT '구분',
     sbsc_acp_st_dt        DATE COMMENT '접수기간 시작일',
     sbsc_acp_clsg_dt      DATE COMMENT '접수기간 종료일',

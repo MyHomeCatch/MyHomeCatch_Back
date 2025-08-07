@@ -67,8 +67,8 @@ public class LhNoticeScheduler {
 
     private final int NUMBER_OF_PAGE = 35;
 
-//     @Scheduled(fixedDelay = 6000000, initialDelay = 0)
-    @Scheduled(cron = "0 0 2 * * *")
+     @Scheduled(fixedDelay = 6000000, initialDelay = 0)
+//    @Scheduled(cron = "0 0 2 * * *")
     public void schedule() {
         log.info("=== LH 공고 데이터 업데이트 스케줄러 시작 ===");
 
@@ -244,7 +244,7 @@ public class LhNoticeScheduler {
                             .danziId(vo.getDanziId())
                             .noticeId(notice.getNoticeId())
                             .build();
-
+                    log.info("공고단지테이블 {} - {}" , notice.getNoticeId(), vo.getDanziId());
                     danziService.createDanziNotice(danziNoticeVO);
                 }
             }
