@@ -88,4 +88,31 @@
 
 
     </select>
+
+    <!-- 통합 주택 정보 조회 -->
+    <select id="getHouseCard" resultType="org.scoula.house.domain.HouseCardVO">
+        <![CDATA[
+        SELECT
+            n.ais_tp_cd_nm,
+            n.cnp_cd_nm,
+            n.pan_ss,
+            d.bzdt_nm,
+            d.lct_ara_adr,
+            d.min_max_rsdn_ddo_ar,
+            d.sum_tot_hsh_cnt,
+            att.ahfl_url,
+            n.pan_nt_st_dt,
+            d.danzi_id
+        FROM lh_notice n
+        INNER JOIN notice_danzi nd ON n.notice_id = nd.notice_id
+        INNER JOIN danzi d ON nd.danzi_id = d.danzi_id
+        LEFT JOIN (
+            SELECT danzi_id, ahfl_url
+            FROM danzi_att
+            WHERE fl_ds_cd_nm = '단지조감도'
+        ) att ON nd.danzi_id = att.danzi_id
+        WHERE d.danzi_id = #{houseId}
+          AND n.notice_id = #{noticeId}
+        ]]>
+    </select>
 </mapper>

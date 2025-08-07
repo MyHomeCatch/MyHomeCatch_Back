@@ -2,6 +2,7 @@ package org.scoula.house.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.scoula.house.dto.HousePage.HouseCardDTO;
 import org.scoula.house.dto.HousePage.HouseDTO;
 import org.scoula.house.dto.HousePage.HousePageResponseDTO;
 import org.scoula.house.dto.HousePage.HouseSearchRequestDTO;
@@ -26,5 +27,10 @@ public class HouseController {
     @GetMapping("/{houseId}")
     public ResponseEntity<DanziResponseDTO> getHouse(@PathVariable Integer houseId) {
         return ResponseEntity.ok(houseService.getHouse(houseId));
+    }
+
+    @GetMapping("/card/{houseId}")
+    public ResponseEntity<HouseCardDTO> getHouseCard(@PathVariable Integer houseId) {
+        return ResponseEntity.ok(houseService.getHouseCard(houseId));
     }
 }

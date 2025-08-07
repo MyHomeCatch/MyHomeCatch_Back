@@ -19,6 +19,7 @@ import org.scoula.lh.danzi.dto.*;
 import org.scoula.lh.danzi.mapper.DanziApplyMapper;
 import org.scoula.lh.danzi.mapper.DanziAttMapper;
 import org.scoula.lh.danzi.mapper.DanziMapper;
+import org.scoula.lh.mapper.LhNoticeMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +32,7 @@ public class HouseServiceImp implements HouseService {
 
     private final LhRentalHouseMapper lhRentalHouseMapper;
     private final LhHousingHouseMapper lhHousingHouseMapper;
+    private final LhNoticeMapper lhNoticeMapper;
     private final ApplyHomeOfficetelDetailMapper applyHomeOfficetelDetailMapper;
     private final HouseFilterMapper houseFilterMapper;
     private final DanziMapper danziMapper;
@@ -112,7 +114,14 @@ public class HouseServiceImp implements HouseService {
                 .notices(noticeInfoDTOList)
                 .build();
         }
+
+    @Override
+    public HouseCardDTO getHouseCard(Integer houseId) {
+        int noticeId = lhNoticeMapper.getNoticeId(houseId);
+        HouseCardDTO houseCardDTO = HouseCardDTO.ofHouseCardVO(houseFilterMapper.getHouseCard(houseId, noticeId));
+        return houseCardDTO;
     }
+}
 
     // 정정공고 boolean 용(Att update용)
 //    public boolean isCorrectedNotice(String panId) {
