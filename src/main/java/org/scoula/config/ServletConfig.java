@@ -20,7 +20,8 @@ import org.springframework.web.servlet.view.JstlView;
     "org.scoula.controller",         // 웹 컨트롤러
     "org.scoula.statics.controller", // 정적 페이지용 컨트롤러
     "org.scoula.house",               // LH 공고 관련 컨트롤러/서비스 등
-    "org.scoula.lh.controller"
+    "org.scoula.lh.controller",
+        "org.scoula.ChatBot.Controller"
 })
 @PropertySource("classpath:application.properties")
 @EnableScheduling
