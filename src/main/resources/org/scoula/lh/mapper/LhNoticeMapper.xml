@@ -93,7 +93,7 @@
     <select id="getLhNotice" resultType="org.scoula.lh.domain.LhNoticeVO">
         SELECT *
         FROM lh_notice
-        WHERE pan_id = #{pandId}
+        WHERE pan_id = #{panId}
         ORDER BY notice_id DESC
             LIMIT 1
     </select>

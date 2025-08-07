@@ -17,7 +17,7 @@ public interface HouseFilterMapper {
      */
     int getHousingCount(HouseSearchRequestDTO searchDto);
 
-    HouseCardVO getHouseCard(@Param("houseId")int houseId, @Param("noticeId")int noticeId);
+    HouseCardVO getHouseCard(@Param("houseId")Integer houseId, @Param("noticeId")Integer noticeId);
 
 //    /**
 //     * 모든 필터 옵션 조회 (한 번에)

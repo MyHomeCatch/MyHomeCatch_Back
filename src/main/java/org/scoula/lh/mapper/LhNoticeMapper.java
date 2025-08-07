@@ -10,7 +10,7 @@ import java.util.List;
 
 @Mapper
 public interface LhNoticeMapper {
-    LhNoticeVO getLhNotice(String panId);
+    LhNoticeVO getLhNotice(@Param("panId") String panId);
     List<LhNoticeVO> getLhNotices();
     int create(LhNoticeVO lhNoticeVO);
     int createAll(List<LhNoticeVO> lhNoticeVOList);

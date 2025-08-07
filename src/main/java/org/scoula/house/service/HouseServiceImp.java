@@ -117,7 +117,7 @@ public class HouseServiceImp implements HouseService {
 
     @Override
     public HouseCardDTO getHouseCard(Integer houseId) {
-        int noticeId = lhNoticeMapper.getNoticeId(houseId);
+        Integer noticeId = lhNoticeMapper.getNoticeId(houseId);
         HouseCardDTO houseCardDTO = HouseCardDTO.ofHouseCardVO(houseFilterMapper.getHouseCard(houseId, noticeId));
         return houseCardDTO;
     }
