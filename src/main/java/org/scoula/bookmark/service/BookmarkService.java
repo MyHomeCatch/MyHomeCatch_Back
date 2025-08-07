@@ -13,4 +13,6 @@ public interface BookmarkService {
     public BookmarkListDto readBookmark(String email);
 
     public int deleteBookmark(BookmarkDto bookmarkDto, String email);
+
+    public int getBookmarksByHouseId(Integer houseId);
 }

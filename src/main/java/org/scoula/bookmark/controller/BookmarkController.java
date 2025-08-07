@@ -101,6 +101,22 @@ public class BookmarkController {
         }
     }
 
+    @ApiOperation(value = "게시물 즐겨찾기수 조회 ",notes = "게시물 별 조회수 개수를 조회합니다." )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "성공적으로 요청이 처리되었습니다.", response = AuthResponse.class),
+            @ApiResponse(code = 401, message = "잘못된 요청입니다."),
+            @ApiResponse(code = 500, message = "서버에서 오류가 발생했습니다.")
+    })
+    @GetMapping("/{houseId}")
+    public ResponseEntity<?> getBookmarksByHouseId(@PathVariable Integer houseId, HttpServletRequest request) {
+        String token = extractToken(request);
+
+        if (token == null || !jwtUtil.isValidToken(token)) {
+            return ResponseEntity.status(401).body("유효하지 않은 토큰입니다.");
+        }
+
+        return ResponseEntity.ok().body(bookmarkService.getBookmarksByHouseId(houseId));
+    }
 
     private String extractToken(HttpServletRequest request) {
         String bearer = request.getHeader("Authorization");

@@ -36,4 +36,8 @@
         DELETE FROM bookmarks WHERE user_id = #{userId} AND danzi_id = #{danziId}
     </delete>
 
+    <select id="countByHouseId" resultType="integer">
+        select count(*) from bookmarks where danzi_id = #{houseId}
+    </select>
+
 </mapper>

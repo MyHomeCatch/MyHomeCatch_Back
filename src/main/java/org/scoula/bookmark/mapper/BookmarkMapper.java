@@ -17,4 +17,6 @@ public interface BookmarkMapper {
 
     public int deleteBookmark(BookmarkDto bookmarkDto);
 
+    public int countByHouseId(Integer houseId);
+
 }
