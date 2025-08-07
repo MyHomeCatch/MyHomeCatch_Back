@@ -35,7 +35,6 @@ public class PdfServiceImpl implements PdfService {
        }
    }
 
-
     private void trustAllCertificates() throws Exception {
         TrustManager[] trustAllCerts = new TrustManager[]{
                 new X509TrustManager() {
