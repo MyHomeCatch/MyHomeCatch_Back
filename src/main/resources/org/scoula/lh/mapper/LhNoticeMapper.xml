@@ -150,4 +150,11 @@
         FROM MyHomeCatch.lh_notice
         WHERE pan_id = #{panId}
     </select>
+
+    <select id="getPopularLhNotices" resultType="org.scoula.lh.domain.LhNoticeVO">
+        SELECT n.*
+        FROM lh_notice n
+        ORDER BY n.all_cnt DESC
+            LIMIT 5
+    </select>
 </mapper>

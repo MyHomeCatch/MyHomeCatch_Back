@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/lh/notices")
+@RequestMapping("/lh/notices")
 public class LhNoticeController {
 
     @Autowired
