@@ -7,6 +7,7 @@ import org.scoula.lh.mapper.NoticeAttMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @Service
@@ -14,15 +15,27 @@ import java.util.stream.Collectors;
 public class NoticeAttServiceImp implements NoticeAttService {
 
     private final NoticeAttMapper noticeAttMapper;
+    Pattern pattern = Pattern.compile(".*공고문\\(PDF\\).*");
+
 
     @Override
     public int create(NoticeAttVO noticeAttVO) {
-        return noticeAttMapper.create(noticeAttVO);
+        String name = noticeAttVO.getSlPanAhflDsCdNm();
+        if (pattern.matcher(name).matches()) {
+            return noticeAttMapper.create(noticeAttVO);
+        }
+        return 0;
     }
 
     @Override
     public int createAll(List<NoticeAttVO> noticeAttVOList) {
-        return noticeAttMapper.createAll(noticeAttVOList);
+        List<NoticeAttVO> filteredList = noticeAttVOList.stream()
+                .filter(item -> {
+                    String name = item.getSlPanAhflDsCdNm();
+                    return name != null && pattern.matcher(name).matches();
+                })
+                .collect(Collectors.toList());
+        return noticeAttMapper.createAll(filteredList);
     }
 
     @Override

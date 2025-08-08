@@ -27,10 +27,19 @@ public class DanziServiceImpl implements DanziService {
 
     @Override
     public List<DanziVO> createAll(List<DanziVO> voList) {
-        int cnt = danziMapper.insert(voList);
-        if(voList.size() == cnt)
-            return voList;
-        return null; // insert된 행과 추가하려는 데이터 수 다름(에러처리)
+        // danzi_id 매핑오류
+//        int cnt = danziMapper.insert(voList);
+//        if(voList.size() == cnt)
+//            return voList;
+//        return null; // insert된 행과 추가하려는 데이터 수 다름(에러처리)
+
+        if (voList == null || voList.isEmpty()) {
+            return null;
+        }
+        for (DanziVO vo : voList) {
+            danziMapper.insertOne(vo);
+        }
+        return voList;
     }
 
     @Override

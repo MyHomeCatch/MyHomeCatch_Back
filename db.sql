@@ -138,7 +138,7 @@ DROP TABLE IF EXISTS danzi;
 CREATE TABLE danzi
 (
     danzi_id            INT AUTO_INCREMENT PRIMARY KEY COMMENT '단지 ID',
-    bzdt_nm             VARCHAR(64) unique COMMENT '단지명',
+    bzdt_nm             VARCHAR(64) COMMENT '단지명',
     lct_ara_adr         VARCHAR(128) COMMENT '단지 주소',
     lct_ara_dtl_adr     VARCHAR(128) COMMENT '단지상세주소',
     min_max_rsdn_ddo_ar VARCHAR(128) COMMENT '전용면적',
@@ -147,47 +147,56 @@ CREATE TABLE danzi
     mvin_xpc_ym         DATE COMMENT '입주예정일'
 ) COMMENT ='단지 기본 정보 테이블';
 
+alter table danzi modify bzdt_nm varchar(64);
+
 -- 3. LH 공고 첨부파일
 DROP TABLE IF EXISTS lh_notice_att;
 CREATE TABLE lh_notice_att
 (
     notice_att_id        INT AUTO_INCREMENT PRIMARY KEY COMMENT '공고 첨부파일 ID',
-    notice_id            INT COMMENT '공고 ID',
+    notice_id            INT not null COMMENT '공고 ID',
     sl_pan_ahfl_ds_cd_nm VARCHAR(32) COMMENT '파일구분명',
     cmn_ahfl_nm          VARCHAR(64) COMMENT '첨부파일명',
     ahfl_url             VARCHAR(2048) COMMENT '다운로드 URL',
     FOREIGN KEY (notice_id) REFERENCES lh_notice (notice_id)
 ) COMMENT ='LH 공고 첨부파일 테이블';
+alter table lh_notice_att MODIFY notice_id INT NOT NULL;
 
 -- 4. 단지 첨부파일
 DROP TABLE IF EXISTS danzi_att;
 CREATE TABLE danzi_att
 (
     danzi_att_id INT AUTO_INCREMENT PRIMARY KEY COMMENT '단지 첨부파일 ID',
-    danzi_id     INT COMMENT '단지 ID',
+    danzi_id     INT not null COMMENT '단지 ID',
     fl_ds_cd_nm  VARCHAR(64) COMMENT '파일구분명',
     cmn_ahfl_nm  VARCHAR(64) COMMENT '첨부파일명',
     ahfl_url     VARCHAR(2048) COMMENT '첨부파일 URL',
     FOREIGN KEY (danzi_id) REFERENCES danzi (danzi_id)
 ) COMMENT ='단지 첨부파일 테이블';
 
+
+alter table danzi_att MODIFY danzi_id INT NOT NULL;
+
 -- 5. 공고-단지 매핑
 DROP TABLE IF EXISTS notice_danzi;
 CREATE TABLE notice_danzi
 (
     id        INT AUTO_INCREMENT PRIMARY KEY COMMENT '고유 ID',
-    notice_id INT COMMENT '공고 ID',
-    danzi_id  INT COMMENT '단지 ID',
+    notice_id INT not null COMMENT '공고 ID',
+    danzi_id  INT not null COMMENT '단지 ID',
     FOREIGN KEY (notice_id) REFERENCES lh_notice (notice_id),
     FOREIGN KEY (danzi_id) REFERENCES danzi (danzi_id)
 ) COMMENT ='공고-단지 매핑 테이블';
+
+alter table notice_danzi MODIFY notice_id INT NOT NULL;
+alter table notice_danzi MODIFY danzi_id INT NOT NULL;
 
 -- 6. 단지 공급/청약 일정
 DROP TABLE IF EXISTS danzi_apply;
 CREATE TABLE danzi_apply
 (
     apply_id              INT AUTO_INCREMENT PRIMARY KEY COMMENT '단지 공급일정 ID',
-    danzi_id              INT unique COMMENT '단지 ID',
+    danzi_id              INT not null COMMENT '단지 ID',
     hs_sbsc_acp_trg_cd_nm VARCHAR(32) COMMENT '구분',
     sbsc_acp_st_dt        DATE COMMENT '접수기간 시작일',
     sbsc_acp_clsg_dt      DATE COMMENT '접수기간 종료일',
@@ -202,6 +211,8 @@ CREATE TABLE danzi_apply
     ctrt_ed_dt            DATE COMMENT '계약체결 종료일',
     FOREIGN KEY (danzi_id) REFERENCES danzi (danzi_id)
 ) COMMENT ='단지별 청약 및 계약 일정 테이블';
+
+alter table danzi_apply MODIFY danzi_id INT NOT NULL;
 
 
 drop table if exists comments;

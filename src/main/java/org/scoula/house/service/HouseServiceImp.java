@@ -129,8 +129,8 @@ public class HouseServiceImp implements HouseService {
         String selfCheckMatchResult = null;
         List<String> userSelfCheckResult = requestDto.getSelfCheckResult();
 
-            HouseCardDTO houseCardDTO = getHouseCard(houseId); // 단지 정보에서 공고 유형을 가져옴
-            String noticeType = houseCardDTO.getNoticeType();
+            HouseCardDTO houseCardDTO = getHouseCard(houseId);
+            String noticeType = houseCardDTO.getNoticeType(); // 단지 정보에서 공고 유형을 가져옴
 
             if (userSelfCheckResult != null && noticeType != null) {
                 Optional<String> matched = userSelfCheckResult.stream()

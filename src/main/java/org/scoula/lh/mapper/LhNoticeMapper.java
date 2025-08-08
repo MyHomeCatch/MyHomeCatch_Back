@@ -13,7 +13,7 @@ public interface LhNoticeMapper {
     LhNoticeVO getLhNotice(@Param("panId") String panId);
     List<LhNoticeVO> getLhNotices();
     int create(LhNoticeVO lhNoticeVO);
-    int createAll(List<LhNoticeVO> lhNoticeVOList);
+    int createAll(List<NoticeVO> lhNoticeVOList);
     boolean existsByPanId(@Param("panId") String panId);
     void createNoticeDanzi(@Param("noticeId") Integer noticeId,@Param("danziId") Integer danziId);
     int getDanziId(@Param("noticeId") Integer noticeId);
