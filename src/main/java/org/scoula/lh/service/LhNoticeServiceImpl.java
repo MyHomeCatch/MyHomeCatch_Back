@@ -22,4 +22,9 @@ public class LhNoticeServiceImpl implements LhNoticeService {
     public LhNoticeVO getLhNoticeByPanIdNew(String panId) {
         return lhNoticeMapper.getLhNoticeByPanIdNew(panId);
     }
+
+    @Override
+    public List<LhNoticeVO> getPopularLhNotices() {
+        return lhNoticeMapper.getPopularLhNotices();
+    }
 }

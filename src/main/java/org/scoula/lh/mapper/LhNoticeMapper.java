@@ -25,4 +25,5 @@ public interface LhNoticeMapper {
     // 새로운 기능 추가
     List<LhNoticeVO> getAllLhNoticesNew();
     LhNoticeVO getLhNoticeByPanIdNew(@Param("panId") String panId);
+    List<LhNoticeVO> getPopularLhNotices();
 }
