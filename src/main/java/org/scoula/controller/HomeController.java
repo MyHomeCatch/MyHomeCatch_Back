@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @Log4j2
 public class HomeController {
-    @GetMapping("/")
     public String home() {
         log.info("================> HomController /");
         return "index"; // View 이름

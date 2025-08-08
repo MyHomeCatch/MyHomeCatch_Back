@@ -36,6 +36,7 @@ public class BookmarkController {
             @ApiResponse(code = 401, message = "잘못된 요청입니다."),
             @ApiResponse(code = 500, message = "서버에서 오류가 발생했습니다.")
     })
+
     @PostMapping()
     public ResponseEntity<?> createBookmark(@RequestBody BookmarkDto bookmarkDto, HttpServletRequest request) {
         String token = extractToken(request);

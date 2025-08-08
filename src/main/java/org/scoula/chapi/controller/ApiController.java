@@ -1,5 +1,7 @@
 package org.scoula.chapi.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.scoula.chapi.scheduler.CHOfficetelScheduler;
@@ -14,12 +16,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/ch/officetel")
+@Api(tags = "CH Officetel API")
 public class ApiController {
     private final OfficetelDBService officetelDbService;
 
     private final CHOfficetelScheduler officetelScheduler;
 
     @GetMapping("/fetch")
+    @ApiOperation(value = "Fetch Officetel Data", notes = "Fetch and insert officetel API data.")
     public ResponseEntity<String> fetch() {
         log.info("Fetching officetel data");
         try{
@@ -35,6 +39,7 @@ public class ApiController {
     }
 
     @GetMapping("/fetch/model")
+    @ApiOperation(value = "Fetch Officetel Model Data", notes = "Fetch and insert officetel model data.")
     public ResponseEntity<String> fetchModel() {
         log.info("Fetching officetel Model data");
         try{
@@ -50,6 +55,7 @@ public class ApiController {
     }
 
     @GetMapping("/fetch/cmpet")
+    @ApiOperation(value = "Fetch Officetel Competition Data", notes = "Fetch and insert officetel competition data.")
     public ResponseEntity<String> fetchCmpet() {
         log.info("Fetching officetel Cmpet data");
         try{
@@ -65,6 +71,7 @@ public class ApiController {
     }
 
     @GetMapping("/schedule")
+    @ApiOperation(value = "Fetch and Update Officetel Data", notes = "Fetch and update all officetel data by schedule.")
     public ResponseEntity<String> fetchAndUpdate() {
         log.info("Fetch and update officetel data by schedule");
         try{

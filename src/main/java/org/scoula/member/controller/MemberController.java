@@ -39,6 +39,7 @@ public class MemberController {
     }
 
     @GetMapping
+    @ApiOperation(value = "Get User Info", notes = "Get user information.")
     public ResponseEntity<?> getUserInfo(HttpServletRequest request) {
         String token = extractToken(request);
         if (token == null || !jwtUtil.isValidToken(token)) {
@@ -58,6 +59,7 @@ public class MemberController {
 
 
     @PutMapping("/password-change")
+    @ApiOperation(value = "Change Password", notes = "Change user password.")
     public ResponseEntity<?> changePassword(@RequestBody UserInfoDto userInfoDto, HttpServletRequest request) {
         String token = extractToken(request);
         // 토큰이 없거나 유효하지 않으면 401 Unauthorized 응답
@@ -80,6 +82,7 @@ public class MemberController {
 
 
     @PutMapping
+    @ApiOperation(value = "Update User Info", notes = "Update user information.")
     public ResponseEntity<?> updateUserInfo(@RequestBody UserInfoDto userInfoDto, HttpServletRequest request) {
         String token = extractToken(request);
         if (token == null || !jwtUtil.isValidToken(token)) {
@@ -109,6 +112,7 @@ public class MemberController {
 
 
     @PostMapping("/password/reset")
+    @ApiOperation(value = "Reset Password", notes = "Reset user password.")
     public ResponseEntity<?> resetPassword(@RequestBody PasswordResetRequestDto dto) {
         System.out.println("비밀번호 변경 요청 이메일: " + dto.getEmail());
         System.out.println("비밀번호 변경 요청 newPassword: " + dto.getNewPassword());
