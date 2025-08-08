@@ -3,7 +3,24 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.scoula.lh.danzi.mapper.DanziApplyMapper">
-    <select id="findByDanziId" resultType="org.scoula.lh.danzi.domain.DanziApplyVO">
+    <resultMap id="danziApplyResultMap" type="org.scoula.lh.danzi.domain.DanziApplyVO">
+        <id property="applyId" column="apply_id"/>
+        <result property="danziId" column="danzi_id"/>
+        <result property="hsSbscAcpTrgCdNm" column="hs_sbsc_acp_trg_cd_nm"/>
+        <result property="sbscAcpStDt" column="sbsc_acp_st_dt"/>
+        <result property="sbscAcpClsgDt" column="sbsc_acp_clsg_dt"/>
+        <result property="rmk" column="rmk"/>
+        <result property="pprSbmOpeAncDt" column="ppr_sbm_ope_anc_dt"/>
+        <result property="pprAcpStDt" column="ppr_acp_st_dt"/>
+        <result property="pprAcpClsgDt" column="ppr_acp_clsg_dt"/>
+        <result property="pzwrAncDt" column="pzwr_anc_dt"/>
+        <result property="pzwrPprSbmStDt" column="pzwr_ppr_sbm_st_dt"/>
+        <result property="pzwrPprSbmEdDt" column="pzwr_ppr_sbm_ed_dt"/>
+        <result property="ctrtStDt" column="ctrt_st_dt"/>
+        <result property="ctrtEdDt" column="ctrt_ed_dt"/>
+    </resultMap>
+
+    <select id="findByDanziId" resultMap="danziApplyResultMap">
         SELECT *
         FROM danzi_apply
         WHERE danzi_id = #{danziId}

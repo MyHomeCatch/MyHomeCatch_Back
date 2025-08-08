@@ -29,7 +29,18 @@
     </resultMap>
 
 
-    <select id="findById" resultType="org.scoula.lh.danzi.domain.DanziVO">
+    <resultMap id="danziResultMap" type="org.scoula.lh.danzi.domain.DanziVO">
+        <id property="danziId" column="danzi_id"/>
+        <result property="bzdtNm" column="bzdt_nm"/>
+        <result property="lctAraAdr" column="lct_ara_adr"/>
+        <result property="lctAraDtlAdr" column="lct_ara_dtl_adr"/>
+        <result property="minMaxRsdnDdoAr" column="min_max_rsdn_ddo_ar"/>
+        <result property="sumTotHshCnt" column="sum_tot_hsh_cnt"/>
+        <result property="htnFmlaDeCoNm" column="htn_fmla_de_cd_nm"/>
+        <result property="mvinXpcYm" column="mvin_xpc_ym"/>
+    </resultMap>
+
+    <select id="findById" resultMap="danziResultMap">
         SELECT *
         FROM danzi
         WHERE danzi_id = #{danziId}
