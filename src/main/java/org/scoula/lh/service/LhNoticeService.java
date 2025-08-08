@@ -6,4 +6,5 @@ import java.util.List;
 public interface LhNoticeService {
     List<LhNoticeVO> getAllLhNoticesNew();
     LhNoticeVO getLhNoticeByPanIdNew(String panId);
+    List<LhNoticeVO> getPopularLhNotices();
 }

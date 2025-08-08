@@ -20,7 +20,8 @@ import org.springframework.web.servlet.view.JstlView;
     "org.scoula.controller",         // 웹 컨트롤러
     "org.scoula.statics.controller", // 정적 페이지용 컨트롤러
     "org.scoula.house",               // LH 공고 관련 컨트롤러/서비스 등
-        "org.scoula.calendar",         // 캘린더 관련 패키지
+    "org.scoula.lh.controller",
+        "org.scoula.ChatBot.Controller"
 })
 @PropertySource("classpath:application.properties")
 @EnableScheduling
@@ -47,12 +48,6 @@ public class ServletConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/v2/api-docs")
                 .addResourceLocations("classpath:/META-INF/resources/");
-
-
-        // favicon.ico 처리 추가
-        registry
-                .addResourceHandler("/favicon.ico")
-                .addResourceLocations("classpath:/WEB-INF/resources/");
     }
 
         // jsp view resolver 설정 - 뷰 이름을 JSP나 템플릿으로 매핑
