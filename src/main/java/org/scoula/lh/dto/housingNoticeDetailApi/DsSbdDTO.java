@@ -56,9 +56,10 @@ public class DsSbdDTO {
                 .lctAraAdr(lctAraAdr)
                 .lctAraDtlAdr(lctAraDtlAdr)
                 .minMaxRsdnDdoAr(minMaxRsdnDdoAr)
-                .sumTotHshCnt(Integer.parseInt(sumTotHshCnt))
+                .sumTotHshCnt((sumTotHshCnt == null || sumTotHshCnt.trim().isEmpty()) ? 0 : Integer.parseInt(sumTotHshCnt))
                 .htnFmlaDeCoNm(htnFmlaDsCdNm)
                 .mvinXpcYm(mvinXpcYm)
                 .build();
     }
+    // sumTotHshCnt "" 형태로 들어오는 경우 : DanziVO에서 0으로 입력
 }
