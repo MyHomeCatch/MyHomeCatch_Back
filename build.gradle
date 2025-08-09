@@ -131,7 +131,11 @@ dependencies {
     implementation 'javax.mail:mail:1.4.7'
     implementation 'org.springframework:spring-context-support'
 
-
+    // OpenAI API
+    implementation "org.springframework.ai:spring-ai-openai-spring-boot-starter"
+    implementation 'org.springframework.ai:spring-ai-openai'
+    implementation "org.springframework.boot:spring-boot-starter-webflux"
+    implementation platform("org.springframework.ai:spring-ai-bom:1.0.0-SNAPSHOT")
 }
 
 test {
