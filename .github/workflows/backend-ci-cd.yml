@@ -15,12 +15,10 @@ jobs:
     # 작업이 실행될 가상 환경
     runs-on: amazonlinux-2023
 
-# backend 디렉터리에서 작업이 실행되도록 기본 경로 설정
-defaults:
-   run:
-       working-directory: ./backend
-    
-
+    # backend 디렉터리에서 작업이 실행되도록 기본 경로 설정
+    defaults:
+        run:
+          working-directory: ./backend
     steps:
       # 1. 코드 체크아웃
       - name: Checkout code
@@ -61,13 +59,11 @@ defaults:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-
-          
-          # docker-compose.yml 파일이 있는 디렉터리로 이동
+            # docker-compose.yml 파일이 있는 디렉터리로 이동
             cd /home/${{ secrets.EC2_USERNAME }}/myhomecatch
             
             # 수정된 docker-compose.yml 설정과 새로운 .war 파일을 적용하여 컨테이너를 다시 시작
-	          docker-compose down --remove-orphans
+            docker-compose down --remove-orphans
             docker-compose up -d --build
             
             # 불필요한 Docker 이미지 정리 
