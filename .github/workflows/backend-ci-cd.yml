@@ -15,10 +15,10 @@ jobs:
     # 작업이 실행될 가상 환경
     runs-on: amazonlinux-2023
 
-	# backend 디렉터리에서 작업이 실행되도록 기본 경로 설정
+    # backend 디렉터리에서 작업이 실행되도록 기본 경로 설정
     defaults:
         run:
-            working-directory: ./backend
+          working-directory: ./backend
     steps:
       # 1. 코드 체크아웃
       - name: Checkout code
