@@ -251,17 +251,30 @@ public class LhNoticeScheduler {
 
              /*
             - 임대 신청 정보 처리
-            1. DanziVO 단지명과 일정정보DsSplScdl의 단지명이 일치하는것을 필터링
+            1. 일정정보 DsSplScdl이 1개뿐일때는 단지명 SBD_LGO_NM 등 일부 정보가 누락되어있는 경우가 있음
+            2. 따라서 size == 1일 때는 단지명 필터링조건 없이 바로 danziapplyVO로 넘어가기
+            3. DsSplScdl이 2개 이상일 때부터 DanziVO 단지명과 일정정보DsSplScdl의 단지명이 일치하는것을 필터링
              */
             if (noticeDetail.getDsSplScdl() != null) {
-                for(DanziVO vo : danziVOList) {
-                    List<DanziApplyVO> danziApplyVOList = noticeDetail.getDsSplScdl().stream()
-                            .filter(dto -> dto.getSbdLgoNm().equals(vo.getBzdtNm()))
-                            .map(dto -> dto.toDanziApplyVO(vo.getDanziId()))
-                            .collect(Collectors.toList());
-                    // service 코드 추가
-                    danziApplyService.createAll(danziApplyVOList);
+                if(noticeDetail.getDsSplScdl().size() == 1) {
+                    for(DanziVO vo : danziVOList) {
+                        List<DanziApplyVO> danziApplyVOList = noticeDetail.getDsSplScdl().stream()
+                                .map(dto -> dto.toDanziApplyVO(vo.getDanziId()))
+                                .collect(Collectors.toList());
+                        // service 코드 추가
+                        danziApplyService.createAll(danziApplyVOList);
+                    }
+                } else {
+                    for(DanziVO vo : danziVOList) {
+                        List<DanziApplyVO> danziApplyVOList = noticeDetail.getDsSplScdl().stream()
+                                .filter(dto -> dto.getSbdLgoNm().equals(vo.getBzdtNm()))
+                                .map(dto -> dto.toDanziApplyVO(vo.getDanziId()))
+                                .collect(Collectors.toList());
+                        // service 코드 추가
+                        danziApplyService.createAll(danziApplyVOList);
+                    }
                 }
+
             }
 
             /* 임대 단지별 첨부파일 처리

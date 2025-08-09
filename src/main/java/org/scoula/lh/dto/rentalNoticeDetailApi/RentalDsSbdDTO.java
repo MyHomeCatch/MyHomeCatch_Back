@@ -36,6 +36,7 @@ public class RentalDsSbdDTO {
     /**
      * 총세대수
      * 예시: "238"
+     * HshCnt "" 형태로 들어오는 경우 존재
      */
     @JsonProperty("HSH_CNT")
     private String hshCnt;
@@ -93,9 +94,10 @@ public class RentalDsSbdDTO {
                 .lctAraAdr(lgdnAdr)
                 .lctAraDtlAdr(lgdnDtlAdr)
                 .minMaxRsdnDdoAr(ddoAr)
-                .sumTotHshCnt(Integer.parseInt(hshCnt))
+                .sumTotHshCnt((hshCnt == null || hshCnt.trim().isEmpty()) ? 0 : Integer.parseInt(hshCnt))
                 .htnFmlaDeCoNm(htnFmlaDesc)
                 .mvinXpcYm(mvinXpcYm)
                 .build();
     }
+    // HshCnt "" 형태로 들어오는 경우 존재 : DanziVO에서 0으로 입력
 }
