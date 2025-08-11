@@ -1,14 +1,19 @@
 package org.scoula.summary.service;
 
 import org.scoula.summary.mapper.SummaryMapper;
+import org.scoula.summary.util.GeminiClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class SummaryServiceImpl implements SummaryService {
 
     @Autowired
     private PdfService pdfService;
+
+    @Autowired
+    private GeminiClient geminiClient;
 
     @Autowired
     private SummaryMapper summaryMapper;
@@ -23,14 +28,72 @@ public class SummaryServiceImpl implements SummaryService {
 
         String text = pdfService.extractTextFromUrl(pdfUrl);
 
-        // 현재는 추출 내용 10글자 저장 -> GPT 연결하면 요약 내용을 저장
-        String shortSummary = text.replaceAll("\\s+", "")
-                .substring(0, Math.min(10, text.length()));
+//        // 현재는 추출 내용 10글자 저장 -> GPT 연결하면 요약 내용을 저장
+//        String shortSummary = text.replaceAll("\\s+", "")
+//                .substring(0, Math.min(10, text.length()));
 
-        summaryMapper.insertSummary(panId, shortSummary);
+//        summaryMapper.insertSummary(panId, text);
 
-        return shortSummary;
+
+
+        return text;
     }
+
+    // 이미 요약이 있으면 그대로 반환, 없으면 생성해서 성공 시 저장
+    @Transactional
+    public String getOrCreateMarkdownSummary(String panId, String pdfUrl) {
+        String existing = summaryMapper.findByPanId(panId);
+        if (existing != null && !existing.isBlank()) {
+            return existing;
+        }
+
+        // 1) PDF → 텍스트
+        String baseText = pdfService.extractTextFromUrl(pdfUrl);
+        if (baseText == null || baseText.isBlank()) {
+            // 저장 없이 바로 리턴 (컨트롤러에서 그대로 내려주게끔)
+            return "";
+        }
+
+        // 2) 프롬프트 구성
+        String prompt = String.format(PROMPT_NOTICE_SUMMARY_MD, baseText);
+
+        // 3) LLM 호출
+        String md = null;
+        try {
+            md = geminiClient.generate(prompt);
+            if (md != null) md = md.trim();
+        } catch (Exception e) {
+            // 실패하면 저장하지 않고 빈값/부분값 반환
+            return "";
+        }
+
+        // 4) 생성물 검증: 비어있으면 저장하지 않음
+        if (md == null || md.isBlank()) {
+            return "";
+        }
+
+        // 5) 저장 (LONGTEXT/MEDIUMTEXT 컬럼 권장)
+        summaryMapper.insertSummary(panId, md);
+        return md;
+    }
+
+    // 기존 문자열 상수 (서비스에 둬도 되고 컨트롤러에 둬도 됨)
+    private static final String PROMPT_NOTICE_SUMMARY_MD = """
+너는 LH 등 주택 모집 공고 PDF 요약 전문가다. 
+아래 입력 텍스트(공고 원문 정제본)만을 근거로, 사람에게 보기 좋은 **마크다운 형식**으로 정리하라.
+허구 금지, 모르면 생략하며, 반드시 문서에 있는 사실만 작성한다.
+
+[출력 규칙]
+- 제목은 "# 공고 요약"으로 시작
+- 개요, 주요 내용, 추진 일정, 참고 링크 등을 섹션으로 구분
+- 목록은 불릿 포인트("- ")로 작성
+- 표는 마크다운 표 형식으로 작성
+- 날짜는 YYYY-MM-DD 형식으로 표기
+- 불필요한 서론·결론 없이 바로 요약 시작
+
+[입력 텍스트]
+%s
+""";
 
 
 

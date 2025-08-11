@@ -11,8 +11,13 @@
         WHERE pan_id = #{panId}
     </select>
 
+<!--    <insert id="insertSummary">-->
+<!--        INSERT INTO summary (pan_id, summary)-->
+<!--        VALUES (#{panId}, #{summary})-->
+<!--    </insert>-->
+
     <insert id="insertSummary">
         INSERT INTO summary (pan_id, summary)
-        VALUES (#{panId}, #{summary})
+        VALUES (#{panId,jdbcType=VARCHAR}, #{summary,jdbcType=LONGVARCHAR})
     </insert>
 </mapper>
