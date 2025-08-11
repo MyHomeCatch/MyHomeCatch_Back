@@ -8,7 +8,7 @@
     <select id="findByPanId" resultType="java.lang.String">
         SELECT summary
         FROM summary
-        WHERE pan_id = #{panId}
+        WHERE danzi_id = #{danziId}
     </select>
 
 <!--    <insert id="insertSummary">-->
@@ -17,7 +17,7 @@
 <!--    </insert>-->
 
     <insert id="insertSummary">
-        INSERT INTO summary (pan_id, summary)
-        VALUES (#{panId,jdbcType=VARCHAR}, #{summary,jdbcType=LONGVARCHAR})
+        INSERT INTO summary (danzi_id, summary)
+        VALUES (#{danziId, jdbcType=INTEGER}, #{summary,jdbcType=LONGVARCHAR})
     </insert>
 </mapper>

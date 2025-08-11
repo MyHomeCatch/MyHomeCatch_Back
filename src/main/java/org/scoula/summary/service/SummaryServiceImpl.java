@@ -19,9 +19,9 @@ public class SummaryServiceImpl implements SummaryService {
     private SummaryMapper summaryMapper;
 
     @Override
-    public String getOrCreateSummary(String panId, String pdfUrl) {
+    public String getOrCreateSummary(int danziId, String pdfUrl) {
 
-        String summary = summaryMapper.findByPanId(panId);
+        String summary = summaryMapper.findByPanId(danziId);
         if (summary != null) {
             return summary;
         }
@@ -41,8 +41,9 @@ public class SummaryServiceImpl implements SummaryService {
 
     // 이미 요약이 있으면 그대로 반환, 없으면 생성해서 성공 시 저장
     @Transactional
-    public String getOrCreateMarkdownSummary(String panId, String pdfUrl) {
-        String existing = summaryMapper.findByPanId(panId);
+    public String getOrCreateMarkdownSummary(int danziId, String pdfUrl) {
+
+        String existing = summaryMapper.findByPanId(danziId);
         if (existing != null && !existing.isBlank()) {
             return existing;
         }
@@ -73,7 +74,7 @@ public class SummaryServiceImpl implements SummaryService {
         }
 
         // 5) 저장 (LONGTEXT/MEDIUMTEXT 컬럼 권장)
-        summaryMapper.insertSummary(panId, md);
+        summaryMapper.insertSummary(danziId, md);
         return md;
     }
 

@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface SummaryMapper {
 
-    String findByPanId(@Param("panId") String panId);
+    String findByPanId(@Param("danziId") int danziId);
 
-    void insertSummary(@Param("panId") String panId, @Param("summary") String summary);
+    void insertSummary(@Param("danziId") int danziId, @Param("summary") String summary);
 }
