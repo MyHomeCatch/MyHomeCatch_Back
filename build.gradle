@@ -131,6 +131,9 @@ dependencies {
     implementation 'javax.mail:mail:1.4.7'
     implementation 'org.springframework:spring-context-support'
 
+    // PDFBOX
+    implementation 'org.apache.pdfbox:pdfbox:2.0.27'
+
 
 }
 
