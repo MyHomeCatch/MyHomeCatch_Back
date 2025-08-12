@@ -1,4 +1,4 @@
-package org.scoula.lh.danzi.dto;
+package org.scoula.lh.danzi.dto.http;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

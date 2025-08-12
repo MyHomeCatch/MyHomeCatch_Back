@@ -5,18 +5,22 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.log4j.Log4j2;
 import org.scoula.auth.dto.AuthResponse;
+import org.scoula.lh.danzi.dto.NoticeSummaryDTO;
+import org.scoula.lh.danzi.dto.http.DanziRequestDTO;
+import org.scoula.lh.danzi.dto.http.DanziResponseDTO;
+import org.scoula.lh.danzi.dto.http.PersonalizedCardDTO;
+import org.scoula.lh.danzi.service.PersonalizedService;
+import org.scoula.summary.service.ParsedSummaryService;
 import org.scoula.summary.service.SummaryService;
 import org.scoula.summary.util.GeminiClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/summary")
@@ -25,15 +29,17 @@ public class SummaryController {
 
     @Autowired
     private SummaryService summaryService;
-
     @Autowired
     private GeminiClient geminiClient;
+    @Autowired
+    private ParsedSummaryService parsedSummaryService;
+    @Autowired
+    private PersonalizedService personalizedService;
 
     @GetMapping
     public void getSummary(@RequestParam("danziId") int danziId,
                            @RequestParam("pdfUrl") String pdfUrl,
                            HttpServletResponse response) {
-
         try {
             String summary = summaryService.getOrCreateSummary(danziId, pdfUrl);
 
@@ -88,10 +94,33 @@ public class SummaryController {
         }
     }
 
+    @ApiOperation(value = "공고 PDF AI 요약 ", notes = "공고문 PDF 요약의 요약을 MD 형식 응답으로 보냅니다.")
+    @GetMapping(value = "/short", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getShortSummary(@RequestParam("danziId") int danziId) {
+        try {
+            String md = summaryService.getNoticeSummary(danziId);
+            if (md == null || md.isBlank()) {
+                return ResponseEntity
+                        .status(502)
+                        .contentType(MediaType.TEXT_PLAIN)
+                        .body("요약 생성 실패(빈 결과)");
+            }
 
+            NoticeSummaryDTO dto = parsedSummaryService.createFromMarkdown(danziId, md);
+            return ResponseEntity.ok(dto); // 헤더 강제 설정 제거
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(500)
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .body("요약 생성 실패: " + (e.getMessage() == null ? "" : e.getMessage()));
+        }
+    }
 
-
-
-
+    @ApiOperation(value = "자격진단 정보와 공고 요약문 비교", notes = "사용자 자가진단 내용이 공고문 요약에 해당하는지 비교합니다.")
+    @PostMapping(value = "/personalCard/{houseId}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createPersonalCard(@RequestBody DanziRequestDTO requestDto, @PathVariable Integer houseId) {
+        return ResponseEntity.ok(personalizedService.getOrCreatePersonalCard(houseId, requestDto.getUserId()));
+    }
 
 }

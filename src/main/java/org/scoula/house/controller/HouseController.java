@@ -5,17 +5,19 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.scoula.house.dto.HousePage.HouseCardDTO;
-import org.scoula.house.dto.HousePage.HouseDTO;
 import org.scoula.house.dto.HousePage.HousePageResponseDTO;
 import org.scoula.house.dto.HousePage.HouseSearchRequestDTO;
 import org.scoula.house.service.HouseService;
-import org.scoula.lh.danzi.dto.DanziRequestDTO;
-import org.scoula.lh.danzi.dto.DanziResponseDTO;
+import org.scoula.lh.danzi.dto.NoticeSummaryDTO;
+import org.scoula.lh.danzi.dto.http.DanziRequestDTO;
+import org.scoula.lh.danzi.dto.http.DanziResponseDTO;
+import org.scoula.lh.danzi.dto.http.PersonalizedCardDTO;
+import org.scoula.lh.danzi.service.PersonalizedService;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.scoula.user.domain.User;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/house")
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 public class HouseController {
 
     private final HouseService houseService;
+    private final PersonalizedService personalizedService;
 
     @GetMapping("")
     @ApiOperation(value = "Get Houses", notes = "Get a paginated list of houses.")
@@ -38,11 +41,14 @@ public class HouseController {
         return ResponseEntity.ok(houseService.getHouse(houseId));
     }
 
-    @PostMapping("/{houseId}")
+    @PostMapping(value = "/{houseId}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Get House with User Data", notes = "Get details of a specific house with user data.")
-    public ResponseEntity<DanziResponseDTO> getHouseWithUserData(@RequestBody DanziRequestDTO requestDto, @PathVariable Integer houseId) {
-        return ResponseEntity.ok(houseService.getHouseWithUserData(requestDto, houseId));
-
+    public ResponseEntity<?> getHouseWithUserData(@RequestBody DanziRequestDTO requestDto, @PathVariable Integer houseId) {
+        DanziResponseDTO house = houseService.getHouseWithUserData(requestDto, houseId);
+        PersonalizedCardDTO card = personalizedService.getOrCreatePersonalCard(houseId, requestDto.getUserId());
+        return ResponseEntity.ok(Map.of("house", house, "personal_card", card));
     }
 
     @GetMapping("/card/{houseId}")

@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.scoula.lh.danzi.domain.NoticeVO;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
