@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.extern.log4j.Log4j2;
 import org.scoula.auth.dto.AuthResponse;
+import org.scoula.lh.danzi.dto.JsonSummaryDTO;
 import org.scoula.lh.danzi.dto.NoticeSummaryDTO;
 import org.scoula.lh.danzi.dto.http.DanziRequestDTO;
 import org.scoula.lh.danzi.dto.http.DanziResponseDTO;
@@ -139,20 +140,20 @@ public class SummaryController {
         }
     }
 
-    @ApiOperation(value = "공고 PDF AI 요약 ", notes = "공고문 PDF 요약의 요약을 MD 형식 응답으로 보냅니다.")
+    @ApiOperation(value = "공고 요약 ", notes = "공고 요약의 요약을 Json 형식 응답으로 보냅니다.")
     @GetMapping(value = "/short", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getShortSummary(@RequestParam("danziId") int danziId) {
         try {
-            String md = summaryService.getNoticeSummary(danziId);
-            if (md == null || md.isBlank()) {
+            String json = summaryService.getNoticeSummary(danziId);
+            if (json == null || json.isBlank()) {
                 return ResponseEntity
                         .status(502)
                         .contentType(MediaType.TEXT_PLAIN)
                         .body("요약 생성 실패(빈 결과)");
             }
 
-            NoticeSummaryDTO dto = parsedSummaryService.createFromMarkdown(danziId, md);
-            return ResponseEntity.ok(dto); // 헤더 강제 설정 제거
+            JsonSummaryDTO dto = parsedSummaryService.createFromJson(danziId, json);
+            return ResponseEntity.ok(Map.of("keyPoint", dto.getKeyPoints(),"target", dto.getTargetGroups(), "tier", dto.getSelectionCriteria() )); // 헤더 강제 설정 제거
         } catch (Exception e) {
             return ResponseEntity
                     .status(500)

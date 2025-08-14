@@ -32,7 +32,7 @@ public class EligibilityResultDTO {
         ELIGIBLE,      // 적합
         INELIGIBLE,    // 부적합
         NEEDS_REVIEW,  // 추가 확인 필요 (e.g., 완화 조건)
-        NOT_APPLICABLE // 해당 없음 (e.g., 자동차가 없는데 자동차 기준이 있는 경우)
+        LinkedHashSet, NOT_APPLICABLE // 해당 없음 (e.g., 자동차가 없는데 자동차 기준이 있는 경우)
     }
 
     public void addNote(String note) {

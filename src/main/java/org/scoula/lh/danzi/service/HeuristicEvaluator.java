@@ -7,60 +7,57 @@ import org.scoula.lh.danzi.dto.EligibilityResultDTO.EligibilityStatus;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static org.scoula.lh.danzi.dto.EligibilityResultDTO.EligibilityStatus.*;
 
 public class HeuristicEvaluator {
-    private final List<String> notes = new ArrayList<>();
-    private void note(String tag, String msg) { if (msg != null && !msg.isEmpty()) notes.add("[" + tag + "] " + msg); }
+    public static final List<String> notes = new ArrayList<>();
+    static public void note(String tag, String msg) { if (msg != null && !msg.isEmpty()) notes.add("[" + tag + "] " + msg); }
     public List<String> getNotes() { return notes; }
 
-    private static final LinkedHashMap<String, String[]> TARGET_DICT = buildTargetDict();
-    private static LinkedHashMap<String, Pattern> TARGET_PATTERNS = buildTargetPatterns(TARGET_DICT);
+    public static final LinkedHashMap<String, String[]> TARGET_DICT = buildTargetDict();
+    public static Map<String, Pattern> TARGET_PATTERNS = buildTargetPatterns();
 
-    private static LinkedHashMap<String, String[]> buildTargetDict() {
+
+   public static LinkedHashMap<String, String[]> buildTargetDict() {
         LinkedHashMap<String, String[]> dict = new LinkedHashMap<>();
-        dict.put("철거민", new String[]{"철거민 பரிசு"});
-        dict.put("장애인", new String[]{"장애인","장애 정도","장애증명"});
+        dict.put("철거민", new String[]{"철거민"});
+        dict.put("장애인", new String[]{"장애인", "장애 정도", "장애증명"});
         dict.put("다자녀 가구", new String[]{"다자녀"});
-        dict.put("국가유공자", new String[]{"국가유공자","민주유공자","5.18","보훈","고엽제후유의증"});
+        dict.put("국가유공자", new String[]{"국가유공자", "민주유공자", "5.18", "보훈", "고엽제후유의증"});
         dict.put("영구임대퇴거자", new String[]{"영구임대퇴거자"});
         dict.put("비닐간이공작물 거주자", new String[]{"비닐간이공작물"});
-        dict.put("신혼부부", new String[]{"신혼부부","예비신혼부부"});
-        dict.put("한부모 가족", new String[]{"한부모가족","한부모"});
+        dict.put("신혼부부", new String[]{"신혼부부", "예비신혼부부"});
+        dict.put("한부모 가족", new String[]{"한부모가족", "한부모"});
         dict.put("무허가건축물 등에 입주한 세입자", new String[]{"무허가건축물"});
         dict.put("기관추천", new String[]{"기관추천"});
         dict.put("신생아", new String[]{"신생아"});
         dict.put("생애최초", new String[]{"생애최초"});
-        dict.put("노부모부양", new String[]{"노부모부양","노부모 부양"});
-        dict.put("대학생 계층", new String[]{"대학생","취업준비생"});
-        dict.put("청년 계층", new String[]{"청년","사회초년생"});
-        dict.put("고령자 계층", new String[]{"고령자","65세 이상","만65세","만 65세"});
-        dict.put("주거급여수급자계층", new String[]{"주거급여수급자","주거급여 수급자","주거급여 수급권자"});
-        dict.put("기초생활수급자", new String[]{"기초생활수급자","생계급여","의료급여"});
+        dict.put("노부모부양", new String[]{"노부모부양", "노부모 부양"});
+        dict.put("대학생 계층", new String[]{"대학생", "취업준비생"});
+        dict.put("청년 계층", new String[]{"청년", "사회초년생"});
+        dict.put("고령자 계층", new String[]{"고령자", "65세 이상", "만65세", "만 65세"});
+        dict.put("주거급여수급자계층", new String[]{"주거급여수급자", "주거급여 수급자", "주거급여 수급권자"});
+        dict.put("기초생활수급자", new String[]{"기초생활수급자", "생계급여", "의료급여"});
         dict.put("위안부 피해자", new String[]{"위안부 피해자"});
         dict.put("북한이탈주민", new String[]{"북한이탈주민"});
         dict.put("아동복지시설 퇴소자", new String[]{"아동복지시설 퇴소자"});
-        dict.put("고령 저소득자", new String[]{"고령 저소득자","저소득 고령자"});
+        dict.put("고령 저소득자", new String[]{"고령 저소득자", "저소득 고령자"});
         dict.put("해당 없음", new String[]{"해당 없음"});
         return dict;
     }
 
-    private static LinkedHashMap<String, Pattern> buildTargetPatterns(LinkedHashMap<String, String[]> dict) {
-        LinkedHashMap<String, Pattern> map = new LinkedHashMap<>();
-        for (Map.Entry<String, String[]> e : dict.entrySet()) {
-            String canon = e.getKey();
-            String[] kws = e.getValue();
-            List<String> parts = new ArrayList<>();
-            for (String kw : kws) {
-                if (kw == null || kw.isEmpty()) continue;
-                String esc = Pattern.quote(kw.trim());
-                // 한글/숫자 토큰 경계 완화: 공백/구두점 주위 허용
-                parts.add("(?<!\\S)" + esc + "(?!\\S)|" + esc);
-            }
-            if (!parts.isEmpty()) {
-                Pattern p = Pattern.compile(String.join("|", parts), Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
-                map.put(canon, p);
+    public static Map<String, Pattern> buildTargetPatterns() {
+        Map<String, Pattern> map = new LinkedHashMap<>();
+        for (Map.Entry<String, String[]> entry : TARGET_DICT.entrySet()) {
+            String patternString = Arrays.stream(entry.getValue())
+                    .filter(kw -> kw != null && !kw.isEmpty())
+                    .map(kw -> Pattern.quote(kw.trim()))
+                    .collect(Collectors.joining("|"));
+
+            if (!patternString.isEmpty()) {
+                map.put(entry.getKey(), Pattern.compile(patternString, Pattern.CASE_INSENSITIVE));
             }
         }
         return map;
@@ -102,19 +99,19 @@ public class HeuristicEvaluator {
         return normalize(sb.toString());
     }
 
-    private static void addItems(StringBuilder sb, List<JsonSummaryDTO.SummaryItem> list) {
+    public static void addItems(StringBuilder sb, List<JsonSummaryDTO.SummaryItem> list) {
         if (list == null) return;
         for (JsonSummaryDTO.SummaryItem it : list) {
             append(sb, it.getGroup());
             append(sb, it.getEvidence());
         }
     }
-    private static void append(StringBuilder sb, String s) { if (s != null && !s.isEmpty()) sb.append(s).append('\n'); }
+    public static void append(StringBuilder sb, String s) { if (s != null && !s.isEmpty()) sb.append(s).append('\n'); }
 
     /* ========= CSV parser (robust, RFC4180-ish) ========= */
 
     /** 간단하지만 견고한 CSV 파서 (큰따옴표, 이스케이프, 줄바꿈 지원) */
-    private static List<String[]> parseCsv(String csv) {
+    public static List<String[]> parseCsv(String csv) {
         List<String[]> rows = new ArrayList<>();
         if (csv == null) return rows;
 
@@ -161,7 +158,7 @@ public class HeuristicEvaluator {
         return rows;
     }
 
-    private static boolean looksLikeCsvTable(String s) {
+    public static boolean looksLikeCsvTable(String s) {
         if (s == null) return false;
         // 콤마+개행이 모두 있고, 최소 2행 2열 이상
         if (!(s.contains(",") && s.contains("\n"))) return false;
@@ -180,10 +177,10 @@ public class HeuristicEvaluator {
 
     /* ========= Number / Money parsing ========= */
 
-    private static Integer safeInt(String s) { try { return Integer.parseInt(s); } catch (Exception e) { return null; } }
+    public static Integer safeInt(String s) { try { return Integer.parseInt(s); } catch (Exception e) { return null; } }
 
     /** "23,700만원", "( 23,700 )만원", "237,000,000(원)" 등 → 만원 단위 정수 */
-    private static Integer parseMoneyToManwon(String s) {
+    public static Integer parseMoneyToManwon(String s) {
         if (s == null) return null;
         String t = s.replaceAll("[()\\s]", "");
         // 1) 12,345만원
@@ -219,7 +216,7 @@ public class HeuristicEvaluator {
         return null;
     }
 
-    private static Integer parsePercent(String s) {
+    public static Integer parsePercent(String s) {
         if (s == null) return null;
         Matcher m = Pattern.compile("(\\d{1,3})\\s*%").matcher(s);
         if (m.find()) return Integer.parseInt(m.group(1));
@@ -228,14 +225,14 @@ public class HeuristicEvaluator {
 
     /* ========= Section-focused text builders ========= */
 
-    private static String joinEvidence(List<JsonSummaryDTO.SummaryItem> items) {
+    public static String joinEvidence(List<JsonSummaryDTO.SummaryItem> items) {
         if (items == null) return null;
         StringBuilder sb = new StringBuilder();
         for (var it : items) append(sb, it.getEvidence());
         return normalize(sb.toString());
     }
 
-    private static String textForEligibility(JsonSummaryDTO dto) {
+    public static String textForEligibility(JsonSummaryDTO dto) {
         StringBuilder sb = new StringBuilder();
         append(sb, joinEvidence(dto.getApplicationRequirements()));
         // 보조: Overview/Key Points에도 자격 요건이 섞이는 경우가 있어 추가
@@ -243,18 +240,18 @@ public class HeuristicEvaluator {
         return normalize(sb.toString());
     }
 
-    private static String textForIncome(JsonSummaryDTO dto) {
+    public static String textForIncome(JsonSummaryDTO dto) {
         return normalize(joinEvidence(dto.getIncomeCriteria()));
     }
 
-    private static String textForAssets(JsonSummaryDTO dto) {
+    public static String textForAssets(JsonSummaryDTO dto) {
         return normalize(joinEvidence(dto.getAssetCriteria()));
     }
 
     /* ========= High-precision extractors using section CSV ========= */
 
     /** Income Criteria 전용: 표가 있으면 그 표에서 최솟값(보수적) % 추출, 없으면 문장에서 "OO% 이하" 최솟값 */
-    private Integer extractIncomeLimitPercent(JsonSummaryDTO dto) {
+    public Integer extractIncomeLimitPercent(JsonSummaryDTO dto) {
         String txt = textForIncome(dto);
         if (txt == null) return null;
 
@@ -297,15 +294,14 @@ public class HeuristicEvaluator {
                 int v = Integer.parseInt(m.group(1));
                 best = (best == null || v < best) ? v : best;
             }
-        } else {
-        note("소득",  best + "이하에 해당해야 합니다.");
         }
+        note("소득",  best + "이하에 해당해야 합니다.");
         return best;
     }
 
     /** Asset Criteria 전용: CSV에서 '총자산가액/자동차가액/부동산' 열을 찾아 최솟값(보수적, 만원) */
-    private static class AssetLimits { Integer totalManwon; Integer carManwon; Integer realEstateManwon; }
-    private AssetLimits extractAssetLimits(JsonSummaryDTO dto) {
+    public static class AssetLimits { Integer totalManwon; Integer carManwon; Integer realEstateManwon; }
+    public static AssetLimits extractAssetLimits(JsonSummaryDTO dto) {
         String txt = textForAssets(dto);
         AssetLimits out = new AssetLimits();
 
@@ -383,13 +379,12 @@ public class HeuristicEvaluator {
             int v = Integer.parseInt(m.group(1));
             if (min == null || v < min) min = v;
         }
-        if (min == null) return null;
         note("소득", "보수적으로 판단하여 " + min + "이하가 안전합니다.");
         return min;
     }
 
     /** 텍스트에서 금액(만원) 1개 추출 (여러 포맷 지원) */
-    public Integer extractFirstMoneyManwon(String text) {
+    public static Integer extractFirstMoneyManwon(String text) {
         if (text == null) return null;
         // 괄호 포함 변종 우선 처리
         Matcher m0 = Pattern.compile("\\(\\s*([0-9]{1,3}(?:,[0-9]{3})*)\\s*\\)\\s*만원").matcher(text);
@@ -416,15 +411,15 @@ public class HeuristicEvaluator {
         return null;
     }
 
-    private static Integer minNN(Integer a, Integer b) { return (a == null) ? b : (b == null ? a : Math.min(a, b)); }
+    public static Integer minNN(Integer a, Integer b) { return (a == null) ? b : (b == null ? a : Math.min(a, b)); }
 
-    private boolean containsAny(String text, String... kws) {
+    public static boolean containsAny(String text, String... kws) {
         if (text == null) return false;
         for (String kw : kws) if (kw != null && !kw.isEmpty() && text.contains(kw)) return true;
         return false;
     }
 
-    private String sliceNear(String text, String keyRegex, int radius) {
+    public static String sliceNear(String text, String keyRegex, int radius) {
         if (text == null) return null;
         Matcher m = Pattern.compile(keyRegex).matcher(text);
         if (m.find()) {
@@ -447,7 +442,7 @@ public class HeuristicEvaluator {
         return v;
     }
 
-    public Integer parseUserTotalAssets(String s) {
+    public static Integer parseUserTotalAssets(String s) {
         if (s == null) return null;
         Integer v = extractFirstMoneyManwon(s + " 이하");
         if (v != null) return v;
@@ -455,7 +450,7 @@ public class HeuristicEvaluator {
         return null;
     }
 
-    public Integer parseUserRealEstate(String s) {
+    public static Integer parseUserRealEstate(String s) {
         if (s == null) return null;
         if (s.contains("없음")) return 0;
         Integer v = extractFirstMoneyManwon(s + " 이하");
@@ -493,7 +488,6 @@ public class HeuristicEvaluator {
             int months = Integer.parseInt(m.group(1));
             if (min == null || months < min) min = months;
         }
-        if (min == null) return null;
         note("거주기간", "거주기간 최소요건은 " + min + "개월 입니다.");
         return min;
     }
@@ -511,7 +505,7 @@ public class HeuristicEvaluator {
     }
 
 
-    private Set<String> extractUserTargetGroups(SelfCheckContentDto u) {
+    public Set<String> extractUserTargetGroups(SelfCheckContentDto u) {
         LinkedHashSet<String> out = new LinkedHashSet<>();
         if (u == null) return out;
 
@@ -554,7 +548,7 @@ public class HeuristicEvaluator {
         return out;
     }
 
-    private String canonicalizeTargetGroupToken(String token) {
+    public String canonicalizeTargetGroupToken(String token) {
         if (token == null || token.isBlank()) return null;
         String s = token.trim();
         for (Map.Entry<String, Pattern> e : TARGET_PATTERNS.entrySet()) {
@@ -565,7 +559,7 @@ public class HeuristicEvaluator {
 
     /* ========= Evaluators (DTO-aware, high precision) ========= */
 
-    private Set<String> detectTargetGroupsInNotice(JsonSummaryDTO dto) {
+    public Set<String> detectTargetGroupsInNotice(JsonSummaryDTO dto) {
         LinkedHashSet<String> hits = new LinkedHashSet<>();
         StringBuilder sb = new StringBuilder();
         // 1순위: Target Groups 섹션
@@ -600,10 +594,7 @@ public class HeuristicEvaluator {
 
         boolean requires = containsAny(text, "무주택세대구성원", "무주택 세대구성원", "세대 전원 무주택", "무주택");
         boolean relaxed  = containsAny(text, "무주택요건 완화", "소형·저가주택", "무주택 간주");
-        if (!requires) {
-            note("무주택", "공고의 무주택 관련 항목이 없어 판정 보류합니다.");
-            return NOT_APPLICABLE;
-        }
+        if (!requires) {return NOT_APPLICABLE;}
         if (u == null || u.getIsHomeless() == null) {
             note("무주택", "사용자의 무주택 관련 항목이 없어 판정 보류");
             return NEEDS_REVIEW;
@@ -623,11 +614,11 @@ public class HeuristicEvaluator {
             limit = extractSmallestPercentLimit(normalize(dto));
         }
         Integer user = parseUserIncomePercent(u.getMonthlyIncome());
+        note("소득", "소득 자격 충족을 위한 한계는 " + limit + "이고, 사용자의 소득은 " + user+ "입니다.");
         if (limit == null || user == null) {
-            note("소득", "공고에서 소득 정보를 확인할 수 없어 판정 보류합니다.");
+            note("소득", "공고 사용자 소득 정보를 확인할 수 없어 판정 보류합니다.");
             return NEEDS_REVIEW;
         }
-        note("소득", "소득 자격 충족을 위한 한계는 " + limit + "이고, 사용자의 소득은 " + user+ "입니다.");
         return (user <= limit) ? ELIGIBLE : INELIGIBLE;
     }
 
@@ -639,11 +630,11 @@ public class HeuristicEvaluator {
         AssetLimits lim = extractAssetLimits(dto);
         Integer limit = lim.totalManwon; // 보수적으로 최솟값 사용
         Integer user  = parseUserTotalAssets(u.getTotalAssets());
+        note("총자산", "총자산 자격 충족을 위한 한계는" + limit + "만원, 사용자의 총자산은 "  + user+"입니다.");
         if (limit == null || user == null) {
             note("총자산", "공고 총자산 정보를 확인할 수 없어 판정 보류합니다.");
             return NEEDS_REVIEW;
         }
-        note("총자산", "총자산 자격 충족을 위한 한계는" + limit + "만원, 사용자의 총자산은 "  + user+"만원 입니다.");
         return (user <= limit) ? ELIGIBLE : INELIGIBLE;
     }
 
@@ -660,11 +651,11 @@ public class HeuristicEvaluator {
             return NEEDS_REVIEW;
         }
         Integer user = parseUserCar(u.getCarValue());
+        note("자동차", "자격 충족을 위한 한계는" + limit + "만원, 사용자의 총자산은 "  + user+"입니다.");
         if (limit == null || user == null) {
             note("자동차", "공고 자동차 정보를 확인할 수 없어 판정 보류합니다.");
             return NEEDS_REVIEW;
         }
-        note("자동차", "자격 충족을 위한 한계는" + limit + "만원, 사용자의 총자산은 "  + user+"만원 입니다.");
         return (user <= limit) ? ELIGIBLE : INELIGIBLE;
     }
 
@@ -680,11 +671,11 @@ public class HeuristicEvaluator {
             return NEEDS_REVIEW;
         }
         Integer user = parseUserRealEstate(u.getRealEstateValue());
+        note("부동산", "자격 충족을 위한 한계는" + limit + "만원, 사용자의 총자산은 "  + user+"입니다.");
         if (limit == null || user == null) {
-            note("부동산", "공고에서 부동산 정보를 확인할 수 없어 판정 보류합니다.");
+            note("부동산", "공고 또는 사용자 부동산 정보를 확인할 수 없어 판정 보류합니다.");
             return NEEDS_REVIEW;
         }
-        note("부동산", "자격 충족을 위한 한계는" + limit + "만원, 사용자의 총자산은 "  + user+"만원 입니다.");
         return (user <= limit) ? ELIGIBLE : INELIGIBLE;
     }
 
@@ -695,9 +686,12 @@ public class HeuristicEvaluator {
             return NEEDS_REVIEW;
         }
         Integer need = extractResidenceMonths(text);
-        if (need == null) return NOT_APPLICABLE;  // 점수표(배점)만 있을 가능성
+        if (need == null) return NOT_APPLICABLE;  // 점수표(배점)만 있을 가능성 → 하드요건 아님
+        if (u == null || u.getResidencePeriod() == 0) {
+            note("거주기간", "사용자의 거주기간 관련 항목이 없어 판정 보류합니다.");
+            return NEEDS_REVIEW;
+        }
         Integer user = u.getResidencePeriod();
-
         note("거주기간", "최소 " + need + " 개월의 거주기간이 필요합니다. 사용자의 거주기간은 " + user + "개월 입니다.");
         return (user >= need) ? ELIGIBLE : INELIGIBLE;
     }
@@ -710,10 +704,16 @@ public class HeuristicEvaluator {
         }
         Integer need = extractSubscriptionMonths(text);
         if (need == null) return NOT_APPLICABLE;
-
+        if (u == null || u.getSubscriptionPeriod() == null) {
+            note("청약가입기간", "사용자의 청약가입기간 관련 항목이 없어 판정 보류합니다.");
+            return NEEDS_REVIEW;
+        }
         Integer user = mapUserSubPeriodToMonths(u.getSubscriptionPeriod());
         note("청약가입기간", "최소 " + need + " 개월의 가입 기간이 필요합니다. 사용자의 거주기간은 " + user + "개월 입니다.");
-
+        if (user == null) {
+            note("청약가입기간", "사용자의 청약가입기간 정보를 확인할 수 없어 판정 보류합니다.");
+            return NEEDS_REVIEW;
+        }
         return (user >= need) ? ELIGIBLE : INELIGIBLE;
     }
 
@@ -727,7 +727,15 @@ public class HeuristicEvaluator {
         Integer need = null;
         if (m.find()) need = Integer.parseInt(m.group(1));
         if (need == null) return NOT_APPLICABLE;
+        if (u == null || u.getHouseHoldMembers() == null) {
+            note("세대원수", "사용자의 세대원수 관련 항목이 없어 판정 보류");
+            return NEEDS_REVIEW;
+        }
         int[] parsed = parseHouseholdMembers(u.getHouseHoldMembers());
+        if (parsed == null || parsed.length < 1) {
+            note("세대원수", "사용자의 세대원수 정보를 확인할 수 없어 판정 보류");
+            return NEEDS_REVIEW;
+        }
         int userMembers = parsed[0];
         note("세대원수",  need + "인 이상의 세대원 수가 필요합니다. 사용자의 세대원 수는 " + userMembers + "명 입니다.");
         return (userMembers >= need) ? ELIGIBLE : INELIGIBLE;
@@ -741,7 +749,7 @@ public class HeuristicEvaluator {
         for (String canon : TARGET_DICT.keySet()) {
             if (notice.contains(canon) && user.contains(canon)) {
                 types.add(canon);
-                note("대상", "공고에 해당하는 사용자의 유형은 " + canon + "입니다.");
+                note("대상", "공고에 해당하는 사용자의 유형은'" + canon + "' 입니다.");
             }
         }
         List<String> result = new ArrayList<>(types);
@@ -751,7 +759,7 @@ public class HeuristicEvaluator {
 
     /* ========= User convenience ========= */
 
-    private Integer mapUserSubPeriodToMonths(String s) {
+    public static Integer mapUserSubPeriodToMonths(String s) {
         if (s == null) return null;
         if (s.contains("없음")) return 0;
         if (s.contains("24")) return 24;

@@ -10,7 +10,7 @@ public interface EligibilityService {
     public EligibilityResultDTO.EligibilityStatus evalHomeless(String text, SelfCheckContentDto u);
     public EligibilityResultDTO.EligibilityStatus evalIncome(String text, SelfCheckContentDto u);
     public EligibilityResultDTO.EligibilityStatus evalAssets(String text, SelfCheckContentDto u);
-    public EligibilityResultDTO.EligibilityStatus evalCar(NoticeSummaryDTO summary, SelfCheckContentDto u);
+    public EligibilityResultDTO.EligibilityStatus evalCar(String text, SelfCheckContentDto u);
     public Integer extractMaxPercent(String text);
     public Integer extractFirstMoneyManwon(String text);
     public String joinNonNull(String... s);
