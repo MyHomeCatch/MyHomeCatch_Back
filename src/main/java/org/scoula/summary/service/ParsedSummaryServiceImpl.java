@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 import static org.scoula.summary.parsing.MarkdownSectionExtractor.extractSection;
 
 import java.time.LocalDate;
@@ -34,7 +36,6 @@ public class ParsedSummaryServiceImpl implements ParsedSummaryService {
                     HttpStatus.NOT_FOUND, "요약 원문(markdown)이 없습니다. danziId=" + danziId);
         }
 
-
         NoticeSummaryDTO existing = summaryMapper.findDTOByDanziId(danziId);
 
         // 1) 마크다운 전처리 + 파싱
@@ -56,15 +57,15 @@ public class ParsedSummaryServiceImpl implements ParsedSummaryService {
         out.setDanziId(neu.getDanziId());
         out.setApplicationRequirements(nvl(neu.getApplicationRequirements(), oldDto.getApplicationRequirements()));
         out.setRentalConditions(nvl(neu.getRentalConditions(), oldDto.getRentalConditions()));
-        out.setIncomeConditions(nvl(neu.getIncomeConditions(), oldDto.getIncomeConditions()));
-        out.setAssetConditions(nvl(neu.getAssetConditions(), oldDto.getAssetConditions()));
+        out.setIncomeCriteria(nvl(neu.getIncomeCriteria(), oldDto.getIncomeCriteria()));
+        out.setAssetCriteria(nvl(neu.getAssetCriteria(), oldDto.getAssetCriteria()));
         out.setSelectionCriteria(nvl(neu.getSelectionCriteria(), oldDto.getSelectionCriteria()));
         out.setSchedule(nvl(neu.getSchedule(), oldDto.getSchedule()));
         out.setRequiredDocuments(nvl(neu.getRequiredDocuments(), oldDto.getRequiredDocuments()));
         return out;
     }
 
-    private static String nvl(String a, String b) {
+    private static <T> List<T> nvl(List<T> a, List<T> b) {
         return (a != null && !a.isEmpty()) ? a : b;
     }
 
@@ -72,12 +73,12 @@ public class ParsedSummaryServiceImpl implements ParsedSummaryService {
         NoticeSummaryDTO dto = new NoticeSummaryDTO();
         dto.setDanziId(danziId);
 
-        dto.setApplicationRequirements(firstNonNull(
+        setSummaryItem(dto::setApplicationRequirements, firstNonNull(
                 extractSection(markdown, "신청 자격", "신청자격", "신청 자격 상세 조건"),
                 extractSection(markdown, "개요") // 그래도 없으면 개요로 대체
         ));
 
-        dto.setRentalConditions(firstNonNull(
+        setSummaryItem(dto::setRentalConditions, firstNonNull(
                 extractSection(markdown, "임대 조건", "임대조건"),
                 extractSection(markdown, "공급 대상") // 문서에 따라 여기에 묶여있는 경우
         ));
@@ -90,22 +91,30 @@ public class ParsedSummaryServiceImpl implements ParsedSummaryService {
                 extractSection(markdown, "자산 기준", "자산요건", "소득 및 자산보유 기준", "소득 및 자산 기준"),
                 income // 같은 섹션이면 복제
         );
-        dto.setIncomeConditions(income);
-        dto.setAssetConditions(asset);
+        setSummaryItem(dto::setIncomeCriteria, income);
+        setSummaryItem(dto::setAssetCriteria, asset);
 
-        dto.setSelectionCriteria(firstNonNull(
+        setSummaryItem(dto::setSelectionCriteria, firstNonNull(
                 extractSection(markdown, "선정 기준"),
                 extractSection(markdown, "배점 기준", "배점기준"),
                 extractSection(markdown, "입주자 선정 방법")
         ));
 
-        dto.setSchedule(firstNonNull(
+        setSummaryItem(dto::setSchedule, firstNonNull(
                 extractSection(markdown, "추진 일정"),
                 extractSection(markdown, "모집 일정", "주요 일정")
         ));
 
-        dto.setRequiredDocuments(extractSection(markdown, "제출 서류"));
+        setSummaryItem(dto::setRequiredDocuments, extractSection(markdown, "제출 서류"));
         return dto;
+    }
+
+    private void setSummaryItem(java.util.function.Consumer<List<NoticeSummaryDTO.SummaryItem>> setter, String text) {
+        if (text != null && !text.isEmpty()) {
+            NoticeSummaryDTO.SummaryItem item = new NoticeSummaryDTO.SummaryItem();
+            item.setEvidence(text);
+            setter.accept(List.of(item));
+        }
     }
 
 

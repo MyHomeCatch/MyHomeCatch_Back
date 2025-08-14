@@ -35,7 +35,7 @@ import java.util.Properties;
         "org.scoula.chapi.scheduler"
 })
 @Log4j2
-@PropertySource({"classpath:application.properties", "classpath:secrets.properties"})
+@PropertySource({"classpath:application.properties"})
 @MapperScan(basePackages = {"org.scoula.**.mapper"})
 @ComponentScan(basePackages = {
         "org.scoula",                    // 전체 스캔

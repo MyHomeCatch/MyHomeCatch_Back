@@ -284,7 +284,7 @@ CREATE TABLE personalized_card
 (
     user_id         INT                                                             NOT NULL, -- 대상 사용자
     danzi_id        INT                                                             NOT NULL, -- 단지 ID
-    types           json null,
+    types           json                                                            null,
 
     -- EligibilityResultDTO
     overall_status  ENUM ('ELIGIBLE','INELIGIBLE','NEEDS_REVIEW', 'NOT_APPLICABLE') NOT NULL,
@@ -300,4 +300,16 @@ CREATE TABLE personalized_card
     UNIQUE KEY uk_user_danzi (user_id, danzi_id),                                             -- 업서트 키
     CONSTRAINT fk_pc_user FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE,
     CONSTRAINT fk_pc_danzi FOREIGN KEY (danzi_id) REFERENCES danzi (danzi_id) ON DELETE CASCADE
+);
+
+drop table if exists summary_json;
+
+create table summary_json
+(
+    danzi_id int      not null
+        primary key,
+    summary  longtext null,
+    constraint fk_summaryJson_danzi
+        foreign key (danzi_id) references danzi (danzi_id)
+            on update cascade on delete cascade
 );

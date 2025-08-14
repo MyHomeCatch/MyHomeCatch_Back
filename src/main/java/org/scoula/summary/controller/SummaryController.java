@@ -14,6 +14,7 @@ import org.scoula.summary.service.ParsedSummaryService;
 import org.scoula.summary.service.SummaryService;
 import org.scoula.summary.util.GeminiClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -94,6 +95,50 @@ public class SummaryController {
         }
     }
 
+    @ApiOperation(value = "공고 PDF AI 요약 ", notes = "공고 PDF를 AI를 통해 요약하여 JSON 형식 String 응답을 보냅니다.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "성공적으로 요청이 처리되었습니다.", response = AuthResponse.class),
+            @ApiResponse(code = 401, message = "잘못된 요청입니다."),
+            @ApiResponse(code = 500, message = "서버에서 오류가 발생했습니다.")
+    })
+    @GetMapping(value = "/json", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getDynamicJsonSummary(
+            @RequestParam("danziId") int danziId,
+            @RequestParam("pdfUrl") String pdfUrl
+    ) {
+        try {
+            // 간단한 파라미터 검증
+            if (pdfUrl == null || pdfUrl.trim().isEmpty()) {
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .contentType(MediaType.TEXT_PLAIN)
+                        .body("pdfUrl 파라미터가 필요합니다.");
+            }
+
+            String json = summaryService.getOrCreateJsonSummary(danziId, pdfUrl);
+
+            if (json == null || json.isBlank()) {
+                // 502 Bad Gateway: 다운스트림(AI 요약) 실패 표현
+                return ResponseEntity
+                        .status(HttpStatus.BAD_GATEWAY)
+                        .contentType(MediaType.TEXT_PLAIN)
+                        .body("요약 생성 실패(빈 결과)");
+            }
+
+            return ResponseEntity
+                    .ok()
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(json);
+
+        } catch (Exception e) {
+            log.error("dynamic summary failed danziId={}, pdfUrl={}, err={}", danziId, pdfUrl, e.toString(), e);
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .contentType(MediaType.TEXT_PLAIN)
+                    .body("요약 생성 실패: " + (e.getMessage() == null ? "Unknown error" : e.getMessage()));
+        }
+    }
+
     @ApiOperation(value = "공고 PDF AI 요약 ", notes = "공고문 PDF 요약의 요약을 MD 형식 응답으로 보냅니다.")
     @GetMapping(value = "/short", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<?> getShortSummary(@RequestParam("danziId") int danziId) {
@@ -115,6 +160,8 @@ public class SummaryController {
                     .body("요약 생성 실패: " + (e.getMessage() == null ? "" : e.getMessage()));
         }
     }
+
+
 
     @ApiOperation(value = "자격진단 정보와 공고 요약문 비교", notes = "사용자 자가진단 내용이 공고문 요약에 해당하는지 비교합니다.")
     @PostMapping(value = "/personalCard/{houseId}", consumes = MediaType.APPLICATION_JSON_VALUE,

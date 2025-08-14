@@ -8,4 +8,5 @@ public interface SummaryService {
     public String getOrCreateMarkdownSummary(int danziId, String pdfUrl);
     public void fillAllSummaries();
     public String getNoticeSummary(int danziId);
+    public String getOrCreateJsonSummary(int danziId, String pdfUrl);
 }

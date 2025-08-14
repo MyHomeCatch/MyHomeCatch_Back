@@ -15,6 +15,9 @@ public interface SummaryMapper {
 
     void insertSummaryV2(NoticeSummaryDTO summary);
 
+    void insertSummaryJson(@Param("danziId") int danziId, @Param("summary") String summary);
+
+
     NoticeSummaryDTO findDTOByDanziId(@Param("danziId") int danziId);
 
 }

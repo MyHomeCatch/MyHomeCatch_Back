@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 import static org.scoula.lh.danzi.dto.EligibilityResultDTO.EligibilityStatus.*;
 
@@ -22,27 +23,39 @@ public class EligibilityServiceImpl implements EligibilityService {
         notes.add("[" + category + "] " + msg);
     }
 
+    private String summaryItemsToString(List<NoticeSummaryDTO.SummaryItem> items) {
+        if (items == null || items.isEmpty()) {
+            return null;
+        }
+        return items.stream()
+                .map(NoticeSummaryDTO.SummaryItem::getEvidence)
+                .collect(Collectors.joining("\n"));
+    }
+
     public EligibilityResultDTO analyze(NoticeSummaryDTO summary, SelfCheckContentDto user) {
         notes = new ArrayList<>();
         Map<String, EligibilityResultDTO.EligibilityStatus> detail = new LinkedHashMap<>();
 
         // 1) 무주택
+        String applicationRequirements = summaryItemsToString(summary.getApplicationRequirements());
         EligibilityResultDTO.EligibilityStatus homeless =
-                evalHomeless(summary.getApplicationRequirements(), user);
+                evalHomeless(applicationRequirements, user);
         detail.put("homeless", homeless);
         note("무주택", "판정=" + homeless);
         if (homeless == NEEDS_REVIEW) notes.add("무주택요건 완화 문구가 있어 확인이 필요합니다.");
 
         // 2) 소득
+        String incomeConditions = summaryItemsToString(summary.getIncomeCriteria());
         EligibilityResultDTO.EligibilityStatus income =
-                evalIncome(summary.getIncomeConditions(), user);
+                evalIncome(incomeConditions, user);
         detail.put("income", income);
 
         note("소득", "판정=" + income);
 
         // 3) 총자산/부동산
+        String assetConditions = summaryItemsToString(summary.getAssetCriteria());
         EligibilityResultDTO.EligibilityStatus asset =
-                evalAssets(summary.getAssetConditions(), user);
+                evalAssets(assetConditions, user);
         detail.put("asset", asset);
         note("자산", "판정=" + asset);
 
@@ -198,8 +211,8 @@ public class EligibilityServiceImpl implements EligibilityService {
 
     public EligibilityResultDTO.EligibilityStatus evalCar(NoticeSummaryDTO summary, SelfCheckContentDto u) {
         note("자동차", "입력 체크: user=" + (u != null) + ", carValue=" + (u != null ? u.getCarValue() : null));
-        String all = joinNonNull(summary.getIncomeConditions(), summary.getAssetConditions(),
-                summary.getApplicationRequirements(), summary.getRentalConditions());
+        String all = joinNonNull(summaryItemsToString(summary.getIncomeCriteria()), summaryItemsToString(summary.getAssetCriteria()),
+                summaryItemsToString(summary.getApplicationRequirements()), summaryItemsToString(summary.getRentalConditions()));
         if (all == null) {
             note("자동차", "관련 텍스트 부재 → 판정 보류");
             return NEEDS_REVIEW;
@@ -238,9 +251,9 @@ public class EligibilityServiceImpl implements EligibilityService {
     public List<String> evalTypes(NoticeSummaryDTO summary, SelfCheckContentDto u) {
         List<String> types = new ArrayList<>();
         String text = joinNonNull(
-                summary != null ? summary.getRentalConditions() : null,
-                summary != null ? summary.getApplicationRequirements() : null,
-                summary != null ? summary.getSelectionCriteria() : null
+                summary != null ? summaryItemsToString(summary.getRentalConditions()) : null,
+                summary != null ? summaryItemsToString(summary.getApplicationRequirements()) : null,
+                summary != null ? summaryItemsToString(summary.getSelectionCriteria()) : null
         );
 
         if (text == null) {
@@ -308,7 +321,7 @@ public class EligibilityServiceImpl implements EligibilityService {
     }
 
     public Integer extractMaxPercent(String text) {
-        Matcher m = java.util.regex.Pattern.compile("(\\d{1,3})\\s*%\\s*이하").matcher(text);
+        Matcher m = java.util.regex.Pattern.compile("(\\d{1,3})\\s*\\%\\s*이하").matcher(text);
         Integer max = null;
         while (m.find()) {
             int v = Integer.parseInt(m.group(1));
@@ -344,7 +357,7 @@ public class EligibilityServiceImpl implements EligibilityService {
 
     public String joinNonNull(String... s) {
         StringBuilder sb = new StringBuilder();
-        for (String v : s) if (v != null && !v.isEmpty()) sb.append(v).append('\n');
+        for (String v : s) if (v != null && !v.isEmpty()) sb.append(v).append("\n");
         return sb.length() == 0 ? null : sb.toString();
     }
 }

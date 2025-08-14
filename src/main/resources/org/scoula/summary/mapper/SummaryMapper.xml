@@ -21,6 +21,12 @@
         VALUES (#{danziId, jdbcType=INTEGER}, #{summary,jdbcType=LONGVARCHAR})
     </insert>
 
+    <insert id="insertSummaryJson">
+        INSERT INTO summary_json (danzi_id, summary)
+        VALUES (#{danziId, jdbcType=INTEGER}, #{summary,jdbcType=LONGVARCHAR})
+        on duplicate key update summary = values(summary)
+    </insert>
+
     <insert id="insertSummaryV2" parameterType="org.scoula.lh.danzi.dto.NoticeSummaryDTO">
         INSERT INTO notice_summary (
             danzi_id,
