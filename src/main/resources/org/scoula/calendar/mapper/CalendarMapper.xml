@@ -25,6 +25,15 @@
         ORDER BY da.sbsc_acp_st_dt;
     </select>
 
+    <select id="getToday" resultType="Integer">
+    <![CDATA[
+        SELECT COUNT(*) AS danzi_count
+        FROM danzi_apply
+        WHERE sbsc_acp_st_dt <= STR_TO_DATE(#{date}, '%Y.%m.%d')
+          AND sbsc_acp_clsg_dt >= STR_TO_DATE(#{date}, '%Y.%m.%d')
+        ]]>
+</select>
+
     <resultMap id="calendarResultMap" type="org.scoula.calendar.domain.CalendarVO">
 <!--        <id property="danzi_id" column="danzi_id" />-->
         <result property="danzi_id" column="danzi_id" />

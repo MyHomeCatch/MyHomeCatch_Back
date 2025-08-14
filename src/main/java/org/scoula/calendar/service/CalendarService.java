@@ -7,4 +7,6 @@ import java.util.List;
 public interface CalendarService {
 
     CalendarResponseDTO getCalendar(String date);
+
+    Integer getToday(String date);
 }
