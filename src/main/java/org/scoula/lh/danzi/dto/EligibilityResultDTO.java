@@ -17,13 +17,14 @@ import java.util.Map;
 // 사용자와 공고의 적합성 분석 결과
 public class EligibilityResultDTO {
     private EligibilityStatus overallStatus; // 종합적인 신청 가능 여부
-    private EligibilityStatus homelessStatus;
-    private EligibilityStatus incomeStatus;
-    private EligibilityStatus assetStatus;
-    private EligibilityStatus carStatus;
+    @Builder.Default
+    private Map<String, EligibilityStatus> detailedStatus = new HashMap<>();
 
-    private java.util.Map<String, EligibilityStatus> detailedStatus = new java.util.HashMap<>();
-    private List<String> notes = new ArrayList<>(); // 항목별 판단 이유 및 주의 문구 (e.g., "소득 기준이 약간 초과하지만, 예비자로는 가능할 수 있습니다.")
+    @Builder.Default
+    private List<String> notes = new ArrayList<>();
+    // 항목별 판단 이유 및 주의 문구
+
+    @Builder.Default
     private List<String> types = new ArrayList<>();
 
     // Enum for Eligibility Status

@@ -1,6 +1,7 @@
 package org.scoula.lh.danzi.service;
 
 import org.scoula.lh.danzi.dto.EligibilityResultDTO;
+import org.scoula.lh.danzi.dto.JsonSummaryDTO;
 import org.scoula.lh.danzi.dto.NoticeSummaryDTO;
 import org.scoula.selfCheck.dto.SelfCheckContentDto;
 
@@ -13,4 +14,5 @@ public interface EligibilityService {
     public Integer extractMaxPercent(String text);
     public Integer extractFirstMoneyManwon(String text);
     public String joinNonNull(String... s);
+    public EligibilityResultDTO analyzeJson(JsonSummaryDTO summary, SelfCheckContentDto u);
 }

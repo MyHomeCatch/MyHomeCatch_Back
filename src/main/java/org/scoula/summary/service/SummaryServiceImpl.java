@@ -219,7 +219,7 @@ public class SummaryServiceImpl implements SummaryService {
                GOAL
                - From the raw notice text (already OCR/cleaned), extract ONLY items that map to the eligibility-check fields and return a compact JSON summary.
                - NO fabrication. If a datum is not clearly present, omit it.
-               - Keep each “evidence” fully understandable (greater than 300 chars) and preferably verbatim.
+               - Keep each “evidence” fully understandable (greater than 500 chars) and preferably verbatim.
             
                OUTPUT FORMAT (return JSON only; no extra text)
                - A single JSON object with these sections as top-level keys (in this order if present):
@@ -256,6 +256,26 @@ public class SummaryServiceImpl implements SummaryService {
                - "Required Documents" ⇐ ^(제출서류|구비서류|필요서류)$
                - "Reference Links" ⇐ 링크/URL/문의/홈페이지 관련 절 전체
                - "Target Groups" ⇐ ^(공급대상|계층|우선공급|특별공급|대상|기관추천)$
+               
+               TABLE EVIDENCE RULE (GLOBAL; applies to ALL sections)
+               - If the source evidence is in a table (표/행열/머리글/합계/주석 포함), YOU MUST PARSE THE ENTIRE TABLE. Do not summarize, skip, or ellipsize.
+               - Output the table inside a single "evidence" string as CSV text (UTF-8, comma-separated, one row per line).\s
+                 - Preserve every header, subheader, units, and footnotes exactly as text.
+                 - If a cell is merged in the original, fill-down/fill-right the merged value into each affected cell.
+                 - Keep original row/column order. Do not sort or re-group.
+                 - Quote any field that itself contains a comma, newline, or quote using standard CSV quoting (wrap with double quotes, escape inner quotes by doubling them).
+               - If the table is too large to fit once due to model limits, split it into multiple evidence items under the SAME section and SAME group, in order, and prefix each with "(part X/Y)". Never drop rows/columns.
+               - When a single table is the evidence for multiple groups within the same section, you may repeat the full CSV evidence for each relevant group (better to duplicate than to truncate).
+               - Numbers, currency units (원/만원 등), %, ㎡ 등 단위는 원문 그대로 유지. Thousand separators는 원문 그대로 유지.
+            
+            HEADER-ONLY / PARTIAL TABLE GUARD (강제 무결성 체크)
+            - 다음 중 하나라도 만족 못 하면 "그 표 증거는 출력하지 말고 생략"한다(부분 출력 금지):
+              1) 최소 2행(머리글 제외)·2열 이상이어야 한다.
+              2) 첫 번째 열(행 머리) 값이 존재해야 한다(예: 구분/가구원수/주택형 등). 비어 있으면 재추출 시도, 실패 시 생략.
+              3) 모든 데이터 행은 동일한 열 개수를 가져야 한다(콤마 개수 정합). 불일치 시 재추출.
+              4) 숫자 또는 %가 최소 2개 이상 존재해야 한다(헤더만 있는지를 방지).
+              5) "해당 없음" 같은 토큰이 연속 반복되는데 행 머리(label)가 없거나 맞지 않으면 재추출. 계속 실패 시 생략.
+            - 표가 부분만 OCR된 것으로 의심되면, 표 위·아래의 문단/주석을 포함해 표 경계를 넉넉히 다시 캡처하여 전체 CSV를 재구성한 뒤 위 기준을 재검사한다. 그래도 불가하면 해당 표 증거는 출력하지 않는다(그 group 자체를 생략).
             
             
                MAPPING GUIDELINES
@@ -271,6 +291,17 @@ public class SummaryServiceImpl implements SummaryService {
                  - group: "monthly_income"를 반복 허용.
                  -	우대비율(가산항목) 추출:group: "income_adjustment"에 “1인가구 +20%p, 2인가구 +10%p / 출생자녀 1명 +10%p, 2명 이상 +20%p(기준일, 입양/태아 포함 조건)”를 evidence로 저장.
                   -	설명/산정 방식 핵심만:group: "income_calc_rule"에 “세대 전원 합산, 세전, 12종 소득 합산” 같은 문장 최소 1개 저장.
+                
+                - Income Criteria Table → group:"monthly_income"
+                  - 흔한 형식: [가구원수/세대원수] × [월평균소득 % 구간]. 반드시 다음을 포함:
+                    a) 첫 열: "가구원수/세대원수/1인·2인·3인 이상" 등 행 라벨
+                    b) 머리글: "월평균소득 XX% 이하" 등 임계값(여러 구간)
+                  - "맞벌이 200%" 등 주석은 표 하단에 별도 행으로 “주석:” 접두어를 붙여 CSV에 포함.
+                  - 위 무결성 조건을 충족하지 못하면 monthly_income evidence를 출력하지 않는다(헤더 조각 금지).
+                
+                INCOME CRITERIA RECOVERY RULE (비표/반표 대비)
+                - "월평균소득" 관련 텍스트가 표 형태로 완전 추출되지 않으면, 대안으로 문장형 근거(예: "1인 90%, 2인 80%")를 최소 1줄 이상 모아 evidence로 제시한다.
+                - 단, “해당 없음”·"맞벌이 200%" 같은 토막 헤더끼리만 모인 문자열은 evidence로 사용 금지.
             
                - For Asset Criteria:
                   -	Separate 총자산 한도, 자동차가액 한도:
@@ -282,6 +313,11 @@ public class SummaryServiceImpl implements SummaryService {
                                      -	group: "asset_adjustment" evidence: “출생자녀 1명 +10%p, 2명 이상 +20%p(기준일 이후 출생 기준)”
                                  -	자산 산정/제외 규칙 요약:
                                      -	group: "asset_calc_rule" evidence에 “세대 전원 합산, 자동차 일부 제외(장애인사용·보철용 등), 금융정보제공동의 필수, 임차보증금/분양권 등 신고 누락 시 해지 가능” 등 핵심 1~3줄.
+               
+               - Asset Criteria Table → groups:"total_assets","car_value","real_estate_value"
+                 - 총자산/자동차/부동산 한도 표는 열 머리(항목명)와 숫자 임계값이 모두 보여야 한다.
+                 - 주석(장애인용 차량 제외 등)은 하단 “주석:” 행으로 포함.
+                 
                - For Rental Conditions:
                  - Deposit and monthly rent per type if shown; if multiple tables exist, capture concise, representative rows or describe range in evidence.
                               	-	군(‘가’/‘나’) + 전환가능 보증금 한도 + 최대전환 시 임대보증금/월임대료 세트로 추출:
@@ -321,14 +357,17 @@ public class SummaryServiceImpl implements SummaryService {
                - Numbers: keep digit grouping if present; keep 원/만원 등 통화 단위 그대로.
                - Areas: keep ㎡ as in text; do not convert.
                - Percentages: keep as shown (e.g., "70%").
-               - Evidence: terse, preferably single line; remove excessive spacing or duplicates.
+               - Evidence: terse, remove excessive spacing or duplicates.
             
                VALIDATION CHECKLIST (apply before returning)
                - JSON is syntactically valid (no trailing commas).
                - "title" must be one sentence that include core information.
                - No fields beyond the specified keys.
                - No explanatory prose outside the JSON.SOURCE FIELDS
-
+              - 표 기반 evidence가 있는 경우: (1) 2행·2열 이상, (2) 행 라벨 존재, (3) 열 개수 정합, (4) 숫자/퍼센트 포함, (5) "해당 없음" 헤더조각 금지.
+              - Income Criteria의 monthly_income: 가구원수 라벨과 % 이하 임계값이 함께 존재하지 않으면 해당 evidence 미출력.
+              -  「 에 관한 법률」에 따른 부분 생략
+              
                [Input Text]
                {{INPUT_TEXT}}
             """;

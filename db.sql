@@ -260,6 +260,8 @@ VALUES (74, '고등 S-3 단지 구조가 좋아보입니다.', 4, '류세민'),
 
 select count(*)
 from lh_notice_att;
+
+set foreign_key_checks =0;
 -- 단지별 공고 상세 내용을 저장
 CREATE TABLE notice_summary
 (
@@ -278,6 +280,29 @@ CREATE TABLE notice_summary
             ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+drop table if exists notice_summary_json;
+CREATE TABLE notice_summary_json (
+                                danzi_id              INT           NOT NULL PRIMARY KEY,
+                                title                 VARCHAR(500)  NOT NULL,
+                                overview              JSON          NULL,
+                                key_points            JSON          NULL,
+                                target_groups         JSON          NULL,
+
+                                application_requirements JSON       NULL,  -- 신청 자격 + 상세조건 묶음(JSON 배열)
+                                rental_conditions       JSON       NULL,   -- 임대 조건
+                                income_conditions       JSON       NULL,   -- 소득 기준
+                                asset_conditions        JSON       NULL,   -- 자산 기준
+                                selection_criteria      JSON       NULL,   -- 선정/배점 기준
+                                schedule                JSON       NULL,   -- 추진 일정
+                                required_documents      JSON       NULL,   -- 제출 서류
+                                reference_links         JSON       NULL,   -- 참고 링크(배열)
+                                created_at            TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                updated_at            TIMESTAMP     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                                CONSTRAINT danzi_id
+                                    FOREIGN KEY (danzi_id) REFERENCES danzi (danzi_id)
+                                        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
 DROP TABLE IF EXISTS personalized_card;
 
 CREATE TABLE personalized_card
@@ -290,8 +315,12 @@ CREATE TABLE personalized_card
     overall_status  ENUM ('ELIGIBLE','INELIGIBLE','NEEDS_REVIEW', 'NOT_APPLICABLE') NOT NULL,
     homeless_status ENUM ('ELIGIBLE','INELIGIBLE','NEEDS_REVIEW', 'NOT_APPLICABLE') NULL,
     income_status   ENUM ('ELIGIBLE','INELIGIBLE','NEEDS_REVIEW', 'NOT_APPLICABLE') NULL,
-    asset_status    ENUM ('ELIGIBLE','INELIGIBLE','NEEDS_REVIEW', 'NOT_APPLICABLE') NULL,
-    car_status      ENUM ('ELIGIBLE','INELIGIBLE','NEEDS_REVIEW', 'NOT_APPLICABLE') NULL,
+    total_assets_status    ENUM ('ELIGIBLE','INELIGIBLE','NEEDS_REVIEW', 'NOT_APPLICABLE') NULL,
+    car_value_status      ENUM ('ELIGIBLE','INELIGIBLE','NEEDS_REVIEW', 'NOT_APPLICABLE') NULL,
+    real_estate_value_status     ENUM ('ELIGIBLE','INELIGIBLE','NEEDS_REVIEW', 'NOT_APPLICABLE') NULL,
+    residence_period_status      ENUM ('ELIGIBLE','INELIGIBLE','NEEDS_REVIEW', 'NOT_APPLICABLE') NULL,
+    subscription_period_status      ENUM ('ELIGIBLE','INELIGIBLE','NEEDS_REVIEW', 'NOT_APPLICABLE') NULL,
+    household_members_status      ENUM ('ELIGIBLE','INELIGIBLE','NEEDS_REVIEW', 'NOT_APPLICABLE') NULL,
     notes           JSON                                                            NULL,     -- ["무주택요건 완화 문구가 있어 확인이 필요합니다.", ...]
 
     created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -313,3 +342,15 @@ create table summary_json
         foreign key (danzi_id) references danzi (danzi_id)
             on update cascade on delete cascade
 );
+
+
+CREATE TABLE notice_summary_meta (
+                                     danzi_id   INT           NOT NULL PRIMARY KEY,       -- 공고/단지 식별자(외부 키로 사용)
+                                     title      VARCHAR(500)  NOT NULL,                   -- "# Notice Summary ..." 한 줄
+                                     created_at DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                     updated_at DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP
+                                         ON UPDATE CURRENT_TIMESTAMP
+);
+
+
+

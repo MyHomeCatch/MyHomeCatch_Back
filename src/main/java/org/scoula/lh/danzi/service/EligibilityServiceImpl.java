@@ -1,6 +1,7 @@
 package org.scoula.lh.danzi.service;
 
 import org.scoula.lh.danzi.dto.EligibilityResultDTO;
+import org.scoula.lh.danzi.dto.JsonSummaryDTO;
 import org.scoula.lh.danzi.dto.NoticeSummaryDTO;
 import org.scoula.selfCheck.dto.SelfCheckContentDto;
 import org.springframework.stereotype.Service;
@@ -10,7 +11,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
-import java.util.stream.Collectors;
 
 import static org.scoula.lh.danzi.dto.EligibilityResultDTO.EligibilityStatus.*;
 
@@ -23,39 +23,27 @@ public class EligibilityServiceImpl implements EligibilityService {
         notes.add("[" + category + "] " + msg);
     }
 
-    private String summaryItemsToString(List<NoticeSummaryDTO.SummaryItem> items) {
-        if (items == null || items.isEmpty()) {
-            return null;
-        }
-        return items.stream()
-                .map(NoticeSummaryDTO.SummaryItem::getEvidence)
-                .collect(Collectors.joining("\n"));
-    }
-
     public EligibilityResultDTO analyze(NoticeSummaryDTO summary, SelfCheckContentDto user) {
         notes = new ArrayList<>();
         Map<String, EligibilityResultDTO.EligibilityStatus> detail = new LinkedHashMap<>();
 
         // 1) 무주택
-        String applicationRequirements = summaryItemsToString(summary.getApplicationRequirements());
         EligibilityResultDTO.EligibilityStatus homeless =
-                evalHomeless(applicationRequirements, user);
+                evalHomeless(summary.getApplicationRequirements(), user);
         detail.put("homeless", homeless);
         note("무주택", "판정=" + homeless);
         if (homeless == NEEDS_REVIEW) notes.add("무주택요건 완화 문구가 있어 확인이 필요합니다.");
 
         // 2) 소득
-        String incomeConditions = summaryItemsToString(summary.getIncomeCriteria());
         EligibilityResultDTO.EligibilityStatus income =
-                evalIncome(incomeConditions, user);
+                evalIncome(summary.getIncomeConditions(), user);
         detail.put("income", income);
 
         note("소득", "판정=" + income);
 
         // 3) 총자산/부동산
-        String assetConditions = summaryItemsToString(summary.getAssetCriteria());
         EligibilityResultDTO.EligibilityStatus asset =
-                evalAssets(assetConditions, user);
+                evalAssets(summary.getAssetConditions(), user);
         detail.put("asset", asset);
         note("자산", "판정=" + asset);
 
@@ -94,11 +82,6 @@ public class EligibilityServiceImpl implements EligibilityService {
         result.setOverallStatus(overall);
         result.setTypes(correspondents);
         result.setNotes(notes);
-
-        result.setHomelessStatus(homeless);
-        result.setIncomeStatus(income);
-        result.setAssetStatus(asset);
-        result.setCarStatus(car);
 
         return result;
     }
@@ -211,8 +194,8 @@ public class EligibilityServiceImpl implements EligibilityService {
 
     public EligibilityResultDTO.EligibilityStatus evalCar(NoticeSummaryDTO summary, SelfCheckContentDto u) {
         note("자동차", "입력 체크: user=" + (u != null) + ", carValue=" + (u != null ? u.getCarValue() : null));
-        String all = joinNonNull(summaryItemsToString(summary.getIncomeCriteria()), summaryItemsToString(summary.getAssetCriteria()),
-                summaryItemsToString(summary.getApplicationRequirements()), summaryItemsToString(summary.getRentalConditions()));
+        String all = joinNonNull(summary.getIncomeConditions(), summary.getAssetConditions(),
+                summary.getApplicationRequirements(), summary.getRentalConditions());
         if (all == null) {
             note("자동차", "관련 텍스트 부재 → 판정 보류");
             return NEEDS_REVIEW;
@@ -251,9 +234,9 @@ public class EligibilityServiceImpl implements EligibilityService {
     public List<String> evalTypes(NoticeSummaryDTO summary, SelfCheckContentDto u) {
         List<String> types = new ArrayList<>();
         String text = joinNonNull(
-                summary != null ? summaryItemsToString(summary.getRentalConditions()) : null,
-                summary != null ? summaryItemsToString(summary.getApplicationRequirements()) : null,
-                summary != null ? summaryItemsToString(summary.getSelectionCriteria()) : null
+                summary != null ? summary.getRentalConditions() : null,
+                summary != null ? summary.getApplicationRequirements() : null,
+                summary != null ? summary.getSelectionCriteria() : null
         );
 
         if (text == null) {
@@ -321,7 +304,7 @@ public class EligibilityServiceImpl implements EligibilityService {
     }
 
     public Integer extractMaxPercent(String text) {
-        Matcher m = java.util.regex.Pattern.compile("(\\d{1,3})\\s*\\%\\s*이하").matcher(text);
+        Matcher m = java.util.regex.Pattern.compile("(\\d{1,3})\\s*%\\s*이하").matcher(text);
         Integer max = null;
         while (m.find()) {
             int v = Integer.parseInt(m.group(1));
@@ -357,7 +340,77 @@ public class EligibilityServiceImpl implements EligibilityService {
 
     public String joinNonNull(String... s) {
         StringBuilder sb = new StringBuilder();
-        for (String v : s) if (v != null && !v.isEmpty()) sb.append(v).append("\n");
+        for (String v : s) if (v != null && !v.isEmpty()) sb.append(v).append('\n');
         return sb.length() == 0 ? null : sb.toString();
+    }
+
+    @SafeVarargs
+    private final String joinSummaryItems(List<JsonSummaryDTO.SummaryItem>... sections) {
+        StringBuilder sb = new StringBuilder();
+        if (sections != null) {
+            for (List<JsonSummaryDTO.SummaryItem> sec : sections) {
+                if (sec == null || sec.isEmpty()) continue;
+                for (JsonSummaryDTO.SummaryItem it : sec) {
+                    if (it == null) continue;
+                    if (it.getGroup() != null && !it.getGroup().isEmpty()) {
+                        sb.append(it.getGroup()).append(": ");
+                    }
+                    if (it.getEvidence() != null && !it.getEvidence().isEmpty()) {
+                        sb.append(it.getEvidence());
+                    }
+                    sb.append('\n');
+                }
+            }
+        }
+        return sb.length() == 0 ? null : sb.toString();
+    }
+
+    public EligibilityResultDTO analyzeJson(JsonSummaryDTO summary, SelfCheckContentDto u) {
+        HeuristicEvaluator h = new HeuristicEvaluator();
+
+        Map<String, EligibilityResultDTO.EligibilityStatus> detail = new LinkedHashMap<>();
+
+        // 1) 무주택
+        var s1 = h.evalHomeless(summary, u);        detail.put("homeless", s1);
+
+        // 2) 소득
+        var s2 = h.evalIncome(summary, u);          detail.put("income", s2);
+
+        // 3) 총자산
+        var s3 = h.evalTotalAssets(summary, u);     detail.put("total_assets", s3);
+
+        // 4) 자동차가액
+        var s4 = h.evalCar(summary, u);             detail.put("car_value", s4);
+
+        // 5) 부동산 가액
+        var s5 = h.evalRealEstate(summary, u);      detail.put("real_estate_value", s5);
+
+        // 6) 거주기간
+        var s6 = h.evalResidencePeriod(summary, u); detail.put("residence_period", s6);
+
+        // 7) 청약가입기간
+        var s7 = h.evalSubscriptionPeriod(summary, u); detail.put("subscription_period", s7);
+
+        // 8) 세대원수(문구가 있을 때만)
+        var s8 = h.evalHouseholdMembers(summary, u); detail.put("household_members", s8);
+
+        List<String> s9 = h.evalTypes(summary, u);
+
+        // 종합 판정: 하나라도 INELIGIBLE → INELIGIBLE, 전부 ELIGIBLE/NOT_APPLICABLE → ELIGIBLE, 그 외 NEEDS_REVIEW
+        EligibilityResultDTO.EligibilityStatus overall = ELIGIBLE;
+        boolean anyReview = false;
+        for (var st : detail.values()) {
+            if (st == INELIGIBLE) { overall = INELIGIBLE; break; }
+            if (st == NEEDS_REVIEW) anyReview = true;
+        }
+        if (overall != INELIGIBLE && anyReview) overall = NEEDS_REVIEW;
+
+        EligibilityResultDTO out = new EligibilityResultDTO();
+        out.setDetailedStatus(detail);
+        out.setOverallStatus(overall);
+        out.setNotes(h.getNotes());
+        out.setTypes(s9);
+
+        return out;
     }
 }
