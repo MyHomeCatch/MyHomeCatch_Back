@@ -1,12 +1,20 @@
 package org.scoula.summary.service;
 
+import lombok.extern.log4j.Log4j2;
+import org.scoula.lh.danzi.domain.NoticeAttVO;
+import org.scoula.lh.danzi.dto.NoticeSummaryDTO;
+import org.scoula.lh.mapper.LhNoticeMapper;
+import org.scoula.lh.mapper.NoticeAttMapper;
 import org.scoula.summary.mapper.SummaryMapper;
 import org.scoula.summary.util.GeminiClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
+@Log4j2
 public class SummaryServiceImpl implements SummaryService {
 
     @Autowired
@@ -17,6 +25,12 @@ public class SummaryServiceImpl implements SummaryService {
 
     @Autowired
     private SummaryMapper summaryMapper;
+
+    @Autowired
+    private NoticeAttMapper noticeAttMapper;
+
+    @Autowired
+    private LhNoticeMapper lhNoticeMapper;
 
     @Override
     public String getOrCreateSummary(int danziId, String pdfUrl) {
@@ -76,6 +90,39 @@ public class SummaryServiceImpl implements SummaryService {
         // 5) 저장 (LONGTEXT/MEDIUMTEXT 컬럼 권장)
         summaryMapper.insertSummary(danziId, md);
         return md;
+    }
+
+    @Override
+    public void fillAllSummaries() {
+        int last = noticeAttMapper.getLast();
+        for (int i = 1; i < last; i++) {
+            Integer noticeId = i;
+            List<NoticeAttVO> noticeAtts = noticeAttMapper.getNoticeAttByNoticeId(noticeId);
+            if (noticeAtts != null && !noticeAtts.isEmpty()) {
+                String pdfUrl = noticeAtts.get(0).getAhflUrl();
+                if (pdfUrl != null && !pdfUrl.isBlank()) {
+                    Integer danziId = lhNoticeMapper.getDanziId(noticeId);
+                    if (danziId != null) {
+                        try {
+                            log.info("Summarizing noticeId={}, danziId={}, pdfUrl={}", noticeId, danziId, pdfUrl);
+                            getOrCreateMarkdownSummary(danziId, pdfUrl);
+                        } catch (Exception e) {
+                            log.error("Failed to summarize noticeId={}, danziId={}, pdfUrl={}", noticeId, danziId, pdfUrl, e);
+                        }
+                    } else {
+                        log.warn("danziId not found for noticeId={}", noticeId);
+                    }
+                } else {
+                    log.warn("pdfUrl is blank for noticeId={}", noticeId);
+                }
+            } else {
+                log.warn("noticeAtts not found for noticeId={}", noticeId);
+            }
+        }
+    }
+
+    public String getNoticeSummary(int danziId){
+        return summaryMapper.findByPanId(danziId);
     }
 
     // 기존 문자열 상수 (서비스에 둬도 되고 컨트롤러에 둬도 됨)

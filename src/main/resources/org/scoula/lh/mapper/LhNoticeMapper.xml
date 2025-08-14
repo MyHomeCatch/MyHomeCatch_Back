@@ -113,11 +113,11 @@
     </insert>
 
     <select id="getDanziId" resultType="Integer">
-        select danzi_id from notice_danzi where notice_id = #{noticeId}
+        select danzi_id from notice_danzi where notice_id = #{noticeId} LIMIT 1
     </select>
 
     <select id="getNoticeId" resultType="integer">
-        select notice_id from notice_danzi where danzi_id = #{danziId}
+        select notice_id from notice_danzi where danzi_id = #{danziId} LIMIT 1
     </select>
 
     <select id="getPanIds" resultType="String">

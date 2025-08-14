@@ -37,7 +37,7 @@
         </foreach>
     </insert>
 
-    <select id="getNoticeAttByNoticeId" parameterType="integer" resultType="org.scoula.lh.danzi.domain.NoticeAttVO">
+    <select id="getNoticeAttByNoticeId" parameterType="Integer" resultType="org.scoula.lh.danzi.domain.NoticeAttVO">
         SELECT
             notice_att_id,
             notice_id,
@@ -47,5 +47,9 @@
         FROM lh_notice_att
         WHERE notice_id = #{noticeId}
         ORDER BY notice_att_id
+    </select>
+
+    <select id="getLast" resultType="int">
+        select count(*) from lh_notice_att;
     </select>
 </mapper>

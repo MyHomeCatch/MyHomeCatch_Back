@@ -1,9 +1,13 @@
-package org.scoula.lh.danzi.dto;
+package org.scoula.lh.danzi.dto.http;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.scoula.lh.danzi.dto.DanziApplyDTO;
+import org.scoula.lh.danzi.dto.DanziAttDTO;
+import org.scoula.lh.danzi.dto.DanziDTO;
+import org.scoula.lh.danzi.dto.NoticeInfoDTO;
 
 import java.util.List;
 

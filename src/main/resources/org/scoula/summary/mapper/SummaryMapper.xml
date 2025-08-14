@@ -20,4 +20,73 @@
         INSERT INTO summary (danzi_id, summary)
         VALUES (#{danziId, jdbcType=INTEGER}, #{summary,jdbcType=LONGVARCHAR})
     </insert>
+
+    <insert id="insertSummaryV2" parameterType="org.scoula.lh.danzi.dto.NoticeSummaryDTO">
+        INSERT INTO notice_summary (
+            danzi_id,
+            application_requirements,
+            rental_conditions,
+            income_conditions,
+            asset_conditions,
+            selection_criteria,
+            schedule,
+            required_documents
+        )
+        VALUES (
+                   #{danziId,               jdbcType=INTEGER},
+                   #{applicationRequirements, jdbcType=LONGVARCHAR},
+                   #{rentalConditions,        jdbcType=LONGVARCHAR},
+                   #{incomeConditions,        jdbcType=LONGVARCHAR},
+                   #{assetConditions,         jdbcType=LONGVARCHAR},
+                   #{selectionCriteria,       jdbcType=LONGVARCHAR},
+                   #{schedule,                jdbcType=LONGVARCHAR},
+                   #{requiredDocuments,       jdbcType=LONGVARCHAR}
+               )
+        ON DUPLICATE KEY UPDATE
+                             application_requirements = VALUES(application_requirements),
+                             rental_conditions        = VALUES(rental_conditions),
+                             income_conditions        = VALUES(income_conditions),
+                             asset_conditions         = VALUES(asset_conditions),
+                             selection_criteria       = VALUES(selection_criteria),
+                             schedule                 = VALUES(schedule),
+                             required_documents       = VALUES(required_documents)
+    </insert>
+
+    <!-- DTO 매핑 -->
+    <resultMap id="findNoticeSummary" type="org.scoula.lh.danzi.dto.NoticeSummaryDTO">
+        <id     property="danziId"               column="danzi_id"/>
+        <result property="applicationRequirements" column="application_requirements"/>
+        <result property="rentalConditions"        column="rental_conditions"/>
+        <result property="incomeConditions"        column="income_conditions"/>
+        <result property="assetConditions"         column="asset_conditions"/>
+        <result property="selectionCriteria"       column="selection_criteria"/>
+        <result property="schedule"                column="schedule"/>
+        <result property="requiredDocuments"       column="required_documents"/>
+    </resultMap>
+
+
+    <!-- 공통 컬럼 목록 (SELECT에 include) -->
+    <sql id="noticeSummaryColumns">
+        danzi_id,
+        application_requirements,
+        rental_conditions,
+        income_conditions,
+        asset_conditions,
+        selection_criteria,
+        `schedule`,
+        required_documents
+    </sql>
+
+    <!-- 단건 조회 -->
+    <select id="findDTOByDanziId"
+            parameterType="int"
+            resultMap="findNoticeSummary">
+        SELECT
+        <include refid="noticeSummaryColumns"/>
+        FROM notice_summary
+        WHERE danzi_id = #{danziId}
+    </select>
+
+
+
 </mapper>

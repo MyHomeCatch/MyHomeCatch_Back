@@ -73,6 +73,10 @@ CREATE TABLE APPLYHOME_APT_competition
     Constraint apt_cmpet unique (PBLANC_NO, MODEL_NO, RESIDE_SECD)
 );
 
+DELETE
+FROM APPLYHOME_APT
+WHERE YEAR(CNTRCT_CNCLS_BGNDE) < 2025;
+
 CREATE TABLE APPLYHOME_APT_special
 (
     special_id                 INT AUTO_INCREMENT PRIMARY KEY,
@@ -147,7 +151,8 @@ CREATE TABLE danzi
     mvin_xpc_ym         DATE COMMENT '입주예정일'
 ) COMMENT ='단지 기본 정보 테이블';
 
-alter table danzi modify bzdt_nm varchar(64);
+alter table danzi
+    modify bzdt_nm varchar(64);
 
 -- 3. LH 공고 첨부파일
 DROP TABLE IF EXISTS lh_notice_att;
@@ -160,7 +165,8 @@ CREATE TABLE lh_notice_att
     ahfl_url             VARCHAR(2048) COMMENT '다운로드 URL',
     FOREIGN KEY (notice_id) REFERENCES lh_notice (notice_id)
 ) COMMENT ='LH 공고 첨부파일 테이블';
-alter table lh_notice_att MODIFY notice_id INT NOT NULL;
+alter table lh_notice_att
+    MODIFY notice_id INT NOT NULL;
 
 -- 4. 단지 첨부파일
 DROP TABLE IF EXISTS danzi_att;
@@ -175,7 +181,8 @@ CREATE TABLE danzi_att
 ) COMMENT ='단지 첨부파일 테이블';
 
 
-alter table danzi_att MODIFY danzi_id INT NOT NULL;
+alter table danzi_att
+    MODIFY danzi_id INT NOT NULL;
 
 -- 5. 공고-단지 매핑
 DROP TABLE IF EXISTS notice_danzi;
@@ -188,8 +195,10 @@ CREATE TABLE notice_danzi
     FOREIGN KEY (danzi_id) REFERENCES danzi (danzi_id)
 ) COMMENT ='공고-단지 매핑 테이블';
 
-alter table notice_danzi MODIFY notice_id INT NOT NULL;
-alter table notice_danzi MODIFY danzi_id INT NOT NULL;
+alter table notice_danzi
+    MODIFY notice_id INT NOT NULL;
+alter table notice_danzi
+    MODIFY danzi_id INT NOT NULL;
 
 -- 6. 단지 공급/청약 일정
 DROP TABLE IF EXISTS danzi_apply;
@@ -212,7 +221,8 @@ CREATE TABLE danzi_apply
     FOREIGN KEY (danzi_id) REFERENCES danzi (danzi_id)
 ) COMMENT ='단지별 청약 및 계약 일정 테이블';
 
-alter table danzi_apply MODIFY danzi_id INT NOT NULL;
+alter table danzi_apply
+    MODIFY danzi_id INT NOT NULL;
 
 
 drop table if exists comments;
@@ -221,8 +231,8 @@ create table comments
     comment_id INT PRIMARY KEY AUTO_INCREMENT,      -- 댓글 고유 ID
     danzi_id   INT          NOT NULL,               -- 단지 ID (외래 키 관계 가능)
     content    TEXT         NOT NULL,               -- 댓글 내용
-    user_id    INT          NOT NULL,        -- 작성자 ID
-    nickname   VARCHAR(255) NOT NULL,        -- 작성자 닉네임
+    user_id    INT          NOT NULL,               -- 작성자 ID
+    nickname   VARCHAR(255) NOT NULL,               -- 작성자 닉네임
     is_deleted BOOLEAN   DEFAULT FALSE,             -- 삭제 여부
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 작성 시각
     FOREIGN KEY (danzi_id) REFERENCES danzi (danzi_id),
@@ -231,19 +241,63 @@ create table comments
 ) COMMENT ="단지별 게시물 댓글창";
 
 -- 가져오려면 users nickname이 unique여야함
-ALTER TABLE users ADD UNIQUE (nickname);
+ALTER TABLE users
+    ADD UNIQUE (nickname);
 
 -- 단지 ID: 5에 대한 댓글
 INSERT INTO comments (danzi_id, content, user_id, nickname)
-VALUES
-    (5, '왕숙 푸르지오 관심있어요! 청약 일정은 언제인가요?', 2, '김재현'),
-    (5, '동호수 배치도가 인상적이네요.', 3, 'givemeakimchi');
+VALUES (5, '왕숙 푸르지오 관심있어요! 청약 일정은 언제인가요?', 2, '김재현'),
+       (5, '동호수 배치도가 인상적이네요.', 3, 'givemeakimchi');
 
 -- 단지 ID: 74에 대한 댓글
 INSERT INTO comments (danzi_id, content, user_id, nickname)
-VALUES
-    (74, '고등 S-3 단지 구조가 좋아보입니다.', 4, '류세민'),
-    (74, '지하철역이랑 가까운가요?', 5, '소현'),
-    (74, '분양가 정보는 어디서 확인하나요?', 6, '류세민2'),
-    (74, '위치도에서 학교가 가까워 보이네요.', 7, 'test1'),
-    (74, '주차 공간이 넉넉할까요?', 8, 'testss');
+VALUES (74, '고등 S-3 단지 구조가 좋아보입니다.', 4, '류세민'),
+       (74, '지하철역이랑 가까운가요?', 5, '소현'),
+       (74, '분양가 정보는 어디서 확인하나요?', 6, '류세민2'),
+       (74, '위치도에서 학교가 가까워 보이네요.', 7, 'test1'),
+       (74, '주차 공간이 넉넉할까요?', 8, 'testss');
+
+
+select count(*)
+from lh_notice_att;
+-- 단지별 공고 상세 내용을 저장
+CREATE TABLE notice_summary
+(
+    danzi_id                 INT      NOT NULL PRIMARY KEY, -- PK(업서트 대상 키)
+    application_requirements LONGTEXT NULL,                 -- 신청 자격
+    rental_conditions        LONGTEXT NULL,                 -- 임대 조건
+    income_conditions        LONGTEXT NULL,                 -- 소득 기준
+    asset_conditions         LONGTEXT NULL,                 -- 자산 기준
+    selection_criteria       LONGTEXT NULL,                 -- 선정/배점 기준
+    schedule                 LONGTEXT NULL,                 -- 추진 일정
+    required_documents       LONGTEXT NULL,                 -- 제출 서류
+    created_at               TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at               TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    CONSTRAINT fk_danzi_id
+        FOREIGN KEY (danzi_id) REFERENCES danzi (danzi_id)
+            ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+DROP TABLE IF EXISTS personalized_card;
+
+CREATE TABLE personalized_card
+(
+    user_id         INT                                                             NOT NULL, -- 대상 사용자
+    danzi_id        INT                                                             NOT NULL, -- 단지 ID
+    types           json null,
+
+    -- EligibilityResultDTO
+    overall_status  ENUM ('ELIGIBLE','INELIGIBLE','NEEDS_REVIEW', 'NOT_APPLICABLE') NOT NULL,
+    homeless_status ENUM ('ELIGIBLE','INELIGIBLE','NEEDS_REVIEW', 'NOT_APPLICABLE') NULL,
+    income_status   ENUM ('ELIGIBLE','INELIGIBLE','NEEDS_REVIEW', 'NOT_APPLICABLE') NULL,
+    asset_status    ENUM ('ELIGIBLE','INELIGIBLE','NEEDS_REVIEW', 'NOT_APPLICABLE') NULL,
+    car_status      ENUM ('ELIGIBLE','INELIGIBLE','NEEDS_REVIEW', 'NOT_APPLICABLE') NULL,
+    notes           JSON                                                            NULL,     -- ["무주택요건 완화 문구가 있어 확인이 필요합니다.", ...]
+
+    created_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at      TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+    UNIQUE KEY uk_user_danzi (user_id, danzi_id),                                             -- 업서트 키
+    CONSTRAINT fk_pc_user FOREIGN KEY (user_id) REFERENCES users (user_id) ON DELETE CASCADE,
+    CONSTRAINT fk_pc_danzi FOREIGN KEY (danzi_id) REFERENCES danzi (danzi_id) ON DELETE CASCADE
+);
