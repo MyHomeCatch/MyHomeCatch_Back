@@ -29,4 +29,9 @@ public class CalendarServiceImpl implements CalendarService {
                 .dataList(calendarList)
                 .build();
     }
+
+    @Override
+    public Integer getToday(String date) {
+        return calendarMapper.getToday(date);
+    }
 }

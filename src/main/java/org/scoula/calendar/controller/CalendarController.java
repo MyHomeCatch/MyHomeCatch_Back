@@ -27,4 +27,9 @@ public class CalendarController {
     public ResponseEntity<CalendarResponseDTO> getCalendar(@RequestParam String date) {
         return ResponseEntity.ok(calendarService.getCalendar(date));
     }
+
+    @GetMapping("/today")
+    public ResponseEntity<Integer> getApplyToday(@RequestParam String date) {
+        return ResponseEntity.ok(calendarService.getToday(date));
+    }
 }
