@@ -171,4 +171,11 @@ public class SummaryController {
         return ResponseEntity.ok(personalizedService.getOrCreatePersonalCard(houseId, requestDto.getUserId()));
     }
 
+
+    @ApiOperation(value = "자격진단 정보와 공고 요약문 비교 Json", notes = "사용자 자가진단 내용이 공고문 요약에 해당하는지 비교합니다.")
+    @PostMapping(value = "/personalCard/json/{houseId}", consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> createPersonalCardJson(@RequestBody DanziRequestDTO requestDto, @PathVariable Integer houseId) {
+        return ResponseEntity.ok(personalizedService.getOrCreatePersonalCardFromJson(houseId, requestDto.getUserId()));
+    }
 }

@@ -97,7 +97,7 @@ public class SummaryServiceImpl implements SummaryService {
     @Transactional
     public String getOrCreateJsonSummary(int danziId, String pdfUrl) {
 
-        String existing = summaryMapper.findByPanId(danziId);
+        String existing = summaryMapper.findJsonByDanziId(danziId);
         if (existing != null && !existing.isBlank()) {
             return existing;
         }
@@ -109,8 +109,9 @@ public class SummaryServiceImpl implements SummaryService {
             return "";
         }
 
-// 2) 프롬프트 구성 (서식 포맷터 사용 금지!)
-        String prompt = buildPrompt(baseText); // 위에 제시한 replace 방식
+        // 2) 프롬프트 구성 (서식 포맷터 사용 금지!)
+        String prompt = buildPrompt(baseText);
+        // 위에 제시한 replace 방식
 
         // 3) LLM 호출
         String json;
