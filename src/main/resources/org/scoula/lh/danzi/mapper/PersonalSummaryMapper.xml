@@ -14,15 +14,19 @@
         <association property="eligibilityResultDTO"
                      javaType="org.scoula.lh.danzi.dto.EligibilityResultDTO">
             <result property="overallStatus"  column="overall_status"/>
-            <result property="homelessStatus" column="homeless_status"/>
-            <result property="incomeStatus"   column="income_status"/>
-            <result property="assetStatus"    column="asset_status"/>
-            <result property="carStatus"      column="car_status"/>
+            <result property="detailedStatus.homeless"           column="homeless_status"/>
+            <result property="detailedStatus.income"             column="income_status"/>
+            <result property="detailedStatus.total_assets"       column="total_assets_status"/>
+            <result property="detailedStatus.car_value"          column="car_value_status"/>
+            <result property="detailedStatus.real_estate_value"  column="real_estate_value_status"/>
+            <result property="detailedStatus.residence_period"   column="residence_period_status"/>
+            <result property="detailedStatus.subscription_period" column="subscription_period_status"/>
+            <result property="detailedStatus.household_members"  column="household_members_status"/>
             <result property="types" column="types"
-                    typeHandler="org.scoula.summary.parsing.JsonStringListTypeHandler"/>
+                    typeHandler="org.scoula.summary.parsing.JsonSummaryTypeHandler"/>
             <!-- notes(JSON) -->
             <result property="notes" column="notes"
-                    typeHandler="org.scoula.summary.parsing.JsonStringListTypeHandler"/>
+                    typeHandler="org.scoula.summary.parsing.JsonSummaryTypeHandler"/>
         </association>
     </resultMap>
 
@@ -33,8 +37,12 @@
     overall_status,
     homeless_status,
     income_status,
-    asset_status,
-    car_status,
+     total_assets_status,
+     car_value_status,
+     real_estate_value_status,
+     residence_period_status,
+     subscription_period_status,
+     household_members_status,
     notes,
     types,
     created_at,
@@ -50,24 +58,36 @@
      overall_status,
      homeless_status,
      income_status,
-     asset_status,
-     car_status,
+     total_assets_status,
+     car_value_status,
+     real_estate_value_status,
+     residence_period_status,
+     subscription_period_status,
+     household_members_status,
      types,
      notes)
     VALUES (#{userId},
             #{danziId},
             #{eligibilityResultDTO.overallStatus},
-            #{eligibilityResultDTO.homelessStatus},
-            #{eligibilityResultDTO.incomeStatus},
-            #{eligibilityResultDTO.assetStatus},
-            #{eligibilityResultDTO.carStatus},
-            #{eligibilityResultDTO.types, typeHandler=org.scoula.summary.parsing.JsonStringListTypeHandler},
-                #{eligibilityResultDTO.notes, typeHandler=org.scoula.summary.parsing.JsonStringListTypeHandler})
+            #{eligibilityResultDTO.detailedStatus.homeless},
+            #{eligibilityResultDTO.detailedStatus.income},
+            #{eligibilityResultDTO.detailedStatus.total_assets},
+            #{eligibilityResultDTO.detailedStatus.car_value},
+            #{eligibilityResultDTO.detailedStatus.real_estate_value},
+            #{eligibilityResultDTO.detailedStatus.residence_period},
+            #{eligibilityResultDTO.detailedStatus.subscription_period},
+            #{eligibilityResultDTO.detailedStatus.household_members},
+            #{eligibilityResultDTO.types, typeHandler=org.scoula.summary.parsing.JsonSummaryTypeHandler},
+                #{eligibilityResultDTO.notes, typeHandler=org.scoula.summary.parsing.JsonSummaryTypeHandler})
     ON DUPLICATE KEY UPDATE overall_status  = VALUES(overall_status),
                             homeless_status = VALUES(homeless_status),
                             income_status   = VALUES(income_status),
-                            asset_status    = VALUES(asset_status),
-                            car_status      = VALUES(car_status),
+                            total_assets_status = values(total_assets_status),
+                            car_value_status = values(car_value_status),
+                            real_estate_value_status =values(real_estate_value_status),
+                            residence_period_status =values(residence_period_status),
+                            subscription_period_status=values(subscription_period_status),
+                            household_members_status=values(household_members_status),
                             notes           = VALUES(notes),
                             types            = values(types),
                             updated_at      = CURRENT_TIMESTAMP
