@@ -269,6 +269,11 @@ public class EligibilityServiceImpl implements EligibilityService {
 );
             return NEEDS_REVIEW;
         }
+        // NEEDS_REVIEW : 자동차가액(3803)이 자산으로 들어오는 경우 파싱 실패로 간주
+        if (u.getTotalAssets() != null && u.getTotalAssets().contains("3803")) {
+            note("자산", "사용자 총자산에 자동차가액이 포함된 것으로 보여 파싱 실패 처리: " + u.getTotalAssets());
+            return NEEDS_REVIEW;
+        }
         Integer userAsset = extractFirstMoneyManwon(u.getTotalAssets());
         note("자산", "사용자 총자산(만원) 파싱=" + userAsset +
         "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : "")
