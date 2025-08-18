@@ -190,23 +190,23 @@ public class EligibilityServiceImpl implements EligibilityService {
 
         if (!requiresHomeless) {
             note("무주택", "무주택 요건 비명시 → 해당 없음 처리");
-            notes.add("신청 자격에 무주택 관련이 없는 것으로 보입니다."+
+            notes.add("신청 자격에 무주택 관련이 없는 것으로 보입니다." +
                     "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : ""));
             return NOT_APPLICABLE;
         }
 
         if (u.getIsHomeless().equals("예")) {
             note("무주택", "사용자 응답=예 (무주택)");
-            notes.add("무주택 요건: 사용자가 무주택이므로 적격입니다."+
+            notes.add("무주택 요건: 사용자가 무주택이므로 적격입니다." +
                     "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : ""));
             return ELIGIBLE;
         }
         if (relaxed) {
-            note("무주택", "사용자 무주택 아님, 단 완화 문구 존재 → 추가 확인 필요"+
+            note("무주택", "사용자 무주택 아님, 단 완화 문구 존재 → 추가 확인 필요" +
                     "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : ""));
             return NEEDS_REVIEW;
         } else {
-            note("무주택", "사용자 무주택 아님 → 부적격"+
+            note("무주택", "사용자 무주택 아님 → 부적격" +
                     "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : ""));
             return INELIGIBLE;
         }
@@ -219,15 +219,15 @@ public class EligibilityServiceImpl implements EligibilityService {
             return NEEDS_REVIEW;
         }
         if (text.contains("소득 요건 배제") || text.contains("소득 배제")) {
-            note("소득", "공고에서 '소득 요건 배제' 명시 → 해당 없음"+
+            note("소득", "공고에서 '소득 요건 배제' 명시 → 해당 없음" +
                     "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : ""));
             return NOT_APPLICABLE;
         }
 
         Integer limit = extractMaxPercent(text);
-        note("소득", "공고 상한% 파싱 값 " + limit  +
-        "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : "")
-);
+        note("소득", "공고 상한% 파싱 값 " + limit +
+                "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : "")
+        );
         if (limit == null) return NEEDS_REVIEW;
         Integer userPct = extractMaxPercent(u.getMonthlyIncome());
         note("소득", "사용자 소득% 은 " + userPct + "로 추정돼요." +
@@ -254,41 +254,39 @@ public class EligibilityServiceImpl implements EligibilityService {
             return NEEDS_REVIEW;
         }
         if (text.contains("총자산 요건 배제") || text.contains("총자산 배제") || text.contains("자산 요건 배제")) {
-            note("자산", "공고에서 '자산 요건 배제' 명시 → 해당 없음"+
+            note("자산", "공고에서 '자산 요건 배제' 명시 → 해당 없음" +
                     "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : ""));
             return NOT_APPLICABLE;
         }
 
         Integer limitAsset = extractFirstMoneyManwon(text);
+        if (limitAsset == 3803) {
+            note("자산", "총자산 파싱에 자동차가액이 포함된 것으로 보여 파싱 실패 처리: " + u.getTotalAssets());
+            return NEEDS_REVIEW;
+        }
         note("자산", "공고 총자산 상한(만원) 파싱=" + limitAsset +
-        "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : "")
-);
+                "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : "")
+        );
         if (limitAsset == null) {
             note("자산", "총자산 상한 파싱 실패 → 판정 보류 : text=" +
-            "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : "")
-);
+                    "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : "")
+            );
             return NEEDS_REVIEW;
         }
-        // NEEDS_REVIEW : 자동차가액(3803)이 자산으로 들어오는 경우 파싱 실패로 간주
-        if (u.getTotalAssets() != null && u.getTotalAssets().contains("3803")) {
-            note("자산", "사용자 총자산에 자동차가액이 포함된 것으로 보여 파싱 실패 처리: " + u.getTotalAssets());
-            return NEEDS_REVIEW;
-        }
+
         Integer userAsset = extractFirstMoneyManwon(u.getTotalAssets());
-        note("자산", "사용자 총자산(만원) 파싱=" + userAsset +
-        "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : "")
-);
         if (userAsset == null) {
             note("자산", "사용자 총자산 파싱 실패 → 판정 보류: text=" +
                     "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : "")
             );
             return NEEDS_REVIEW;
         }
+        note("자산", "사용자 총자산(만원) 파싱=" + userAsset );
         if (userAsset <= limitAsset) {
-            note("자산", "비교: 사용자=" + userAsset + " ≤ 기준=" + limitAsset + " → 적격");
+            note("자산", "비교: 사용자=" + userAsset + "만원 ≤ 기준=" + limitAsset + "만원 → 적격");
             return ELIGIBLE;
         } else {
-            note("자산", "비교: 사용자=" + userAsset + " > 기준=" + limitAsset + " → 부적격");
+            note("자산", "비교: 사용자=" + userAsset + "만원 > 기준=" + limitAsset + "만원 → 부적격");
             return INELIGIBLE;
         }
     }
@@ -301,24 +299,20 @@ public class EligibilityServiceImpl implements EligibilityService {
         }
 
         boolean mentionsCar = text.contains("자동차가액") || text.contains("차량가액") || text.contains("자동차 기준");
-        note("자동차", "문구존재=" + mentionsCar+
+        note("자동차", "문구존재=" + mentionsCar +
                 "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : ""));
         if (!mentionsCar) {
             note("자동차", "자동차 기준 미명시 → 해당 없음");
             return NOT_APPLICABLE;
         }
         if (text.contains("자동차가액은 3,803만원 이하") || text.contains("3,803만원 이하")) {
-            note("자동차", "기준=3,803만원 이하로 탐지"+
+            note("자동차", "기준=3,803만원 이하로 탐지" +
                     "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : ""));
 
             Integer userCar = extractFirstMoneyManwon(u.getCarValue());
-            note("자동차", "사용자 자동차가액(만원) 파싱=" + userCar  +
-            "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : "")
-);
+            note("자동차", "사용자 자동차가액(만원) 파싱=" + userCar);
             if (userCar == null) {
-                note("자동차", "사용자 자동차가액 파싱 실패 → 판정 보류: text=" +
-                        "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : "")
-                );
+                note("자동차", "사용자 자동차가액 파싱 실패 → 판정 보류");
                 return NEEDS_REVIEW;
             }
             if (userCar <= 3803) {
@@ -345,8 +339,8 @@ public class EligibilityServiceImpl implements EligibilityService {
 
         Integer user = parseUserRealEstate(u.getRealEstateValue());
         note("부동산", "자격 충족을 위한 한계는" + limit + "만원, 사용자의 총자산은 " + user +
-        "(" + (txt != null ? txt.substring(0, Math.min(txt.length(), 80)) : "")
- + "입니다.");
+                "(" + (txt != null ? txt.substring(0, Math.min(txt.length(), 80)) : "")
+                + "입니다.");
         if (limit == null) {
             note("부동산", "공고 부동산 정보를 확인할 수 없어 판정 보류합니다.: text=" +
                     "(" + (txt != null ? txt.substring(0, Math.min(txt.length(), 80)) : "")
@@ -477,7 +471,7 @@ public class EligibilityServiceImpl implements EligibilityService {
         Set<String> noticeGroups = detectGroupsInNotice(noticeText);
         Set<String> userGroups = extractGroupsFromUser(u);
 
-        note("대상", "공고에서 찾은 유형: " + noticeGroups+
+        note("대상", "공고에서 찾은 유형: " + noticeGroups +
                 "(" + (noticeText != null ? noticeText.substring(0, Math.min(noticeText.length(), 80)) : ""));
         note("대상", "사용자가 해당하는 유형: " + userGroups);
 
