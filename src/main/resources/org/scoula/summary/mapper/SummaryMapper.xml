@@ -11,57 +11,107 @@
         WHERE danzi_id = #{danziId}
     </select>
 
-<!--    <insert id="insertSummary">-->
-<!--        INSERT INTO summary (pan_id, summary)-->
-<!--        VALUES (#{panId}, #{summary})-->
-<!--    </insert>-->
+    <!--    <insert id="insertSummary">-->
+    <!--        INSERT INTO summary (pan_id, summary)-->
+    <!--        VALUES (#{panId}, #{summary})-->
+    <!--    </insert>-->
 
     <insert id="insertSummary">
         INSERT INTO summary (danzi_id, summary)
         VALUES (#{danziId, jdbcType=INTEGER}, #{summary,jdbcType=LONGVARCHAR})
     </insert>
 
+    <insert id="insertSummaryJson">
+        INSERT INTO summary_json (danzi_id, summary)
+        VALUES (#{danziId, jdbcType=INTEGER}, #{summary,jdbcType=LONGVARCHAR})
+        on duplicate key update summary = values(summary)
+    </insert>
+
+    <insert id="insertSummaryJsonDTO" parameterType="org.scoula.lh.danzi.dto.NoticeSummaryDTO">
+        INSERT INTO notice_summary_json (danzi_id, title,
+                                         overview, key_points, target_groups,
+                                         application_requirements, rental_conditions, income_conditions,
+                                         asset_conditions,
+                                         selection_criteria, schedule, required_documents, reference_links)
+        VALUES (#{danziId},
+                #{title},
+                CAST(#{overview,               typeHandler=org.scoula.summary.parsing.JsonSummaryTypeHandler} AS JSON),
+                CAST(#{keyPoints,              typeHandler=org.scoula.summary.parsing.JsonSummaryTypeHandler} AS JSON),
+                CAST(#{targetGroups,           typeHandler=org.scoula.summary.parsing.JsonSummaryTypeHandler} AS JSON),
+                CAST(#{applicationRequirements,typeHandler=org.scoula.summary.parsing.JsonSummaryTypeHandler} AS JSON),
+                CAST(#{rentalConditions,       typeHandler=org.scoula.summary.parsing.JsonSummaryTypeHandler} AS JSON),
+                CAST(#{incomeCriteria,         typeHandler=org.scoula.summary.parsing.JsonSummaryTypeHandler} AS JSON),
+                CAST(#{assetCriteria,          typeHandler=org.scoula.summary.parsing.JsonSummaryTypeHandler} AS JSON),
+                CAST(#{selectionCriteria,      typeHandler=org.scoula.summary.parsing.JsonSummaryTypeHandler} AS JSON),
+                CAST(#{schedule,               typeHandler=org.scoula.summary.parsing.JsonSummaryTypeHandler} AS JSON),
+                CAST(#{requiredDocuments,      typeHandler=org.scoula.summary.parsing.JsonSummaryTypeHandler} AS JSON),
+                CAST(#{referenceLinks,         typeHandler=org.scoula.summary.parsing.JsonSummaryTypeHandler} AS JSON))
+        ON DUPLICATE KEY UPDATE title                    = VALUES(title),
+                                overview                 = VALUES(overview),
+                                key_points               = VALUES(key_points),
+                                target_groups            = VALUES(target_groups),
+                                application_requirements = VALUES(application_requirements),
+                                rental_conditions        = VALUES(rental_conditions),
+                                income_conditions        = VALUES(income_conditions),
+                                asset_conditions         = VALUES(asset_conditions),
+                                selection_criteria       = VALUES(selection_criteria),
+                                schedule                 = VALUES(schedule),
+                                required_documents       = VALUES(required_documents),
+                                reference_links          = VALUES(reference_links)
+    </insert>
+
     <insert id="insertSummaryV2" parameterType="org.scoula.lh.danzi.dto.NoticeSummaryDTO">
-        INSERT INTO notice_summary (
-            danzi_id,
-            application_requirements,
-            rental_conditions,
-            income_conditions,
-            asset_conditions,
-            selection_criteria,
-            schedule,
-            required_documents
-        )
-        VALUES (
-                   #{danziId,               jdbcType=INTEGER},
-                   #{applicationRequirements, jdbcType=LONGVARCHAR},
-                   #{rentalConditions,        jdbcType=LONGVARCHAR},
-                   #{incomeConditions,        jdbcType=LONGVARCHAR},
-                   #{assetConditions,         jdbcType=LONGVARCHAR},
-                   #{selectionCriteria,       jdbcType=LONGVARCHAR},
-                   #{schedule,                jdbcType=LONGVARCHAR},
-                   #{requiredDocuments,       jdbcType=LONGVARCHAR}
-               )
-        ON DUPLICATE KEY UPDATE
-                             application_requirements = VALUES(application_requirements),
-                             rental_conditions        = VALUES(rental_conditions),
-                             income_conditions        = VALUES(income_conditions),
-                             asset_conditions         = VALUES(asset_conditions),
-                             selection_criteria       = VALUES(selection_criteria),
-                             schedule                 = VALUES(schedule),
-                             required_documents       = VALUES(required_documents)
+        INSERT INTO notice_summary (danzi_id,
+                                    application_requirements,
+                                    rental_conditions,
+                                    income_conditions,
+                                    asset_conditions,
+                                    selection_criteria,
+                                    schedule,
+                                    required_documents)
+        VALUES (#{danziId,               jdbcType=INTEGER},
+                #{applicationRequirements, jdbcType=LONGVARCHAR},
+                #{rentalConditions,        jdbcType=LONGVARCHAR},
+                #{incomeConditions,        jdbcType=LONGVARCHAR},
+                #{assetConditions,         jdbcType=LONGVARCHAR},
+                #{selectionCriteria,       jdbcType=LONGVARCHAR},
+                #{schedule,                jdbcType=LONGVARCHAR},
+                #{requiredDocuments,       jdbcType=LONGVARCHAR})
+        ON DUPLICATE KEY UPDATE application_requirements = VALUES(application_requirements),
+                                rental_conditions        = VALUES(rental_conditions),
+                                income_conditions        = VALUES(income_conditions),
+                                asset_conditions         = VALUES(asset_conditions),
+                                selection_criteria       = VALUES(selection_criteria),
+                                schedule                 = VALUES(schedule),
+                                required_documents       = VALUES(required_documents)
     </insert>
 
     <!-- DTO 매핑 -->
     <resultMap id="findNoticeSummary" type="org.scoula.lh.danzi.dto.NoticeSummaryDTO">
-        <id     property="danziId"               column="danzi_id"/>
+        <id property="danziId" column="danzi_id"/>
         <result property="applicationRequirements" column="application_requirements"/>
-        <result property="rentalConditions"        column="rental_conditions"/>
-        <result property="incomeConditions"        column="income_conditions"/>
-        <result property="assetConditions"         column="asset_conditions"/>
-        <result property="selectionCriteria"       column="selection_criteria"/>
-        <result property="schedule"                column="schedule"/>
-        <result property="requiredDocuments"       column="required_documents"/>
+        <result property="rentalConditions" column="rental_conditions"/>
+        <result property="incomeConditions" column="income_conditions"/>
+        <result property="assetConditions" column="asset_conditions"/>
+        <result property="selectionCriteria" column="selection_criteria"/>
+        <result property="schedule" column="schedule"/>
+        <result property="requiredDocuments" column="required_documents"/>
+    </resultMap>
+
+    <resultMap id="findJsonDTO" type="org.scoula.lh.danzi.dto.JsonSummaryDTO">
+        <id property="danziId" column="danzi_id"/>
+        <result property="title" column="title"/>
+        <result property="overview" column="overview" typeHandler="org.scoula.summary.parsing.JsonSummaryTypeHandler"/>
+        <result property="keyPoints" column="key_points" typeHandler="org.scoula.summary.parsing.JsonSummaryTypeHandler" />
+        <result property="targetGroups" column="target_groups" typeHandler="org.scoula.summary.parsing.JsonSummaryTypeHandler"/>
+        <result property="applicationRequirements" column="application_requirements" typeHandler="org.scoula.summary.parsing.JsonSummaryTypeHandler"/>
+        <result property="rentalConditions" column="rental_conditions" typeHandler="org.scoula.summary.parsing.JsonSummaryTypeHandler"/>
+        <result property="incomeCriteria" column="income_conditions" typeHandler="org.scoula.summary.parsing.JsonSummaryTypeHandler"/>
+        <result property="assetCriteria" column="asset_conditions" typeHandler="org.scoula.summary.parsing.JsonSummaryTypeHandler"/>
+        <result property="selectionCriteria" column="selection_criteria" typeHandler="org.scoula.summary.parsing.JsonSummaryTypeHandler"/>
+        <result property="schedule" column="schedule" typeHandler="org.scoula.summary.parsing.JsonSummaryTypeHandler"/>
+        <result property="requiredDocuments" column="required_documents" typeHandler="org.scoula.summary.parsing.JsonSummaryTypeHandler"/>
+        <result property="referenceLinks" column="reference_links" typeHandler="org.scoula.summary.parsing.JsonSummaryTypeHandler"/>
     </resultMap>
 
 
@@ -87,6 +137,29 @@
         WHERE danzi_id = #{danziId}
     </select>
 
+    <select id="findJsonByDanziId" parameterType="int" resultType="java.lang.String">
+        SELECT summary
+        FROM summary_json
+        WHERE danzi_id = #{danziId}
+    </select>
+
+    <select id="findJsonDTOByDanziId" parameterType="int" resultMap="findJsonDTO">
+        SELECT danzi_id,
+               title,
+               overview,
+               key_points,
+               target_groups,
+               application_requirements,
+               rental_conditions,
+               income_conditions,
+               asset_conditions,
+               selection_criteria,
+               `schedule`,
+               required_documents,
+               reference_links
+        FROM notice_summary_json
+        WHERE danzi_id = #{danziId}
+    </select>
 
 
 </mapper>

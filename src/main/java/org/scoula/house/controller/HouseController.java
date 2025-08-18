@@ -47,7 +47,17 @@ public class HouseController {
     @ApiOperation(value = "Get House with User Data", notes = "Get details of a specific house with user data.")
     public ResponseEntity<?> getHouseWithUserData(@RequestBody DanziRequestDTO requestDto, @PathVariable Integer houseId) {
         DanziResponseDTO house = houseService.getHouseWithUserData(requestDto, houseId);
-        PersonalizedCardDTO card = personalizedService.getOrCreatePersonalCard(houseId, requestDto.getUserId());
+//        PersonalizedCardDTO card = personalizedService.getOrCreatePersonalCard(houseId, requestDto.getUserId());
+        return ResponseEntity.ok(house);
+    }
+
+    @PostMapping(value = "/json/{houseId}",
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiOperation(value = "Get House with Json Parsing User Data", notes = "Get details of a specific house with user data.")
+    public ResponseEntity<?> getHouseWithUserDataJson(@RequestBody DanziRequestDTO requestDto, @PathVariable Integer houseId) {
+        DanziResponseDTO house = houseService.getHouseWithUserData(requestDto, houseId);
+        PersonalizedCardDTO card = personalizedService.getOrCreatePersonalCardFromJson(houseId, requestDto.getUserId());
         return ResponseEntity.ok(Map.of("house", house, "personal_card", card));
     }
 

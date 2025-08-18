@@ -16,7 +16,7 @@
     </typeAliases>
 
     <typeHandlers>
-        <typeHandler handler="org.scoula.summary.parsing.JsonStringListTypeHandler"/>
+        <typeHandler handler="org.scoula.summary.parsing.JsonSummaryTypeHandler"/>
     </typeHandlers>
 
     <!-- 매퍼 경로 설정 -->
