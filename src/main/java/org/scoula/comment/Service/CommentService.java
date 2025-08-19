@@ -1,9 +1,9 @@
-package org.scoula.DetailPage.Service;
+package org.scoula.comment.Service;
 
 
 import lombok.RequiredArgsConstructor;
-import org.scoula.DetailPage.mapper.CommentMapper;
-import org.scoula.DetailPage.dto.CommentDTO;
+import org.scoula.comment.mapper.CommentMapper;
+import org.scoula.comment.dto.CommentDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

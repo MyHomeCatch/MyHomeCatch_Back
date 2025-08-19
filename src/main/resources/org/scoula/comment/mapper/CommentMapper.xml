@@ -3,9 +3,9 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="org.scoula.DetailPage.mapper.CommentMapper">
+<mapper namespace="org.scoula.comment.mapper.CommentMapper">
 
-    <select id="getCommentsByDanziId" resultType="org.scoula.DetailPage.dto.CommentDTO">
+    <select id="getCommentsByDanziId" resultType="org.scoula.comment.dto.CommentDTO">
         SELECT c.danzi_id AS danziId,
                c.comment_id AS commentId,
                c.content,
@@ -19,7 +19,7 @@
         ORDER BY c.comment_id DESC
     </select>
 
-    <insert id="insertComment" parameterType="org.scoula.DetailPage.dto.CommentDTO">
+    <insert id="insertComment" parameterType="org.scoula.comment.dto.CommentDTO">
         INSERT INTO comments (danzi_id, content, user_id, nickname, is_deleted)
         SELECT
             #{danziId},
