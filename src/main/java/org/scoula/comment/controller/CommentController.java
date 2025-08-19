@@ -1,11 +1,11 @@
-package org.scoula.DetailPage.controller;
+package org.scoula.comment.controller;
 
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import org.scoula.DetailPage.Service.CommentService;
-import org.scoula.DetailPage.dto.CommentDTO;
+import org.scoula.comment.Service.CommentService;
+import org.scoula.comment.dto.CommentDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

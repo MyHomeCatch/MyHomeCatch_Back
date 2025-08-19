@@ -1,7 +1,7 @@
-package org.scoula.DetailPage.mapper;
+package org.scoula.comment.mapper;
 
 import org.apache.ibatis.annotations.Param;
-import org.scoula.DetailPage.dto.CommentDTO;
+import org.scoula.comment.dto.CommentDTO;
 
 import java.util.List;
 

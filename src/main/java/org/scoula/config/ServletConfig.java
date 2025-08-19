@@ -14,15 +14,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 @EnableWebMvc
-@ComponentScan(basePackages = {
-    "org.scoula",                    // 전체 기본 패키지
-    "org.scoula.exception",          // 예외 처리 관련 패키지
-    "org.scoula.controller",         // 웹 컨트롤러
-    "org.scoula.statics.controller", // 정적 페이지용 컨트롤러
-    "org.scoula.house",               // LH 공고 관련 컨트롤러/서비스 등
-    "org.scoula.lh.controller",
-        "org.scoula.ChatBot.Controller"
-})
+@ComponentScan(basePackages = {"org.scoula"})
 @PropertySource("classpath:application.properties")
 @EnableScheduling
 public class ServletConfig implements WebMvcConfigurer {
