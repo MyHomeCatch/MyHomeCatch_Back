@@ -127,38 +127,74 @@
 <br>
 
 # **5. application.properties (설정 파일)**
-1. `application.properties` 파일 생성
-    루트 디렉토리에 `application.properties` 파일을 생성하고 아래 내용을 입력합니다.
+## 설정 파일 생성
+프로젝트 루트 디렉토리에 `application.properties` 파일을 생성하고, 아래 예시를 참고해 환경 변수 값을 채워 넣습니다.  
+(**주의:** 실제 값은 `{}` 부분을 발급받은 값으로 교체하세요.)
 ```
 
-jdbc.driver={your-db}
-jdbc.url={your-db}
-jdbc.username={your-db}
-jdbc.password={your-db}
+# ---------------------------
+# Database 설정
+# ---------------------------
+jdbc.driver={JDBC_DRIVER}          # DB 드라이버 (ex: com.mysql.cj.jdbc.Driver)
+jdbc.url={JDBC_URL}                # DB 접속 URL (ex: jdbc:mysql://localhost:3306/db명)
+jdbc.username={DB_USERNAME}        # DB 계정명
+jdbc.password={DB_PASSWORD}        # DB 비밀번호
 
-APPLYHOME_API_SERVICE_KEY={your-api-key}
-LH_API_SERVICE_KEY={your-api-key}
+
+# ---------------------------
+# 공공 API 키
+# ---------------------------
+APPLYHOME_API_SERVICE_KEY={APPLYHOME_API_KEY}   # 국토교통부 청약홈 API 키 (공공데이터포털에서 발급)
+LH_API_SERVICE_KEY={LH_API_KEY}                 # LH 공사 관련 API 키 (공공데이터포털에서 발급)
 
 
-kakao.clientId={your-api-key}
-kakao.redirectUrl=http://localhost:5173/auth/loading
+# ---------------------------
+# Kakao 로그인
+# ---------------------------
+kakao.clientId={KAKAO_CLIENT_ID}                        # 카카오 개발자센터에서 발급받은 REST API 키
+kakao.redirectUrl=http://localhost:5173/auth/loading    # 로그인 후 redirect 받을 URL (프론트엔드 주소)
 
-google.client.id={your-api-key}
-google.client.secret={your-api-key}
-google.redirect.uri=http://localhost:5173/auth/googleloading
 
-# email
+# ---------------------------
+# Google 로그인
+# ---------------------------
+google.client.id={GOOGLE_CLIENT_ID}         # Google Cloud Console OAuth 클라이언트 ID
+google.client.secret={GOOGLE_CLIENT_SECRET} # Google Cloud Console OAuth 클라이언트 Secret
+google.redirect.uri=http://localhost:5173/auth/googleloading  # 로그인 후 redirect 받을 프론트엔드 주소
+# (개발 시 로컬 5173, 실제 서비스 시 배포 URL로 교체 필요)
+
+
+# ---------------------------
+# 이메일 (Gmail SMTP)
+# ---------------------------
 spring.mail.host=smtp.gmail.com
 spring.mail.port=587
-spring.mail.username={your-api-key}
-spring.mail.password={your-api-key}
+spring.mail.username={GMAIL_USERNAME}    # Gmail 주소 (보내는 계정)
+spring.mail.password={GMAIL_APP_PASSWORD} # Gmail 앱 비밀번호 (2단계 인증 후 발급 필요)
 spring.mail.properties.mail.smtp.auth=true
 spring.mail.properties.mail.smtp.timeout=5000
 spring.mail.properties.mail.smtp.starttls.enable=true
 
-# chatAI
-gemini.api.key={your-api-key}
-gemini.api.url={your-api-key}
+
+# ---------------------------
+# Chat AI (예: Gemini)
+# ---------------------------
+gemini.api.key={GEMINI_API_KEY}  # Google AI Studio (Gemini)에서 발급받은 API 키
+gemini.api.url={GEMINI_API_URL}  # Gemini API 호출 endpoint URL (예: https://generativelanguage.googleapis.com/v1beta)
+
 
 ```
+## 📖 환경 변수 설명
+
+| 변수명                                                             | 설명                    | 발급/설정 경로                                                 |
+| --------------------------------------------------------------- | --------------------- | -------------------------------------------------------- |
+| `{JDBC_DRIVER}`, `{JDBC_URL}`, `{DB_USERNAME}`, `{DB_PASSWORD}` | DB 연결 설정              | 사용 중인 DB(MySQL, PostgreSQL 등) 환경                         |
+| `{APPLYHOME_API_KEY}`                                           | 청약홈 API 키             | [공공데이터포털](https://www.data.go.kr)                        |
+| `{LH_API_KEY}`                                                  | LH 임대주택 API 키         | [공공데이터포털](https://www.data.go.kr)                        |
+| `{KAKAO_CLIENT_ID}`                                             | 카카오 로그인 REST API 키    | [카카오 개발자센터](https://developers.kakao.com)                |
+| `{GOOGLE_CLIENT_ID}` / `{GOOGLE_CLIENT_SECRET}`                 | Google OAuth2 클라이언트   | [Google Cloud Console](https://console.cloud.google.com) |
+| `{GMAIL_USERNAME}`                                              | Gmail 계정 (보내는 이메일)    | Gmail 계정                                                 |
+| `{GMAIL_APP_PASSWORD}`                                          | Gmail 앱 비밀번호 (2FA 필요) | Google 계정 보안 → 앱 비밀번호                                    |
+| `{GEMINI_API_KEY}`                                              | Gemini API Key        | [Google AI Studio](https://aistudio.google.com)          |
+| `{GEMINI_API_URL}`                                              | Gemini API Endpoint   | Google AI Studio Docs                                    |
 
