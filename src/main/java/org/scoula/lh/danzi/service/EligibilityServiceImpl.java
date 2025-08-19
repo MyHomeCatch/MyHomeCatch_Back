@@ -79,8 +79,8 @@ public class EligibilityServiceImpl implements EligibilityService {
         );
         List<String> correspondents = evalTypes(typeText, user);
         if (correspondents.size() == 0) {
-            detail.put("correspondents", INELIGIBLE);
-            note("대상", "판정=" + INELIGIBLE);
+            detail.put("correspondents", NOT_APPLICABLE);
+            note("대상", "판정=" + NOT_APPLICABLE);
         } else {
             detail.put("correspondents", ELIGIBLE);
             note("대상", "판정=" + ELIGIBLE);
@@ -158,7 +158,7 @@ public class EligibilityServiceImpl implements EligibilityService {
         // evalTypes는 자격/부적격이 아닌, 해당하는 유형 리스트를 반환합니다.
         List<String> correspondentTypes = evalTargetGroups(summary, user);
         // 사용자가 해당하는 유형이 하나라도 있으면 '적격'으로 간주합니다.
-        detail.put("types", correspondentTypes.isEmpty() ? INELIGIBLE : ELIGIBLE);
+        detail.put("types", correspondentTypes.isEmpty() ? NOT_APPLICABLE : ELIGIBLE);
 
 
         EligibilityResultDTO result = new EligibilityResultDTO();
