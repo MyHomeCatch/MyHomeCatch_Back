@@ -85,7 +85,7 @@
 ## 🔧 **Backend**
 
 | 기술 | 배지 |
-|———|———|
+|------|------|
 | Java Spring Framework | ![Java Spring Framework](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white) |
 | Tomcat | ![Apache Tomcat](https://img.shields.io/badge/apache%20tomcat-%23F8DC75.svg?style=for-the-badge&logo=apache-tomcat&logoColor=black) |
 | Gradle | ![JavaScript](https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white) |
@@ -95,7 +95,7 @@
 ## 🚀 **DB**
 
 | 기술 | 배지 |
-|———|———|
+|------|------|
 | MySQL | ![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white) |
 | MyBatis | ![MyBatis](https://img.shields.io/badge/mybatis-6DB33F?style=for-the-badge&logo=mybatis&logoColor=white) |
 
@@ -105,7 +105,7 @@
 ## 🔧 APIS
 
 | 기술 | 배지 |
-|———|———|
+|------|------|
 | Google Gemini API | ![Google Gemini API](https://img.shields.io/badge/Google%20Gemini-4285F4?style=for-the-badge&logo=google&logoColor=white) |
 | Kakao Maps API | ![Kakao Maps API](https://img.shields.io/badge/Kakao%20Maps-FFCD00?style=for-the-badge&logo=kakao&logoColor=000000) |
 | 공공데이터포털 | ![공공데이터포털](https://img.shields.io/badge/%EA%B3%B5%EA%B3%B5%EB%8D%B0%EC%9D%B4%ED%84%B0%ED%8F%AC%ED%84%B8-FFCD00?style=for-the-badge&logoColor=000000) |
