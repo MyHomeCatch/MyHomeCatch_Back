@@ -61,7 +61,6 @@ public class ParsedSummaryServiceImpl implements ParsedSummaryService {
     @Transactional
     public JsonSummaryDTO createFromJson(int danziId, String json) {
         if (json == null || json.trim().isEmpty()) {
-            // 0) 파라미터가 비어있다면 DB에 저장된 원문 JSON을 사용
             String fromDb = summaryMapper.findJsonByDanziId(danziId);
             if (fromDb == null || fromDb.trim().isEmpty()) {
                 throw new ResponseStatusException(

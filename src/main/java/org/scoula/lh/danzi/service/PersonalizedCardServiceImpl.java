@@ -8,12 +8,18 @@ import org.scoula.lh.danzi.dto.JsonSummaryDTO;
 import org.scoula.lh.danzi.dto.NoticeSummaryDTO;
 import org.scoula.lh.danzi.dto.http.PersonalizedCardDTO;
 import org.scoula.lh.danzi.mapper.PersonalSummaryMapper;
+import org.scoula.lh.danzi.domain.NoticeAttVO;
+import org.scoula.lh.mapper.LhNoticeMapper;
+import org.scoula.lh.mapper.NoticeAttMapper;
 import org.scoula.selfCheck.dto.SelfCheckContentDto;
 import org.scoula.selfCheck.mapper.SelfCheckMapper;
 import org.scoula.summary.mapper.SummaryMapper;
 import org.scoula.summary.service.ParsedSummaryService;
+import org.scoula.summary.service.SummaryService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,10 +27,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class PersonalizedCardServiceImpl implements PersonalizedService {
 
     private final ParsedSummaryService parsedSummaryService;
+    private final SummaryService summaryService;
     private final SummaryMapper summaryMapper;
     private final EligibilityService eligibilityService;
     private final SelfCheckMapper userSelfCheckMapper;
     private final PersonalSummaryMapper personalSummaryMapper;
+    private final NoticeAttMapper noticeAttMapper;
+    private final LhNoticeMapper lhNoticeMapper;
 
     /**
      * danziId, userId, markdown을 받아 저장 + 분석 + DTO 반환
@@ -75,6 +84,17 @@ public class PersonalizedCardServiceImpl implements PersonalizedService {
     @Override
     public PersonalizedCardDTO getOrCreatePersonalCardFromJson(int danziId, int userId) {
         String json = summaryMapper.findJsonByDanziId(danziId);
+
+        if (json == null) {
+            int noticeId = lhNoticeMapper.getNoticeId(danziId);
+            List<NoticeAttVO> noticeAtts = noticeAttMapper.getNoticeAttByNoticeId(noticeId);
+            if (noticeAtts != null && !noticeAtts.isEmpty()) {
+                String pdfUrl = noticeAtts.get(0).getAhflUrl();
+                if (pdfUrl != null && !pdfUrl.isBlank()) {
+                    summaryService.getOrCreateJsonSummary(danziId, pdfUrl);
+                }
+            }
+        }
 
         // 1) 요약 DTO 저장 및 가져오기
         JsonSummaryDTO summary = parsedSummaryService.createFromJson(danziId, json);

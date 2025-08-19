@@ -79,8 +79,8 @@ public class EligibilityServiceImpl implements EligibilityService {
         );
         List<String> correspondents = evalTypes(typeText, user);
         if (correspondents.size() == 0) {
-            detail.put("correspondents", INELIGIBLE);
-            note("대상", "판정=" + INELIGIBLE);
+            detail.put("correspondents", NOT_APPLICABLE);
+            note("대상", "판정=" + NOT_APPLICABLE);
         } else {
             detail.put("correspondents", ELIGIBLE);
             note("대상", "판정=" + ELIGIBLE);
@@ -158,7 +158,7 @@ public class EligibilityServiceImpl implements EligibilityService {
         // evalTypes는 자격/부적격이 아닌, 해당하는 유형 리스트를 반환합니다.
         List<String> correspondentTypes = evalTargetGroups(summary, user);
         // 사용자가 해당하는 유형이 하나라도 있으면 '적격'으로 간주합니다.
-        detail.put("types", correspondentTypes.isEmpty() ? INELIGIBLE : ELIGIBLE);
+        detail.put("types", correspondentTypes.isEmpty() ? NOT_APPLICABLE : ELIGIBLE);
 
 
         EligibilityResultDTO result = new EligibilityResultDTO();
@@ -260,6 +260,12 @@ public class EligibilityServiceImpl implements EligibilityService {
         }
 
         Integer limitAsset = extractFirstMoneyManwon(text);
+        if (limitAsset == null) {
+            note("자산", "총자산 상한 파싱 실패 → 판정 보류 : text=" +
+                    "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : "")
+            );
+            return NEEDS_REVIEW;
+        }
         if (limitAsset == 3803) {
             note("자산", "총자산 파싱에 자동차가액이 포함된 것으로 보여 파싱 실패 처리: " + u.getTotalAssets());
             return NEEDS_REVIEW;
@@ -267,12 +273,6 @@ public class EligibilityServiceImpl implements EligibilityService {
         note("자산", "공고 총자산 상한(만원) 파싱=" + limitAsset +
                 "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : "")
         );
-        if (limitAsset == null) {
-            note("자산", "총자산 상한 파싱 실패 → 판정 보류 : text=" +
-                    "(" + (text != null ? text.substring(0, Math.min(text.length(), 80)) : "")
-            );
-            return NEEDS_REVIEW;
-        }
 
         Integer userAsset = extractFirstMoneyManwon(u.getTotalAssets());
         if (userAsset == null) {
@@ -360,8 +360,8 @@ public class EligibilityServiceImpl implements EligibilityService {
         if (need == null) return NOT_APPLICABLE;  // 점수표(배점)만 있을 가능성 → 하드요건 아님
 
         Integer user = u.getResidencePeriod();
-        note("거주기간", "최소 " + need + " 개월의 거주기간이 필요합니다. 사용자의 거주기간은 " + user + "개월 입니다.");
-        return (user >= need) ? ELIGIBLE : INELIGIBLE;
+        note("거주기간", "거주기간 항목에 " + need + " 개월의 거주기간이 발견 되었습니다. 사용자의 거주기간은 " + user + "개월 입니다.");
+        return (user >= need) ? ELIGIBLE : NEEDS_REVIEW;
     }
 
     public EligibilityResultDTO.EligibilityStatus evalSubscriptionPeriod(JsonSummaryDTO dto, SelfCheckContentDto u) {
@@ -374,7 +374,7 @@ public class EligibilityServiceImpl implements EligibilityService {
         if (need == null) return NOT_APPLICABLE;
 
         Integer user = mapUserSubPeriodToMonths(u.getSubscriptionPeriod());
-        note("청약가입기간", "최소 " + need + " 개월의 가입 기간이 필요합니다. 사용자의 거주기간은 " + user + "개월 입니다.");
+        note("청약가입기간", "최소 " + need + " 개월의 가입 기간이 필요합니다. 사용자의 가입 기간은 " + user + "개월 입니다.");
 
         return (user >= need) ? ELIGIBLE : INELIGIBLE;
     }
@@ -393,8 +393,8 @@ public class EligibilityServiceImpl implements EligibilityService {
         int[] parsed = parseHouseholdMembers(u.getHouseHoldMembers());
 
         int userMembers = parsed[0];
-        note("세대원수", need + "인 이상의 세대원 수가 필요합니다. 사용자의 세대원 수는 " + userMembers + "명 입니다.");
-        return (userMembers >= need) ? ELIGIBLE : INELIGIBLE;
+        note("세대원수", need + "인 이상의 세대원 수가 내용이 감지되었습니다. 사용자의 세대원 수는 " + userMembers + "명 입니다.");
+        return (userMembers >= need) ? ELIGIBLE : NEEDS_REVIEW;
     }
 
     /**
