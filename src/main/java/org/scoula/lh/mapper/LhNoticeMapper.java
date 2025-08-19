@@ -4,7 +4,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.scoula.lh.danzi.domain.NoticeVO;
 import org.scoula.lh.domain.LhNoticeVO;
-import org.scoula.lh.dto.NoticeDTO;
 
 import java.util.List;
 
