@@ -1,4 +1,4 @@
-# 🐈 **MHC: 청약이 어려운 분들을 위한 체계적인 청약 정보 제공 플랫폼**
+# 🐈 **MHC: 체계적인 청약 정보 제공 플랫폼**
 
 <br>
 
@@ -77,7 +77,7 @@
 |------|------|
 | HTML5 | ![HTML5](https://img.shields.io/badge/HTML5-E34F26?style=for-the-badge&logo=html5&logoColor=white) |
 | CSS3 | ![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=for-the-badge&logo=css3&logoColor=white) |
-| JAVASCRIPT | ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black) |
+| JavaScript | ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black) |
 | Bootstrap | ![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white) |
 
 <br>
@@ -86,9 +86,10 @@
 
 | 기술 | 배지 |
 |------|------|
-| Java Spring Framework | ![Java Spring Framework](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white) |
-| Tomcat | ![Apache Tomcat](https://img.shields.io/badge/apache%20tomcat-%23F8DC75.svg?style=for-the-badge&logo=apache-tomcat&logoColor=black) |
-| Gradle | ![JavaScript](https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white) |
+| Java | ![Java](https://img.shields.io/badge/java-%23ED8B00.svg?style=for-the-badge&logo=openjdk&logoColor=white)
+| Spring | ![Spring](https://img.shields.io/badge/Spring-6DB33F?style=for-the-badge&logo=Spring&logoColor=white) |
+| Tomcat | ![Tomcat](https://img.shields.io/badge/apache%20tomcat-%23F8DC75.svg?style=for-the-badge&logo=apache-tomcat&logoColor=black) |
+| Gradle | ![Gradle](https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white) |
 
 <br>
 
