@@ -122,6 +122,43 @@
 | 공공데이터포털 | ![공공데이터포털](https://img.shields.io/badge/%EA%B3%B5%EA%B3%B5%EB%8D%B0%EC%9D%B4%ED%84%B0%ED%8F%AC%ED%84%B8-FFCD00?style=for-the-badge&logoColor=000000) |
 | 한국부동산원 | ![한국부동산원](https://img.shields.io/badge/%ED%95%9C%EA%B5%AD%EB%B6%80%EB%8F%99%EC%82%B0%EC%9B%90-1572B6?style=for-the-badge&logoColor=white) |
 
+---
+
+<br>
+
+# **5. application.properties (설정 파일)**
+1. `application.properties` 파일 생성
+    루트 디렉토리에 `application.properties` 파일을 생성하고 아래 내용을 입력합니다.
+```
+
+jdbc.driver={your-db}
+jdbc.url={your-db}
+jdbc.username={your-db}
+jdbc.password={your-db}
+
+APPLYHOME_API_SERVICE_KEY={your-api-key}
+LH_API_SERVICE_KEY={your-api-key}
 
 
+kakao.clientId={your-api-key}
+kakao.redirectUrl=http://localhost:5173/auth/loading
+
+google.client.id={your-api-key}
+google.client.secret={your-api-key}
+google.redirect.uri=http://localhost:5173/auth/googleloading
+
+# email
+spring.mail.host=smtp.gmail.com
+spring.mail.port=587
+spring.mail.username={your-api-key}
+spring.mail.password={your-api-key}
+spring.mail.properties.mail.smtp.auth=true
+spring.mail.properties.mail.smtp.timeout=5000
+spring.mail.properties.mail.smtp.starttls.enable=true
+
+# chatAI
+gemini.api.key={your-api-key}
+gemini.api.url={your-api-key}
+
+```
 
