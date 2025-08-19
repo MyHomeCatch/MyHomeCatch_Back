@@ -113,3 +113,13 @@
 | Kakao Maps API | ![Kakao Maps API](https://img.shields.io/badge/Kakao%20Maps-FFCD00?style=for-the-badge&logo=kakao&logoColor=000000) |
 | 공공데이터포털 | ![공공데이터포털](https://img.shields.io/badge/%EA%B3%B5%EA%B3%B5%EB%8D%B0%EC%9D%B4%ED%84%B0%ED%8F%AC%ED%84%B8-FFCD00?style=for-the-badge&logoColor=000000) |
 | 한국부동산원 | ![한국부동산원](https://img.shields.io/badge/%ED%95%9C%EA%B5%AD%EB%B6%80%EB%8F%99%EC%82%B0%EC%9B%90-1572B6?style=for-the-badge&logoColor=white) |
+
+---
+
+<br>
+
+# **4. ERD (DB 설계)**
+<img width="1109" height="714" alt="스크린샷 2025-08-19 오후 4 04 18" src="https://github.com/user-attachments/assets/088dd657-f94c-43dc-ae19-472085708107" />
+<img width="1058" height="580" alt="스크린샷 2025-08-19 오후 4 04 35" src="https://github.com/user-attachments/assets/94dffef3-b9e5-4d9a-a130-dbd36858aed2" />
+
+
