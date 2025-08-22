@@ -1,5 +1,7 @@
 package org.scoula.selfCheck.controller;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.scoula.auth.mapper.AuthMapper;
 import org.scoula.common.util.JwtUtil;
 import org.scoula.selfCheck.dto.SelfCheckContentDto;
@@ -17,6 +19,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/self-check")
+@Api(tags = "Self Check API")
 public class SelfCheckController {
 
     @Autowired
@@ -39,6 +42,7 @@ public class SelfCheckController {
     }
 
     @PostMapping("/diagnosis/Kookmin")
+    @ApiOperation(value = "Diagnose Kookmin", notes = "Diagnose Kookmin self-check.")
     public ResponseEntity<Map<String, Object>> diagnoseKookmin(@RequestHeader("Authorization") String tokenHeader,
                                                                @RequestBody SelfCheckRequestDto dto) {
         int userId = extractUserIdFromToken(tokenHeader);
@@ -47,6 +51,7 @@ public class SelfCheckController {
     }
 
     @PostMapping("/diagnosis/HengBok")
+    @ApiOperation(value = "Diagnose HengBok", notes = "Diagnose HengBok self-check.")
     public ResponseEntity<Map<String, Object>> diagnoseHengBok(@RequestHeader("Authorization") String tokenHeader,
                                                                @RequestBody SelfCheckRequestDto dto) {
         int userId = extractUserIdFromToken(tokenHeader);
@@ -55,6 +60,7 @@ public class SelfCheckController {
     }
 
     @PostMapping("/diagnosis/GongGong")
+    @ApiOperation(value = "Diagnose GongGong", notes = "Diagnose GongGong self-check.")
     public ResponseEntity<Map<String, Object>> diagnoseGongGong(@RequestHeader("Authorization") String tokenHeader,
                                                                 @RequestBody SelfCheckRequestDto dto) {
         int userId = extractUserIdFromToken(tokenHeader);
@@ -63,6 +69,7 @@ public class SelfCheckController {
     }
 
     @PostMapping("/diagnosis/09")
+    @ApiOperation(value = "Diagnose 09", notes = "Diagnose 09 self-check.")
     public ResponseEntity<Map<String, Object>> diagnose09(@RequestHeader("Authorization") String tokenHeader,
                                                           @RequestBody SelfCheckRequestDto dto) {
         int userId = extractUserIdFromToken(tokenHeader);
@@ -71,6 +78,7 @@ public class SelfCheckController {
     }
 
     @DeleteMapping("/init")
+    @ApiOperation(value = "Initialize Self-Check", notes = "Initialize self-check results for the user.")
     public ResponseEntity<?> initialize(@RequestHeader("Authorization") String tokenHeader) {
         String token = tokenHeader.replace("Bearer ", "");
 
@@ -92,6 +100,7 @@ public class SelfCheckController {
     }
 
     @GetMapping("/results")
+    @ApiOperation(value = "Get Self-Check Results", notes = "Get self-check results for the user.")
     public ResponseEntity<?> getResults(@RequestHeader("Authorization") String tokenHeader) {
         String token = tokenHeader.replace("Bearer ", "");
 
@@ -113,6 +122,7 @@ public class SelfCheckController {
     }
 
     @PostMapping("/content/save")
+    @ApiOperation(value = "Save Self-Check Content", notes = "Save self-check content for the user.")
     public ResponseEntity<?> saveContent(@RequestHeader("Authorization") String tokenHeader,
                                          @RequestBody SelfCheckRequestDto dto) {
         int userId = extractUserIdFromToken(tokenHeader);
@@ -123,6 +133,7 @@ public class SelfCheckController {
     }
 
     @DeleteMapping("/content/delete")
+    @ApiOperation(value = "Delete Self-Check Content", notes = "Delete self-check content for the user.")
     public ResponseEntity<?> deleteContent(@RequestHeader("Authorization") String tokenHeader) {
         int userId = extractUserIdFromToken(tokenHeader);
         if (userId == -1) return ResponseEntity.badRequest().body("유효하지 않은 사용자입니다.");
@@ -132,6 +143,7 @@ public class SelfCheckController {
     }
 
     @GetMapping("/content")
+    @ApiOperation(value = "Get Self-Check Content", notes = "Get self-check content for the user.")
     public ResponseEntity<?> getSelfCheckContent(@RequestHeader("Authorization") String tokenHeader) {
         int userId = extractUserIdFromToken(tokenHeader);
         if (userId == -1) return ResponseEntity.badRequest().body("사용자를 찾을 수 없습니다.");

@@ -16,8 +16,16 @@
         </foreach>
     </insert>
 
+    <resultMap id="danziAttResultMap" type="org.scoula.lh.danzi.domain.DanziAttVO">
+        <id property="attId" column="att_id"/>
+        <result property="danziId" column="danzi_id"/>
+        <result property="flDsCdNm" column="fl_ds_cd_nm"/>
+        <result property="cmnAhflNm" column="cmn_ahfl_nm"/>
+        <result property="ahflUrl" column="ahfl_url"/>
+    </resultMap>
+
     <!-- 단지 ID로 조회 -->
-    <select id="getBydanziId" parameterType="int" resultType="org.scoula.lh.danzi.domain.DanziAttVO">
+    <select id="getBydanziId" parameterType="int" resultMap="danziAttResultMap">
         SELECT danzi_id, fl_ds_cd_nm, cmn_ahfl_nm, ahfl_url
         FROM danzi_att
         WHERE danzi_id = #{danziId}

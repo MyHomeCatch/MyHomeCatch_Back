@@ -9,4 +9,6 @@ import java.util.List;
 public interface CalendarMapper {
 
     List<CalendarVO> getCalendar(@Param("date") String date);
+
+    Integer getToday(@Param("date") String date);
 }

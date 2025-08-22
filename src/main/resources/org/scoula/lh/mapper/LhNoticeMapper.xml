@@ -93,7 +93,7 @@
     <select id="getLhNotice" resultType="org.scoula.lh.domain.LhNoticeVO">
         SELECT *
         FROM lh_notice
-        WHERE pan_id = #{pandId}
+        WHERE pan_id = #{panId}
         ORDER BY notice_id DESC
             LIMIT 1
     </select>
@@ -109,15 +109,15 @@
 
     <insert id="createNoticeDanzi">
         insert into notice_danzi(notice_id, danzi_id)
-        values (#{noticeID}, #{danziId})
+        values (#{noticeId}, #{danziId})
     </insert>
 
     <select id="getDanziId" resultType="Integer">
-        select danzi_id from notice_danzi where notice_id = #{noticeId}
+        select danzi_id from notice_danzi where notice_id = #{noticeId} LIMIT 1
     </select>
 
     <select id="getNoticeId" resultType="integer">
-        select notice_id from notice_danzi where danzi_id = #{danziId}
+        select notice_id from notice_danzi where danzi_id = #{danziId} LIMIT 1
     </select>
 
     <select id="getPanIds" resultType="String">
@@ -149,5 +149,12 @@
         SELECT *
         FROM MyHomeCatch.lh_notice
         WHERE pan_id = #{panId}
+    </select>
+
+    <select id="getPopularLhNotices" resultType="org.scoula.lh.domain.LhNoticeVO">
+        SELECT n.*
+        FROM lh_notice n
+        ORDER BY n.all_cnt DESC
+            LIMIT 5
     </select>
 </mapper>

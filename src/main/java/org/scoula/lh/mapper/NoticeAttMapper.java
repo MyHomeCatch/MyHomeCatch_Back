@@ -9,5 +9,6 @@ public interface NoticeAttMapper {
     // noticeAttVO panId -> notice_id로 변경
     int create(NoticeAttVO noticeAttVO);
     int createAll(List<NoticeAttVO> noticeAttVOList);
-    List<NoticeAttVO> getNoticeAttByNoticeId(String noticeId);
+    List<NoticeAttVO> getNoticeAttByNoticeId(Integer noticeId);
+    int getLast();
 }

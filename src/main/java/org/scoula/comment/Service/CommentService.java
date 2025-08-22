@@ -1,9 +1,9 @@
-package org.scoula.DetailPage.Service;
+package org.scoula.comment.Service;
 
 
 import lombok.RequiredArgsConstructor;
-import org.scoula.DetailPage.mapper.CommentMapper;
-import org.scoula.DetailPage.dto.CommentDTO;
+import org.scoula.comment.mapper.CommentMapper;
+import org.scoula.comment.dto.CommentDTO;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,8 +18,8 @@ public class CommentService {
         return commentMapper.getCommentsByDanziId(danziId);
     }
 
-    public void addComment(CommentDTO comment) {
-        commentMapper.insertComment(comment);
+    public int addComment(CommentDTO comment) {
+        return commentMapper.insertComment(comment);
     }
 
     public void deleteComment(int commentId) {

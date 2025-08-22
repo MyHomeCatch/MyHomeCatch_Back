@@ -59,4 +59,12 @@ public class BookmarkServiceImpl implements BookmarkService {
     public int getUserIdByEmail(String email){
         return authMapper.findByEmail(email).getUserId();
     }
+
+    @Override
+    public int getBookmarksByHouseId(Integer houseId) {
+
+        int cnt = bookmarkMapper.countByHouseId(houseId);
+        log.debug(houseId + " " + cnt);
+        return cnt;
+    }
 }

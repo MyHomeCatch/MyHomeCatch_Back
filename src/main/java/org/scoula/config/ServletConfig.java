@@ -14,14 +14,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 @EnableWebMvc
-@ComponentScan(basePackages = {
-    "org.scoula",                    // 전체 기본 패키지
-    "org.scoula.exception",          // 예외 처리 관련 패키지
-    "org.scoula.controller",         // 웹 컨트롤러
-    "org.scoula.statics.controller", // 정적 페이지용 컨트롤러
-    "org.scoula.house",               // LH 공고 관련 컨트롤러/서비스 등
-        "org.scoula.calendar",         // 캘린더 관련 패키지
-})
+@ComponentScan(basePackages = {"org.scoula"})
 @PropertySource("classpath:application.properties")
 @EnableScheduling
 public class ServletConfig implements WebMvcConfigurer {
@@ -47,12 +40,6 @@ public class ServletConfig implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/v2/api-docs")
                 .addResourceLocations("classpath:/META-INF/resources/");
-
-
-        // favicon.ico 처리 추가
-        registry
-                .addResourceHandler("/favicon.ico")
-                .addResourceLocations("classpath:/WEB-INF/resources/");
     }
 
         // jsp view resolver 설정 - 뷰 이름을 JSP나 템플릿으로 매핑

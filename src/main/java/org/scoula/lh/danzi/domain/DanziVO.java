@@ -19,5 +19,5 @@ public class DanziVO {
     private String minMaxRsdnDdoAr;       // 전용면적
     private Integer sumTotHshCnt;         // 총세대수
     private String htnFmlaDeCoNm;         // 난방방식
-    private Date mvinXpcYm;               // 입주예정월
+    private String mvinXpcYm;               // 입주예정월
 }

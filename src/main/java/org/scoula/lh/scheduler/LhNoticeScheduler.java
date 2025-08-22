@@ -67,7 +67,7 @@ public class LhNoticeScheduler {
 
     private final int NUMBER_OF_PAGE = 35;
 
-    // @Scheduled(fixedDelay = 600000, initialDelay = 0)
+//     @Scheduled(fixedDelay = 6000000, initialDelay = 0)
     @Scheduled(cron = "0 0 2 * * *")
     public void schedule() {
         log.info("=== LH 공고 데이터 업데이트 스케줄러 시작 ===");
@@ -128,9 +128,9 @@ public class LhNoticeScheduler {
             }
 
             /*
-            - 첨부파일 정보 처리
-            1. 하나의 공고 -> 여러개의 첨부파일 O
-            => 리스트를 이용하여 한번에 insert
+            - 공고별 첨부파일 정보 처리
+            1. 각 공고별로 첨부되는 카탈로그, 제출문서, 공고문 등
+            2. 단지 별로 첨부되는 값이 아님 -> 공고 첨부파일 테이블 lh_notice_att에 저장
              */
             if (noticeDetail.getDsAhflInfo() != null) {
                 List<NoticeAttVO> dsAhflInfoDTOList = noticeDetail.getDsAhflInfo().stream()
@@ -178,7 +178,7 @@ public class LhNoticeScheduler {
             }
 
             /*
-            - 주택 첨부 정보 처리
+            - 단지별 첨부파일 처리
             1. 데이터에 단지명 포함 O
             => 단지명을 이용해 단지 id 조회 -> 데이터 저장
             2. List로 한번에 처리
@@ -214,6 +214,19 @@ public class LhNoticeScheduler {
             }
 
             /*
+            - 공고별 첨부파일 정보 처리
+            1. 각 공고별로 첨부되는 카탈로그, 제출문서, 공고문 등
+            2. 단지 별로 첨부되는 값이 아님 -> 공고 첨부파일 테이블 lh_notice_att에 저장
+            => 리스트를 이용하여 한번에 insert
+             */
+            if (noticeDetail.getDsAhflInfo() != null) {
+                List<NoticeAttVO> dsAhflInfoDTOList = noticeDetail.getDsAhflInfo().stream()
+                        .map(dto -> dto.toNoticeAttVO(notice.getNoticeId()))
+                        .collect(Collectors.toList());
+                noticeAttService.createAll(dsAhflInfoDTOList);
+            }
+
+            /*
             - 임대 정보 처리
             1. insert 후 생성된 key 값을 저장(danziVOList)
              */
@@ -231,28 +244,45 @@ public class LhNoticeScheduler {
                             .danziId(vo.getDanziId())
                             .noticeId(notice.getNoticeId())
                             .build();
-
+                    log.info("공고단지테이블 {} - {}" , notice.getNoticeId(), vo.getDanziId());
                     danziService.createDanziNotice(danziNoticeVO);
                 }
             }
 
              /*
             - 임대 신청 정보 처리
-            1. DanziVO 단지명과 일정정보DsSplScdl의 단지명이 일치하는것을 필터링
+            1. 일정정보 DsSplScdl이 1개뿐일때는 단지명 SBD_LGO_NM 등 일부 정보가 누락되어있는 경우가 있음
+            2. 따라서 size == 1일 때는 단지명 필터링조건 없이 바로 danziapplyVO로 넘어가기
+            3. DsSplScdl이 2개 이상일 때부터 DanziVO 단지명과 일정정보DsSplScdl의 단지명이 일치하는것을 필터링
              */
             if (noticeDetail.getDsSplScdl() != null) {
-                for(DanziVO vo : danziVOList) {
-                    List<DanziApplyVO> danziApplyVOList = noticeDetail.getDsSplScdl().stream()
-                            .filter(dto -> dto.getSbdLgoNm().equals(vo.getBzdtNm()))
-                            .map(dto -> dto.toDanziApplyVO(vo.getDanziId()))
-                            .collect(Collectors.toList());
-                    // service 코드 추가
-                    danziApplyService.createAll(danziApplyVOList);
+                if(noticeDetail.getDsSplScdl().size() == 1) {
+                    for(DanziVO vo : danziVOList) {
+                        List<DanziApplyVO> danziApplyVOList = noticeDetail.getDsSplScdl().stream()
+                                .map(dto -> dto.toDanziApplyVO(vo.getDanziId()))
+                                .collect(Collectors.toList());
+                        // service 코드 추가
+                        danziApplyService.createAll(danziApplyVOList);
+                    }
+                } else {
+                    for(DanziVO vo : danziVOList) {
+                        List<DanziApplyVO> danziApplyVOList = noticeDetail.getDsSplScdl().stream()
+                                .filter(dto -> dto.getSbdLgoNm().equals(vo.getBzdtNm()))
+                                .map(dto -> dto.toDanziApplyVO(vo.getDanziId()))
+                                .collect(Collectors.toList());
+                        // service 코드 추가
+                        danziApplyService.createAll(danziApplyVOList);
+                    }
                 }
+
             }
 
-            // 임대 첨부 정보 처리
-            // DanziVO 단지정보가 첨부파일의 단지정보와 일치하는지 필터링
+            /* 임대 단지별 첨부파일 처리
+            1. 데이터에 단지명 포함 O
+            => 단지명을 이용해 단지 id 조회 -> 데이터 저장
+            2. List로 한번에 처리
+            3. DanziVO의 단지정보와 첨부파일 DsSbdAhfl의 단지정보가 일치하는것을 필터링
+            */
             if (noticeDetail.getDsSbdAhfl() != null) {
                 List<DanziAttVO> danziAttVOList = new ArrayList<>();
                 for(DanziVO vo : danziVOList) {

@@ -57,15 +57,14 @@ public class ApplyHomeScheduler {
         log.info("청약홈 공고 데이터 적재");
 
         try {
-            List<ApplyHomeDTO> allNotices = fetchApplyHomeNotice(250); //2455 - 100
+            List<ApplyHomeDTO> allNotices = fetchApplyHomeNotice(25); //2455 - 100
             allNotices.forEach(service::create);
 
             // 경쟁률 및 당첨가점 정보
             // return하는게 안들어와서 내부에서 바로 Service::create)
-            List<ApplyHomeAnalysisDTO> competList = fetchApplyHomeCompet(465); //46488 - 100
-            List<ApplyHomeAnalysisDTO> winnerList = fetchApplyHomeWinner(253); // 25237 - 100
-
-            List<ApplyHomeSpecialDTO> specialList = fetchApplyHomeSpecial(1);
+            List<ApplyHomeAnalysisDTO> competList = fetchApplyHomeCompet(10); //46488 - 100
+            List<ApplyHomeAnalysisDTO> winnerList = fetchApplyHomeWinner(10); // 25237 - 100
+//            List<ApplyHomeSpecialDTO> specialList = fetchApplyHomeSpecial(1);
 
         } catch (Exception e) {
             log.error("청약홈 스케줄러 실행 중 오류 발생: {}", e.getMessage(), e);

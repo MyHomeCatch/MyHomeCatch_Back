@@ -15,6 +15,10 @@
         <package name="org.scoula.statics.dto"/>
     </typeAliases>
 
+    <typeHandlers>
+        <typeHandler handler="org.scoula.summary.parsing.JsonSummaryTypeHandler"/>
+    </typeHandlers>
+
     <!-- 매퍼 경로 설정 -->
     <mappers>
         <mapper resource="org/scoula/statics/mapper/StaticsMapper.xml"/>
