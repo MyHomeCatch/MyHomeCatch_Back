@@ -77,6 +77,53 @@
 
 <br>
 
+# **3.1 시스템 아키텍처 및 MSA 전환 가이드**
+
+## 📐 아키텍처 문서
+
+MyHomeCatch는 현재 **모듈형 모놀리스(Modular Monolith)** 아키텍처로 구현되어 있으며, MSA(Microservices Architecture)로 확장 가능하도록 설계되었습니다.
+
+### 📚 상세 문서
+
+- **[MSA_ARCHITECTURE.md](./MSA_ARCHITECTURE.md)** - 전체 MSA 전환 가이드
+  - 현재 아키텍처 분석
+  - 도메인 경계 및 서비스 분해 계획
+  - 인프라 구성 및 통신 전략
+  - 데이터베이스 전략 및 마이그레이션 로드맵
+
+- **[MSA_QUICK_START.md](./MSA_QUICK_START.md)** - MSA 전환 빠른 시작 가이드
+  - 즉시 시작 가능한 실용적인 첫 걸음
+  - API Gateway 도입 방법
+  - 첫 마이크로서비스 분리 (AI Service)
+  - Service Discovery 구축
+
+- **[MSA_DIAGRAMS.md](./MSA_DIAGRAMS.md)** - 아키텍처 다이어그램
+  - 현재 모놀리스 아키텍처 시각화
+  - 목표 MSA 아키텍처 시각화
+  - 서비스 의존성 및 통신 패턴
+  - 배포 아키텍처 (Kubernetes)
+
+### 🎯 MSA 핵심 구성요소
+
+현재 구현된 **MSA 준비 요소**:
+- ✅ 도메인별 패키지 분리 (DDD 기반)
+- ✅ RESTful API 설계
+- ✅ JWT 기반 Stateless 인증
+- ✅ 외부 API 통합 경험
+- ✅ 설정 외부화
+
+추가 필요한 **MSA 인프라**:
+- 🔄 API Gateway (Spring Cloud Gateway)
+- 🔄 Service Discovery (Eureka)
+- 🔄 독립 데이터베이스 (Database per Service)
+- 🔄 비동기 통신 (RabbitMQ/Kafka)
+- 🔄 분산 추적 (Zipkin)
+- 🔄 중앙 로깅 (ELK Stack)
+
+---
+
+<br>
+
 # **4. Technology Stack (기술 스택)**
 
 ## 🖥 **Frontend**
