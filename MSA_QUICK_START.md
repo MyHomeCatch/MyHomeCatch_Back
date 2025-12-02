@@ -82,7 +82,9 @@ cd myhomecatch-gateway
 
 # Spring Initializr로 프로젝트 생성
 # https://start.spring.io/
-# Dependencies: Spring Cloud Gateway, Eureka Discovery Client, Config Client
+# Dependencies: 
+#   - Spring Cloud Gateway
+#   - Eureka Discovery Client
 ```
 
 #### Step 2: `build.gradle`
@@ -164,7 +166,9 @@ import reactor.core.publisher.Mono;
 @Component
 public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
     
-    private final String SECRET_KEY = "sexyRyusexyRyusexyRyusexyRyusexyRyusexyRyusexyRyusexyRyusexyRyusexyRyu";
+    // ⚠️ WARNING: 프로덕션 환경에서는 반드시 환경 변수로 관리하세요!
+    // 예: @Value("${jwt.secret}") private String SECRET_KEY;
+    private final String SECRET_KEY = "YOUR_SECRET_KEY_HERE_REPLACE_WITH_ENV_VAR";
     
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -195,10 +199,14 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
     
     private boolean isValidToken(String token) {
         try {
-            Claims claims = Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .parseClaimsJws(token)
-                .getBody();
+            // jjwt 0.11.5+ 권장 방식
+            SecretKey key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+            
+            Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token);
+            
             return true;
         } catch (Exception e) {
             return false;

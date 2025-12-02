@@ -45,10 +45,15 @@ org.scoula/
 ├── ChatBot/           # AI 챗봇 (Gemini)
 ├── email/             # 이메일 알림
 ├── statics/           # 통계
-├── common/            # 공통 유틸리티
+├── common/            # 공통 유틸리티 (JwtUtil, Response 등)
 ├── config/            # 설정
 └── exception/         # 예외 처리
 ```
+
+**참고**: MSA 전환 시 `common/` 패키지는 다음과 같이 분리됩니다:
+- `common-dto`: 서비스 간 공유되는 DTO
+- `common-utils`: 공통 유틸리티 (날짜, 문자열 처리 등)
+- `common-security`: JWT 관련 공통 라이브러리
 
 ### 1.2 현재 아키텍처의 강점
 
@@ -480,13 +485,21 @@ public WebClient.Builder webClientBuilder() {
     return WebClient.builder();
 }
 
-// 서비스에서 사용
-public UserInfo getUserInfo(Long userId) {
+// 서비스에서 사용 - Reactive 방식 (권장)
+public Mono<UserInfo> getUserInfo(Long userId) {
+    return webClient.get()
+        .uri("http://AUTH-SERVICE/api/members/{id}", userId)
+        .retrieve()
+        .bodyToMono(UserInfo.class);
+}
+
+// 또는 동기적 호출이 필요한 경우 (특별한 경우에만)
+public UserInfo getUserInfoSync(Long userId) {
     return webClient.get()
         .uri("http://AUTH-SERVICE/api/members/{id}", userId)
         .retrieve()
         .bodyToMono(UserInfo.class)
-        .block();
+        .block();  // 주의: 가능하면 Reactive Chain 유지
 }
 ```
 
@@ -627,6 +640,28 @@ INSERT INTO housing_db.houses SELECT * FROM monolith_db.houses;
 ALTER TABLE preference_db.bookmarks DROP FOREIGN KEY fk_user_id;
 
 -- ✅ 애플리케이션 레벨에서 참조 무결성 관리
+-- 방법 1: API 호출로 검증
+@Service
+public class BookmarkService {
+    private final AuthServiceClient authClient;
+    
+    public void createBookmark(BookmarkDTO bookmark) {
+        // User 존재 여부 확인
+        UserInfo user = authClient.getUser(bookmark.getUserId());
+        if (user == null) {
+            throw new UserNotFoundException("User not found");
+        }
+        // Bookmark 저장
+        bookmarkRepository.save(bookmark);
+    }
+}
+
+-- 방법 2: 이벤트 기반 데이터 동기화
+// User 삭제 시 Bookmark도 삭제
+@RabbitListener(queues = "user-deleted-queue")
+public void handleUserDeleted(UserDeletedEvent event) {
+    bookmarkRepository.deleteByUserId(event.getUserId());
+}
 ```
 
 #### Phase 3: 이벤트 소싱 (선택적)
